@@ -7,13 +7,16 @@ Vue.use(Router)
 export default new Router({
   routes: [
     {
-      path: '/',
-      name: 'main',
-      component: Main
+      path: '/:nav',
+      name: 'Main',
+      component: Main,
+      children: [
+        {path: '', component: () => import('@/views/NewTask')}
+      ]
     },
     {
       path: '*',
-      redirect: '/'
+      redirect: '/newtask'
     }
   ]
 })

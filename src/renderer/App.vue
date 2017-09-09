@@ -14,7 +14,7 @@ export default {
 /* CSS */
 
  ::selection {
-  background-color: #81d8d0;
+  background-color: #17a2b8;
 }
 
 body {
