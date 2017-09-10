@@ -19,7 +19,7 @@
         </b-button>
       </div>
     </div>
-    <b-table empty-text="没有找到车次" :fields="fields" head-variant="inverse" striped hover show-empty></b-table>
+    <b-table empty-text="没有找到车次" :fields="fields" head-variant="default" striped hover show-empty></b-table>
   </div>
 </template>
 
@@ -32,6 +32,7 @@ export default {
         trainNo: {label: '车次', sortable: true},
         fromCity: {label: '出发地'},
         toCity: {label: '目的地'},
+        useTime: {label: '用时', sortable: true},
         remak: {label: '备注'}
       }
     }

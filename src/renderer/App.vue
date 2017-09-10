@@ -26,4 +26,8 @@ body {
 button {
   cursor: pointer;
 }
+
+.font-size-14{
+  font-size: 0.875rem;
+}
 </style>

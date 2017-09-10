@@ -13,6 +13,16 @@
     <main class="container-fluid">
       <router-view></router-view>
     </main>
+    <footer class="fixed-bottom border border-info border-left-0 border-right-0 border-bottom-0">
+      <div class="d-flex flex-row font-size-14">
+        <div class="p-2">
+          <a class="text-info">
+            <i class="iconfont icon-user"></i>
+            <span>未登录</span>
+          </a>
+        </div>
+      </div>
+    </footer>
   </div>
 </template>
 
