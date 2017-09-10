@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="container-fluid">
+  <div id="app">
     <router-view></router-view>
   </div>
 </template>
@@ -15,10 +15,15 @@ export default {
 
  ::selection {
   background-color: #17a2b8;
+  color: #fff;
 }
 
 body {
   -webkit-user-select: none;
   -webkit-app-region: drag;
+}
+
+button {
+  cursor: pointer;
 }
 </style>

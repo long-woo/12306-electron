@@ -12,6 +12,8 @@ import BootstrapVue from 'bootstrap-vue'
 import 'node-waves/dist/waves.css'
 import Wavas from 'node-waves'
 
+import './assets/iconfont/iconfont.css'
+
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.http = Vue.prototype.$http = axios
 Vue.config.productionTip = false
