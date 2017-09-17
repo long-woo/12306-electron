@@ -3,7 +3,7 @@
     <header class="navbar-dark">
       <div class="navbar-nav-scroll">
         <b-nav class="navbar-nav flex-row justify-content-center text-center bg-info">
-          <b-nav-item :active="nav.active" v-for="(nav, index) in navItems" :key="index" :to="nav.to" @click="navChange(nav)">
+          <b-nav-item class="waves-effect" :active="nav.active" v-for="(nav, index) in navItems" :key="index" :to="nav.to" @click="navChange(nav)">
             <i class="iconfont" :class="`icon-${nav.icon}`"></i>
             <p>{{nav.text}}</p>
           </b-nav-item>

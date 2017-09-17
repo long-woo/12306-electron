@@ -4,17 +4,17 @@
       <div class="col-sm-8">
         <b-input-group class="bs-input-group">
           <b-form-input slot="left" placeholder="输入出发地" class="bs-input-left"></b-form-input>
-          <b-button variant="info" class="bs-input-center">
+          <b-button variant="info" class="bs-input-center waves-effect">
             <i class="iconfont icon-change"></i>
           </b-button>
           <b-form-input slot="right" placeholder="输入目的地" class="bs-input-right"></b-form-input>
         </b-input-group>
       </div>
       <div class="col-sm-3">
-        <b-form-input placeholder="乘车日期"></b-form-input>
+        <b-date-picker></b-date-picker>
       </div>
       <div class="col-sm-1">
-        <b-button variant="info">
+        <b-button variant="info" class="waves-effect">
           <i class="iconfont icon-search"></i>
         </b-button>
       </div>
@@ -28,6 +28,7 @@ export default {
   name: 'NewTask',
   data () {
     return {
+      // table option
       fields: {
         trainNo: {label: '车次', sortable: true},
         fromCity: {label: '出发地'},

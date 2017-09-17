@@ -14,13 +14,16 @@ import Wavas from 'node-waves'
 
 import './assets/iconfont/iconfont.css'
 
+import Components from './components'
+
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.http = Vue.prototype.$http = axios
 Vue.config.productionTip = false
 
 Vue.use(BootstrapVue)
+Vue.use(Components)
 
-Wavas.attach('.wavas')
+Wavas.init()
 
 /* eslint-disable no-new */
 new Vue({
