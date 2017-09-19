@@ -14,14 +14,15 @@ import Wavas from 'node-waves'
 
 import './assets/iconfont/iconfont.css'
 
-import Components from './components'
+import bsComponents from './components'
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.http = Vue.prototype.$http = axios
 Vue.config.productionTip = false
 
 Vue.use(BootstrapVue)
-Vue.use(Components)
+Vue.use(bsComponents.Autocomplete)
+Vue.use(bsComponents.DatePicker)
 
 Wavas.init()
 

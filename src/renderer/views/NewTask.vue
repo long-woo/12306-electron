@@ -3,11 +3,12 @@
     <div class="form-row form-group">
       <div class="col-sm-8">
         <b-input-group class="bs-input-group">
-          <b-form-input slot="left" placeholder="输入出发地" class="bs-input-left"></b-form-input>
+          <b-autocomplete slot="left" placeholder="输入出发地" :dropdownData="fromCityData" @onSelect="selectFromCity"></b-autocomplete>
           <b-button variant="info" class="bs-input-center waves-effect">
             <i class="iconfont icon-change"></i>
           </b-button>
-          <b-form-input slot="right" placeholder="输入目的地" class="bs-input-right"></b-form-input>
+          <!-- <b-form-input slot="right" placeholder="输入目的地" class="bs-input-right"></b-form-input> -->
+          <b-autocomplete slot="right" placeholder="输入目的地" inputClass="bs-input-right" :dropdownData="fromCityData" @onSelect="selectFromCity"></b-autocomplete>
         </b-input-group>
       </div>
       <div class="col-sm-3">
@@ -28,6 +29,10 @@ export default {
   name: 'NewTask',
   data () {
     return {
+      fromCityData: [
+        {text: '上海', value: 'SH'},
+        {text: '邵阳', value: 'SY'}
+      ],
       // table option
       fields: {
         trainNo: {label: '车次', sortable: true},
@@ -36,6 +41,12 @@ export default {
         useTime: {label: '用时', sortable: true},
         remak: {label: '备注'}
       }
+    }
+  },
+  methods: {
+    // 选择出发地
+    selectFromCity (city) {
+      console.log(city)
     }
   }
 }
