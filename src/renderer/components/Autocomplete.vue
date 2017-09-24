@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-form-input v-model="selectText" :class="inputClass" :placeholder="placeholder" @keyup.down="down" @keyup.up="up" @keyup.enter="enter" @input="change"></b-form-input>
+    <b-form-input v-model="selectText" :class="inputClass" :placeholder="placeholder" @input="change"></b-form-input>
     <div class="dropdown-menu" :class="{'show': show}">
       <b-dropdown-header v-if="dropdownHeader">{{dropdownHeader}}</b-dropdown-header>
       <b-dropdown-item :class="{'active': isActive(index)}" v-for="(item, index) in dropdownData" :key="index" @click="itemClick(index)">{{item.text}}</b-dropdown-item>
@@ -55,12 +55,15 @@ export default {
 
       this.$emit('onSelect', this.selectData)
     },
-    change () {
+    change (val, e) {
+      e = e || window.event
+
       if (!this.selectText) {
         this.show = false
         return
       }
 
+      console.log(e)
       this.selectIndex = 0
       this.show = true
       this.$emit('onSelect', this.selectData)

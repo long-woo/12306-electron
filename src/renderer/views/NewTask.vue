@@ -1,15 +1,14 @@
 <template>
   <div>
     <div class="form-row form-group">
-      <div class="col-sm-8">
-        <b-input-group class="bs-input-group">
-          <b-autocomplete slot="left" placeholder="输入出发地" :dropdownData="fromCityData" @onSelect="selectFromCity"></b-autocomplete>
+      <div class="col-sm-8 form-inline">
+        <b-autocomplete class="col pl-sm-0 pr-sm-0" inputClass="br-rounded-0" placeholder="输入出发地" :dropdownData="fromCityData" @onSelect="selectFromCity"></b-autocomplete>
+        <div class="col-auto pl-sm-0 pr-sm-0">
           <b-button variant="info" class="bs-input-center waves-effect">
             <i class="iconfont icon-change"></i>
           </b-button>
-          <!-- <b-form-input slot="right" placeholder="输入目的地" class="bs-input-right"></b-form-input> -->
-          <b-autocomplete slot="right" placeholder="输入目的地" inputClass="bs-input-right" :dropdownData="fromCityData" @onSelect="selectFromCity"></b-autocomplete>
-        </b-input-group>
+        </div>
+        <b-autocomplete class="col pl-sm-0 pr-sm-0" placeholder="输入目的地" inputClass="bl-rounded-0" :dropdownData="fromCityData" @onSelect="selectFromCity"></b-autocomplete>
       </div>
       <div class="col-sm-3">
         <b-date-picker></b-date-picker>
@@ -52,11 +51,7 @@ export default {
 }
 </script>
 
-<style scoped>
-.bs-input-left {
-  border-right: 0;
-}
-
+<style>
 .bs-input-center {
   border-radius: 0;
 }
@@ -65,7 +60,13 @@ export default {
   box-shadow: 0 0 0 transparent;
 }
 
-.bs-input-right {
-  border-left: 0;
+.bl-rounded-0{
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.br-rounded-0 {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
 }
 </style>
