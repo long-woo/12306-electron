@@ -14,6 +14,8 @@ import Wavas from 'node-waves'
 
 import './assets/iconfont/iconfont.css'
 
+import swal from 'sweetalert'
+
 import bsComponents from './components'
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
@@ -25,6 +27,8 @@ Vue.use(bsComponents.Autocomplete)
 Vue.use(bsComponents.DatePicker)
 
 Wavas.init()
+
+Vue.swal = Vue.prototype.$swal = swal
 
 /* eslint-disable no-new */
 new Vue({

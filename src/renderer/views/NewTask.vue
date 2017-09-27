@@ -8,7 +8,7 @@
             <i class="iconfont icon-change"></i>
           </b-button>
         </div>
-        <b-autocomplete class="col pl-sm-0 pr-sm-0" placeholder="输入目的地" inputClass="bl-rounded-0" :dropdownData="fromCityData" @onSelect="selectFromCity"></b-autocomplete>
+        <b-autocomplete class="col pl-sm-0 pr-sm-0" placeholder="输入目的地" inputClass="bl-rounded-0" :dropdownData="toCityData" @onSelect="selectFromCity"></b-autocomplete>
       </div>
       <div class="col-sm-3">
         <b-date-picker></b-date-picker>
@@ -30,6 +30,9 @@ export default {
     return {
       fromCityData: [
         {text: '上海', value: 'SH'},
+        {text: '邵阳', value: 'SY'}
+      ],
+      toCityData: [
         {text: '邵阳', value: 'SY'}
       ],
       // table option

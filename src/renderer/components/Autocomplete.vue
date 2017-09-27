@@ -16,7 +16,8 @@ export default {
       show: false,
       selectIndex: 0,
       selectText: this.dropdownData[0].text || '',
-      selectData: null
+      selectData: null,
+      filterData: []
     }
   },
   props: {
@@ -55,7 +56,7 @@ export default {
 
       this.$emit('onSelect', this.selectData)
     },
-    change (val, e) {
+    change (value, e) {
       e = e || window.event
 
       if (!this.selectText) {
@@ -63,7 +64,12 @@ export default {
         return
       }
 
-      console.log(e)
+      this.dropdownData.forEach((val, index) => {
+        console.log(val)
+        if (val.indexOf(value) > -1) {
+          // 2
+        }
+      })
       this.selectIndex = 0
       this.show = true
       this.$emit('onSelect', this.selectData)
