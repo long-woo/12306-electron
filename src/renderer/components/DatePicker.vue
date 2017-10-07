@@ -62,7 +62,7 @@ export default {
         return [
           {
             type: 'fromto',
-            from: new Date()
+            from: new Date().setDate(new Date().getDate() - 1)
           }
         ]
       }

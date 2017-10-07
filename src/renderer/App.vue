@@ -12,8 +12,7 @@ export default {
 
 <style>
 /* CSS */
-
- ::selection {
+::selection {
   background-color: #17a2b8;
   color: #fff;
 }

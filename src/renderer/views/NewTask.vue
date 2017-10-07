@@ -8,13 +8,13 @@
             <i class="iconfont icon-change"></i>
           </b-button>
         </div>
-        <b-autocomplete class="col pl-sm-0 pr-sm-0" placeholder="输入目的地" inputClass="bl-rounded-0" :dropdownData="toCityData" @onSelect="selectFromCity"></b-autocomplete>
+        <b-autocomplete class="col pl-sm-0 pr-sm-0" placeholder="输入目的地" inputClass="bl-rounded-0" :dropdownData="toCityData" @onSelect="selectToCity"></b-autocomplete>
       </div>
       <div class="col-sm-3">
-        <b-date-picker></b-date-picker>
+        <b-date-picker ref="rideDate"></b-date-picker>
       </div>
       <div class="col-sm-1">
-        <b-button variant="info" class="waves-effect">
+        <b-button variant="info" class="waves-effect" @click="queryTrain">
           <i class="iconfont icon-search"></i>
         </b-button>
       </div>
@@ -29,12 +29,15 @@ export default {
   data () {
     return {
       fromCityData: [
-        {text: '上海', value: 'SH'},
-        {text: '邵阳', value: 'SY'}
+        {text: '上海', value: 'SH', firstPY: 'sh', fullPY: 'shanghai'},
+        {text: '邵阳', value: 'SY', firstPY: 'sy', fullPY: 'shaoyang'}
       ],
       toCityData: [
-        {text: '邵阳', value: 'SY'}
+        {text: '上海', value: 'SH', firstPY: 'sh', fullPY: 'shanghai'},
+        {text: '邵阳', value: 'SY', firstPY: 'sy', fullPY: 'shaoyang'}
       ],
+      fromCity: null,
+      toCity: null,
       // table option
       fields: {
         trainNo: {label: '车次', sortable: true},
@@ -48,7 +51,17 @@ export default {
   methods: {
     // 选择出发地
     selectFromCity (city) {
-      console.log(city)
+      this.fromCity = city
+    },
+    // 选择目的地
+    selectToCity (city) {
+      this.toCity = city
+    },
+    // 查询
+    queryTrain () {
+      const rideDate = this.$refs.rideDate.date.time
+      console.log(rideDate)
+      this.$swal('1')
     }
   }
 }
