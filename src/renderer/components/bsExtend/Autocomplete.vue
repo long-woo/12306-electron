@@ -1,6 +1,6 @@
 <template>
   <div>
-    <input type="text" v-model="selectText" :class="inputClass" class="form-control" :placeholder="placeholder" @keyup="keyup" @keyup.up="up" @keyup.down="down" @keyup.enter="enter" />
+    <input type="text" v-model="selectText" :class="inputClass" class="form-control" :placeholder="placeholder" @input="change" @keyup.up="up" @keyup.down="down" @keyup.enter="enter" />
     <div class="dropdown-menu" :class="{'show': show}">
       <b-dropdown-header v-if="dropdownHeader">{{dropdownHeader}}</b-dropdown-header>
       <b-dropdown-item :class="{'active': isActive(index)}" v-for="(item, index) in filterData" :key="index" @click="itemClick(index)">{{item.text}}</b-dropdown-item>
@@ -38,10 +38,18 @@ export default {
       this.$emit('onSelect', this.selectData)
     },
     up () {
-      this.selectIndex = this.selectIndex-- < 0 ? this.filterData.length - 1 : this.selectIndex--
+      this.selectIndex--
+
+      if (this.selectIndex < 0) {
+        this.selectIndex = this.filterData.length - 1
+      }
     },
     down () {
-      this.selectIndex = this.selectIndex++ > this.filterData.length - 1 ? 0 : this.selectIndex++
+      this.selectIndex++
+
+      if (this.selectIndex > this.filterData.length - 1) {
+        this.selectIndex = 0
+      }
     },
     enter () {
       this.selectData = this.filterData[this.selectIndex]
@@ -50,7 +58,7 @@ export default {
 
       this.$emit('onSelect', this.selectData)
     },
-    keyup (e) {
+    change (e) {
       e = e || window.event
 
       let value = this.selectText

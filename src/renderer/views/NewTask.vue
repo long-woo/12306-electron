@@ -61,7 +61,8 @@ export default {
     queryTrain () {
       const rideDate = this.$refs.rideDate.date.time
       console.log(rideDate)
-      this.$swal('1')
+      // this.$swal('1')
+      this.$alert('1')
     }
   }
 }

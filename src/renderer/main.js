@@ -23,8 +23,7 @@ Vue.http = Vue.prototype.$http = axios
 Vue.config.productionTip = false
 
 Vue.use(BootstrapVue)
-Vue.use(bsComponents.Autocomplete)
-Vue.use(bsComponents.DatePicker)
+Vue.use(bsComponents)
 
 Wavas.init()
 

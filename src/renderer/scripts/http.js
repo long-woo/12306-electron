@@ -16,7 +16,7 @@ axios.interceptors.request.use(config => {
   return config
 }, error => {
   // Vue.$hideToast()
-  // Vue.$alert('无法处理您的请求>.<')
+  Vue.alert('请求出错拉>.<')
 
   return error
 })
@@ -36,7 +36,7 @@ axios.interceptors.response.use(res => {
   return res.data
 }, error => {
   // Vue.$hideToast()
-  // Vue.$alert('发生错误了，再试一下>.<')
+  Vue.alert('发生错误了，再试一下>.<')
 
   return error
 })
