@@ -16,7 +16,12 @@ import './assets/iconfont/iconfont.css'
 
 import swal from 'sweetalert'
 
+import 'nprogress/nprogress.css'
+import nprogress from 'nprogress'
+
 import bsComponents from './components'
+
+import api from './scripts/api'
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.http = Vue.prototype.$http = axios
@@ -28,6 +33,8 @@ Vue.use(bsComponents)
 Wavas.init()
 
 Vue.swal = Vue.prototype.$swal = swal
+Vue.nprogress = Vue.prototype.$nprogress = nprogress
+Vue.prototype.$api = api
 
 /* eslint-disable no-new */
 new Vue({

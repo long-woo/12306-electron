@@ -29,4 +29,13 @@ button {
 .font-size-14{
   font-size: 0.875rem;
 }
+
+#nprogress .bar {
+  background-color: #35495E;
+}
+
+#nprogress .spinner-icon {
+  border-top-color: #41B883;
+  border-left-color: #41B883;
+}
 </style>

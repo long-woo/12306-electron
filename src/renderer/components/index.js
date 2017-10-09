@@ -6,7 +6,7 @@ const VuePlugin = {
     for (let component in components) {
       const comName = components[component].name
 
-      if (!/Alert|Toast/.test(component)) {
+      if (!/Alert/.test(component)) {
         Vue.component(comName, components[component])
         continue
       }
@@ -36,35 +36,6 @@ const VuePlugin = {
 
               if ($vmAlert.onHide) $vmAlert.onHide()
             }, $vmAlert.timeout)
-          }
-        }
-        continue
-      }
-
-      if (component === 'Toast') {
-        const ToastConstructor = Vue.extend(components[component])
-        let $vmToast = new ToastConstructor().$mount()
-
-        // 显示函数
-        Vue.toast = (content, opt) => Vue.prototype.$toast(content, opt)
-
-        // 隐藏函数
-        Vue.hideToast = () => {
-          $vmToast.show = false
-
-          if ($vmToast.onHide) $vmToast.onHide()
-        }
-
-        Vue.prototype.$toast = (content, opt) => {
-          Object.assign($vmToast, opt)
-
-          if ($vmToast.show) return
-
-          $vmToast.content = content
-          $vmToast.show = true
-
-          if (!document.getElementsByClassName('bs-toast').length) {
-            document.body.appendChild($vmToast.$el)
           }
         }
         continue

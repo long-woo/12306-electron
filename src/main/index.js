@@ -25,7 +25,10 @@ function createWindow () {
     width: 1000,
     titleBarStyle: 'hidden',
     frameLess: true,
-    show: true
+    show: true,
+    webPreferences: {
+      webSecurity: false
+    }
   })
 
   mainWindow.loadURL(winURL)
@@ -34,6 +37,8 @@ function createWindow () {
     mainWindow = null
   })
 }
+
+app.commandLine.appendSwitch('--disable-web-security')
 
 app.on('ready', createWindow)
 

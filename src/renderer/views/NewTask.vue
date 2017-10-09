@@ -29,12 +29,12 @@ export default {
   data () {
     return {
       fromCityData: [
-        {text: '上海', value: 'SH', firstPY: 'sh', fullPY: 'shanghai'},
-        {text: '邵阳', value: 'SY', firstPY: 'sy', fullPY: 'shaoyang'}
+        {text: '上海', value: 'SHH', firstPY: 'sh', fullPY: 'shanghai'},
+        {text: '长沙', value: 'CSQ', firstPY: 'cs', fullPY: 'changsha'}
       ],
       toCityData: [
-        {text: '上海', value: 'SH', firstPY: 'sh', fullPY: 'shanghai'},
-        {text: '邵阳', value: 'SY', firstPY: 'sy', fullPY: 'shaoyang'}
+        {text: '上海', value: 'SHH', firstPY: 'sh', fullPY: 'shanghai'},
+        {text: '长沙', value: 'CSQ', firstPY: 'cs', fullPY: 'changsha'}
       ],
       fromCity: null,
       toCity: null,
@@ -58,11 +58,12 @@ export default {
       this.toCity = city
     },
     // 查询
-    queryTrain () {
-      const rideDate = this.$refs.rideDate.date.time
-      console.log(rideDate)
+    async queryTrain () {
+      const trainDate = this.$refs.rideDate.date.time
       // this.$swal('1')
-      this.$alert('1')
+      // this.$alert('1')
+      const res = await this.$api.getTicket(this.fromCity.value, this.toCity.value, trainDate)
+      console.log(res.data)
     }
   }
 }
