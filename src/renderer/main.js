@@ -35,6 +35,7 @@ Wavas.init()
 Vue.swal = Vue.prototype.$swal = swal
 Vue.nprogress = Vue.prototype.$nprogress = nprogress
 Vue.prototype.$api = api
+Vue.store = store
 
 /* eslint-disable no-new */
 new Vue({

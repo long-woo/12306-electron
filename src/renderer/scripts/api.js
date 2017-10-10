@@ -3,7 +3,27 @@ import Vue from 'vue'
 const urls = {
   getCaptcha: `/passport/captcha/captcha-image?login_site=E&module=login&rand=sjrand&${Math.random()}`, // GET
   checkCaptcha: '/passport/captcha/captcha-check', // POST
-  getTicket: '/otn/leftTicket/queryX' // GET
+  getQueryUrl: '/otn/leftTicket/query1', // GET
+  getTicket: '/otn/' // GET
+}
+
+/**
+ * 获取查询的url
+ */
+const getQueryUrl = () => {
+  const date = new Date()
+  const year = date.getFullYear()
+  const month = date.getMonth() + 1
+  const day = date.getDate()
+
+  return Vue.http.get(urls.getQueryUrl, {
+    params: {
+      'leftTicketDTO.train_date': `${year}-${month}-${day}`,
+      'leftTicketDTO.from_station': 'SHH',
+      'leftTicketDTO.to_station': 'CSQ',
+      'purpose_codes': 'ADULT'
+    }
+  })
 }
 
 /**
@@ -13,7 +33,7 @@ const urls = {
  * @param {*} trainDate 乘车日期
  */
 const getTicket = (fromCity, toCity, trainDate) => {
-  return Vue.http.get(urls.getTicket, {
+  return Vue.http.get(`${urls.getTicket}${Vue.store.getters.queryUrl}`, {
     params: {
       'leftTicketDTO.train_date': trainDate,
       'leftTicketDTO.from_station': fromCity,
@@ -24,5 +44,6 @@ const getTicket = (fromCity, toCity, trainDate) => {
 }
 
 export default {
+  getQueryUrl,
   getTicket
 }

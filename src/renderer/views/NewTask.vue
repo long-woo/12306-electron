@@ -19,7 +19,15 @@
         </b-button>
       </div>
     </div>
-    <b-table empty-text="没有找到车次" :fields="fields" head-variant="default" striped hover show-empty></b-table>
+    <div>
+      <b-table empty-text="没有找到车次" :fields="fields" :items="ticketData" head-variant="default" striped hover show-empty>
+        <template slot="trainCode" scope="row">{{row.value}}</template>
+        <template slot="fromCityName" scope="row">{{row.value}}</template>
+        <template slot="toCityName" scope="row">{{row.value}}</template>
+        <template slot="useTime" scope="row">{{row.value}}</template>
+        <template slot="remark" scope="row">{{row.value}}</template>
+      </b-table>
+    </div>
   </div>
 </template>
 
@@ -40,12 +48,13 @@ export default {
       toCity: null,
       // table option
       fields: {
-        trainNo: {label: '车次', sortable: true},
-        fromCity: {label: '出发地'},
-        toCity: {label: '目的地'},
+        trainCode: {label: '车次', sortable: true},
+        fromCityName: {label: '出发地'},
+        toCityName: {label: '目的地'},
         useTime: {label: '用时', sortable: true},
-        remak: {label: '备注'}
-      }
+        remark: {label: '备注'}
+      },
+      ticketData: []
     }
   },
   methods: {
@@ -62,8 +71,89 @@ export default {
       const trainDate = this.$refs.rideDate.date.time
       // this.$swal('1')
       // this.$alert('1')
-      const res = await this.$api.getTicket(this.fromCity.value, this.toCity.value, trainDate)
-      console.log(res.data)
+      const {data} = await this.$api.getTicket(this.fromCity.value, this.toCity.value, trainDate)
+      const result = data.result || []
+      const stationNames = data.map || []
+      let ticketData = []
+
+      result.map((val, inx) => {
+        const arrTrain = val.split('|')
+        const trainCode = arrTrain[3]
+
+        ticketData.push({
+          tranType: trainCode.substr(0, 1),
+          trainNo: arrTrain[2],
+          trainCode: trainCode,
+          fromCityCode: arrTrain[6],
+          fromCityName: stationNames[arrTrain[6]],
+          toCityCode: arrTrain[7],
+          toCityName: stationNames[arrTrain[7]],
+          departureTime: arrTrain[8],
+          arrivalTime: arrTrain[9],
+          useTime: arrTrain[10],
+          isBuy: arrTrain[11] === 'Y',
+          ypInfo: arrTrain[12],
+          locationCode: arrTrain[15],
+          seatTypeCodes: this.getSeatTypeCode(arrTrain[35]),
+          seatTypes: this.getSeatTypes(arrTrain),
+          secret: arrTrain[0],
+          remark: arrTrain[1]
+        })
+      })
+
+      console.log(ticketData)
+      this.ticketData = ticketData
+    },
+    // 获取座位代码
+    getSeatTypeCode (seatTypeCodes) {
+      // 存在两个“1”时，第一个“1”改成“W”
+      const seatCodes = seatTypeCodes.replace(/(1)/, 'W').split('')
+
+      return seatCodes
+    },
+    // 获取座位信息
+    getSeatTypes (trains) {
+      const seatCodes = this.getSeatTypeCode(trains[35])
+      let arrSeatInfo = []
+
+      seatCodes.map((val, idx) => {
+        const seatDetail = this.getSeatTypeInfo(val, trains)
+
+        arrSeatInfo.push({ seatTypeCode: val, seatTypeDetail: seatDetail })
+      })
+
+      return arrSeatInfo
+    },
+    // 获取座位类型
+    getSeatTypeInfo (seatTypeCode, seatTypes) {
+      switch (seatTypeCode) {
+        case 'Q':
+          return seatTypes ? `观光座（${seatTypes[20]}）` : '观光座'
+        case '9':
+          return seatTypes ? `商务座（${seatTypes[32]}）` : '商务座'
+        case 'P':
+          return seatTypes ? `特等座（${seatTypes[25]}）` : '特等座'
+        case 'S':
+          return seatTypes ? `一等包座（${seatTypes[27]}）` : '一等包座'
+        case 'M':
+          return seatTypes ? `一等座（${seatTypes[31]}）` : '一等座'
+        case 'O':
+          return seatTypes ? `二等座（${seatTypes[30]}）` : '二等座'
+        case '6':
+          return seatTypes ? `高级软卧（${seatTypes[21]}）` : '高级软卧'
+        case '4':
+          return seatTypes ? `软卧（${seatTypes[23]}）` : '软卧'
+        case '3':
+          return seatTypes ? `硬卧（${seatTypes[28]}）` : '硬卧'
+        case '2':
+          return seatTypes ? `软座（${seatTypes[24]}）` : '软座'
+        case '1':
+          return seatTypes ? `硬座（${seatTypes[29]}）` : '硬座'
+        case 'W':
+          return seatTypes ? `无座（${seatTypes[26]}）` : '无座'
+        default:
+          return seatTypes ? `其他（${seatTypes[22]}）` : '其他'
+      }
     }
   }
 }

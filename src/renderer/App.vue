@@ -6,7 +6,12 @@
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
+  async created () {
+    const {c_url} = await this.$api.getQueryUrl()
+
+    this.$store.dispatch('setQueryUrl', c_url)
+  }
 }
 </script>
 
