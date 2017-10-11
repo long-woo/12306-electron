@@ -25,7 +25,12 @@ export default {
 body {
   -webkit-user-select: none;
   -webkit-app-region: drag;
+  /* overflow: hidden; */
 }
+
+/* table {
+  margin-bottom: 0;
+} */
 
 button {
   cursor: pointer;

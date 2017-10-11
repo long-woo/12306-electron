@@ -22,10 +22,18 @@
     <div>
       <b-table empty-text="没有找到车次" :fields="fields" :items="ticketData" head-variant="default" striped hover show-empty>
         <template slot="trainCode" scope="row">{{row.value}}</template>
-        <template slot="fromCityName" scope="row">{{row.value}}</template>
-        <template slot="toCityName" scope="row">{{row.value}}</template>
+        <template slot="from" scope="row">
+          <p class="mb-0">{{row.item.fromCityName}}</p>
+          <p class="mb-0 font-size-14">{{row.item.departureTime}}</p>
+        </template>
+        <template slot="to" scope="row">
+          <p class="mb-0">{{row.item.toCityName}}</p>
+          <p class="mb-0 font-size-14">{{row.item.arrivalTime}}</p>
+        </template>
         <template slot="useTime" scope="row">{{row.value}}</template>
-        <template slot="remark" scope="row">{{row.value}}</template>
+        <template slot="seatTypes" scope="row">
+          <p class="mb-0">{{row.value}}</p>
+        </template>
       </b-table>
     </div>
   </div>
@@ -48,11 +56,11 @@ export default {
       toCity: null,
       // table option
       fields: {
-        trainCode: {label: '车次', sortable: true},
-        fromCityName: {label: '出发地'},
-        toCityName: {label: '目的地'},
-        useTime: {label: '用时', sortable: true},
-        remark: {label: '备注'}
+        trainCode: {label: '车次', sortable: true, class: 'align-middle'},
+        from: {label: '出发地', class: 'align-middle'},
+        to: {label: '目的地', class: 'align-middle'},
+        useTime: {label: '用时', sortable: true, class: 'align-middle'},
+        seatTypes: {label: '备注', class: 'align-middle', thStyle: 'width: 260px;', formatter: this.formatSeatType}
       },
       ticketData: []
     }
@@ -81,6 +89,7 @@ export default {
         const trainCode = arrTrain[3]
 
         ticketData.push({
+          _rowVariant: arrTrain[11] !== 'Y' ? 'text-danger' : '',
           tranType: trainCode.substr(0, 1),
           trainNo: arrTrain[2],
           trainCode: trainCode,
@@ -103,6 +112,17 @@ export default {
 
       console.log(ticketData)
       this.ticketData = ticketData
+    },
+    // 格式化座位信息
+    formatSeatType (data) {
+      let seatCount = ''
+      // const [{seatTypeDetail}] = data
+
+      data.map(({seatTypeDetail}, indx) => {
+        seatCount += seatTypeDetail
+      })
+
+      return seatCount
     },
     // 获取座位代码
     getSeatTypeCode (seatTypeCodes) {
