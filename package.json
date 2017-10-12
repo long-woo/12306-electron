@@ -55,6 +55,7 @@
   "dependencies": {
     "axios": "^0.16.1",
     "bootstrap-vue": "^1.0.0-beta.7",
+    "icheck-bootstrap": "^1.0.7",
     "node-waves": "^0.7.5",
     "nprogress": "^0.2.0",
     "request": "^2.83.0",

@@ -36,6 +36,10 @@ button {
   cursor: pointer;
 }
 
+label {
+  margin-bottom: 0;
+}
+
 .font-size-14{
   font-size: 0.875rem;
 }
@@ -47,5 +51,18 @@ button {
 #nprogress .spinner-icon {
   border-top-color: #41B883;
   border-left-color: #41B883;
+}
+
+.radio, .checkbox {
+  margin-bottom: 0;
+}
+
+.radio > input[type="radio"]:first-child:checked + label::before,
+.checkbox > input[type="checkbox"]:first-child:checked + label::before,
+.radio > input[type="radio"]:first-child:checked + input[type="hidden"] + label::before,
+.checkbox > input[type="checkbox"]:first-child:checked + input[type="hidden"] + label::before {
+  content: "\e7bc";
+  font-family: 'iconfont';
+  font-size: 1.2rem;
 }
 </style>

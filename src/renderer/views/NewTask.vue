@@ -20,7 +20,13 @@
       </div>
     </div>
     <div>
-      <b-table empty-text="没有找到车次" :fields="fields" :items="ticketData" head-variant="default" striped hover show-empty>
+      <b-table empty-text="没有找到车次" :fields="fields" :items="ticketData" head-variant="default" striped hover show-empty @row-clicked="rowClick">
+        <template slot="checkNo" scope="row">
+          <div class="checkbox icheck-info">
+            <input type="checkbox" :id="`chk_${row.index}`" v-model="chkTrains" :value="row.item.trainCode" />
+            <label :for="`chk_${row.index}`"></label>
+          </div>
+        </template>
         <template slot="trainCode" scope="row">{{row.value}}</template>
         <template slot="from" scope="row">
           <p class="mb-0">{{row.item.fromCityName}}</p>
@@ -32,7 +38,7 @@
         </template>
         <template slot="useTime" scope="row">{{row.value}}</template>
         <template slot="seatTypes" scope="row">
-          <p class="mb-0">{{row.value}}</p>
+          <p class="mb-0 font-size-14">{{row.value}}</p>
         </template>
       </b-table>
     </div>
@@ -56,12 +62,14 @@ export default {
       toCity: null,
       // table option
       fields: {
+        checkNo: {label: '', class: 'text-center align-middle', thStyle: 'width: 20px;'},
         trainCode: {label: '车次', sortable: true, class: 'align-middle'},
         from: {label: '出发地', class: 'align-middle'},
         to: {label: '目的地', class: 'align-middle'},
         useTime: {label: '用时', sortable: true, class: 'align-middle'},
-        seatTypes: {label: '备注', class: 'align-middle', thStyle: 'width: 260px;', formatter: this.formatSeatType}
+        seatTypes: {label: '备注', class: 'align-middle', thStyle: 'width: 200px;', formatter: this.formatSeatType}
       },
+      chkTrains: [],
       ticketData: []
     }
   },
@@ -73,6 +81,17 @@ export default {
     // 选择目的地
     selectToCity (city) {
       this.toCity = city
+    },
+    // 点击行
+    rowClick (item) {
+      console.log(item)
+      const res = this.chkTrains.indexOf(item.trainCode)
+
+      if (res === -1) {
+        this.chkTrains.push(item.trainCode)
+      } else {
+        this.chkTrains.splice(res, 1)
+      }
     },
     // 查询
     async queryTrain () {
