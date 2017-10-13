@@ -24,7 +24,8 @@ export default {
     inputClass: String,
     placeholder: String,
     dropdownHeader: String,
-    dropdownData: Array
+    dropdownData: Array,
+    value: Object
   },
   methods: {
     isActive (index) {

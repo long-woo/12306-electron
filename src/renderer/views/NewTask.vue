@@ -4,7 +4,7 @@
       <div class="col-sm-8 form-inline">
         <b-autocomplete class="col pl-sm-0 pr-sm-0" inputClass="br-rounded-0" placeholder="输入出发地" :dropdownData="fromCityData" @onSelect="selectFromCity"></b-autocomplete>
         <div class="col-auto pl-sm-0 pr-sm-0">
-          <b-button variant="info" class="bs-input-center waves-effect">
+          <b-button variant="info" class="bs-input-center waves-effect" @click="changeCity">
             <i class="iconfont icon-change"></i>
           </b-button>
         </div>
@@ -22,7 +22,7 @@
     <div>
       <b-table empty-text="没有找到车次" :fields="fields" :items="ticketData" head-variant="default" striped hover show-empty @row-clicked="rowClick">
         <template slot="checkNo" scope="row">
-          <div class="checkbox icheck-info">
+          <div class="checkbox icheck-info" v-if="row.item.isBuy">
             <input type="checkbox" :id="`chk_${row.index}`" v-model="chkTrains" :value="row.item.trainCode" />
             <label :for="`chk_${row.index}`"></label>
           </div>
@@ -82,15 +82,22 @@ export default {
     selectToCity (city) {
       this.toCity = city
     },
+    // 切换地址
+    changeCity () {
+      [this.fromCity, this.toCity] = [this.toCity, this.fromCity]
+    },
     // 点击行
     rowClick (item) {
-      console.log(item)
+      if (!item.isBuy) return
+
       const res = this.chkTrains.indexOf(item.trainCode)
 
       if (res === -1) {
         this.chkTrains.push(item.trainCode)
+        item._rowVariant = 'success'
       } else {
         this.chkTrains.splice(res, 1)
+        item._rowVariant = ''
       }
     },
     // 查询
@@ -108,7 +115,7 @@ export default {
         const trainCode = arrTrain[3]
 
         ticketData.push({
-          _rowVariant: arrTrain[11] !== 'Y' ? 'text-danger' : '',
+          _rowVariant: arrTrain[11] !== 'Y' ? 'danger' : '',
           tranType: trainCode.substr(0, 1),
           trainNo: arrTrain[2],
           trainCode: trainCode,
