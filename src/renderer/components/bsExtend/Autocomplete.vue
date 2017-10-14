@@ -1,6 +1,6 @@
 <template>
   <div>
-    <input type="text" v-model="selectText" :class="inputClass" class="form-control" :placeholder="placeholder" @input="change" @keyup.up="up" @keyup.down="down" @keyup.enter="enter" />
+    <input type="text" :value="selectText" :class="inputClass" class="form-control" :placeholder="placeholder" @input="change" @keyup.up="up" @keyup.down="down" @keyup.enter="enter" ref="inputEl" />
     <div class="dropdown-menu" :class="{'show': show}">
       <b-dropdown-header v-if="dropdownHeader">{{dropdownHeader}}</b-dropdown-header>
       <b-dropdown-item :class="{'active': isActive(index)}" v-for="(item, index) in filterData" :key="index" @click="itemClick(index)">{{item.text}}</b-dropdown-item>
@@ -25,7 +25,17 @@ export default {
     placeholder: String,
     dropdownHeader: String,
     dropdownData: Array,
-    value: Object
+    value: Object,
+    maxCount: {
+      type: Number,
+      default: 6
+    }
+  },
+  watch: {
+    value (newVal) {
+      this.selectData = newVal
+      this.selectText = newVal.text
+    }
   },
   methods: {
     isActive (index) {
@@ -62,20 +72,32 @@ export default {
     change (e) {
       e = e || window.event
 
-      let value = this.selectText
+      let value = e.target.value
+      this.selectText = value
 
-      if (!this.selectText) {
+      if (!value) {
         this.show = false
         return
       }
 
-      this.filterData = this.dropdownData.filter(val =>
-        val.text.toLowerCase().indexOf(value) > -1 || val.firstPY.toLowerCase().indexOf(value) > -1 || val.fullPY.toLowerCase().indexOf(value) > -1
-      )
+      let arrData = []
+      let index = 0
+
+      this.dropdownData.forEach((val) => {
+        if ((val.text.toLowerCase().indexOf(value) > -1 || val.firstPY.toLowerCase().indexOf(value) > -1 || val.fullPY.toLowerCase().indexOf(value) > -1) && this.maxCount > index) {
+          arrData.push(val)
+          index++
+        }
+      })
+
+      this.filterData = arrData
 
       if (!this.filterData.length) return
       this.selectIndex = 0
       this.show = true
+    },
+    focus () {
+      this.$refs.inputEl.focus()
     }
   }
 }

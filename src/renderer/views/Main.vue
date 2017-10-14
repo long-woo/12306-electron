@@ -1,6 +1,6 @@
 <template>
   <div>
-    <header class="navbar-dark">
+    <header class="navbar-dark fixed-top">
       <div class="navbar-nav-scroll">
         <b-nav class="navbar-nav flex-row justify-content-center text-center bg-info">
           <b-nav-item class="waves-effect" :active="nav.active" v-for="(nav, index) in navItems" :key="index" :to="nav.to" @click="navChange(nav)">
@@ -51,6 +51,13 @@ export default {
 </script>
 
 <style scoped>
+main {
+  position: absolute;
+  overflow: auto;
+  top: 5.5rem;
+  bottom: 2.5rem;
+}
+
 .navbar-nav .nav-link {
   padding-left: 1rem;
   padding-right: 1rem;

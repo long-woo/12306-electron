@@ -8,9 +8,13 @@
 export default {
   name: 'App',
   async created () {
+    // 查票url
     const {c_url} = await this.$api.getQueryUrl()
-
     this.$store.dispatch('setQueryUrl', c_url)
+
+    // 站名
+    const stations = await this.$api.getStationName()
+    this.$store.dispatch('setStationName', stations)
   }
 }
 </script>
@@ -25,12 +29,13 @@ export default {
 body {
   -webkit-user-select: none;
   -webkit-app-region: drag;
-  /* overflow: hidden; */
+  transition: all 0.3s ease;
+  overflow: hidden;
 }
 
-/* table {
+.table {
   margin-bottom: 0;
-} */
+}
 
 button {
   cursor: pointer;
@@ -64,5 +69,23 @@ label {
   content: "\e7bc";
   font-family: 'iconfont';
   font-size: 1.2rem;
+}
+
+.iconfont {
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+.rotate-enter-active,
+.rotate-leave-active {
+  transition: all 0.3s ease;
+  -webkit-transition: all 0.3s ease;
+}
+
+.rotate-enter,
+.rotate-leave-to {
+  display: inline-block;
+  transform: rotateZ(180deg);
+  -webkit-transform: rotateZ(180deg);
 }
 </style>
