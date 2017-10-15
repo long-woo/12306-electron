@@ -94,6 +94,17 @@ const getTicket = async (fromCity, toCity, trainDate) => {
   return ticketData
 }
 
+/**
+ * 获取图片验证码
+ */
+const getCaptchaCode = async () => {
+  const res = await Vue.http.get(urls.getCaptcha, {
+    responseType: 'arraybuffer'
+  })
+
+  return `data:image/jpeg;base64,${Buffer.from(res).toString('base64')}`
+}
+
 const common = {
   // 获取座位代码
   getSeatTypeCode (seatTypeCodes) {
@@ -151,5 +162,6 @@ const common = {
 export default {
   getStationName,
   getQueryUrl,
-  getTicket
+  getTicket,
+  getCaptchaCode
 }

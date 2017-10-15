@@ -11,10 +11,6 @@ export default {
     // 查票url
     const {c_url} = await this.$api.getQueryUrl()
     this.$store.dispatch('setQueryUrl', c_url)
-
-    // 站名
-    const stations = await this.$api.getStationName()
-    this.$store.dispatch('setStationName', stations)
   }
 }
 </script>

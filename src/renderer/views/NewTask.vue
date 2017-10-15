@@ -42,6 +42,7 @@
         </template>
       </b-table>
     </div>
+    <img :src="captchaCode"/>
   </div>
 </template>
 
@@ -63,13 +64,19 @@ export default {
         seatTypes: {label: '备注', class: 'align-middle', thStyle: 'width: 200px;', formatter: this.formatSeatType}
       },
       chkTrains: [],
-      ticketData: []
+      ticketData: [],
+      captchaCode: ''
     }
   },
-  mounted () {
-    setTimeout(() => {
-      this.stationData = this.$store.getters.stationNames
-    }, 1000)
+  async mounted () {
+    // 站名
+    const stations = await this.$api.getStationName()
+
+    this.$store.dispatch('setStationName', stations)
+    this.stationData = stations
+
+    const res = await this.$api.getCaptchaCode()
+    this.captchaCode = res
   },
   methods: {
     // 选择出发地

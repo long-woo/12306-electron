@@ -16,26 +16,31 @@
     <footer class="fixed-bottom border border-info border-left-0 border-right-0 border-bottom-0 bg-white">
       <div class="d-flex flex-row font-size-14">
         <div class="p-2">
-          <a class="text-info">
+          <a class="text-info" href="javascript:;" v-b-modal.loginModal>
             <i class="iconfont icon-user"></i>
             <span>未登录</span>
           </a>
         </div>
       </div>
     </footer>
+    <login></login>
   </div>
 </template>
 
 <script>
 export default {
   name: 'Main',
+  components: {
+    Login: () => import('./Login')
+  },
   data () {
     return {
       navItems: [
         { text: '新任务', active: true, icon: 'new-task', to: '/newtask' },
         { text: '任务管理', active: false, icon: 'task-manager', to: '/taskmanager' },
         { text: '我的订单', active: false, icon: 'order-manager', to: '/order' }
-      ]
+      ],
+      showLogin: false
     }
   },
   methods: {

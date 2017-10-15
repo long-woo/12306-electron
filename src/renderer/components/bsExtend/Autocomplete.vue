@@ -63,6 +63,8 @@ export default {
       }
     },
     enter () {
+      if (!this.filterData.length) return
+
       this.selectData = this.filterData[this.selectIndex]
       this.selectText = this.selectData.text
       this.show = false
