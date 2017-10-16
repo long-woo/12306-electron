@@ -16,7 +16,7 @@
     <footer class="fixed-bottom border border-info border-left-0 border-right-0 border-bottom-0 bg-white">
       <div class="d-flex flex-row font-size-14">
         <div class="p-2">
-          <a class="text-info" href="javascript:;" v-b-modal.loginModal>
+          <a class="text-info waves-effect" href="javascript:;" v-b-modal.loginModal>
             <i class="iconfont icon-user"></i>
             <span>未登录</span>
           </a>
@@ -24,6 +24,7 @@
       </div>
     </footer>
     <login></login>
+    <captcha-code></captcha-code>
   </div>
 </template>
 
@@ -31,7 +32,8 @@
 export default {
   name: 'Main',
   components: {
-    Login: () => import('./Login')
+    Login: () => import('./Login'),
+    CaptchaCode: () => import('./CaptchaCode')
   },
   data () {
     return {

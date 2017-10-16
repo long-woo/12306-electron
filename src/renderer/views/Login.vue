@@ -1,11 +1,11 @@
 <template>
-  <b-modal id="loginModal" title="登录" :hideHeaderClose="true" :noCloseOnBackdrop="true" :noCloseOnEsc="true" :okOnly="true" ok-title="登录" @ok="login">
+  <b-modal id="loginModal" title="登录" :okOnly="true">
     <form @submit.stop.prevent="login">
       <b-input-group left="账号" class="form-group">
-        <b-form-input type="text" placeholder="输入用户名/邮箱/手机号" v-model="userName"></b-form-input>
+        <b-form-input type="text" placeholder="输入用户名/邮箱/手机号" v-model="userName" @keyup.enter="login"></b-form-input>
       </b-input-group>
       <b-input-group left="密码" class="form-group">
-        <b-form-input type="password" placeholder="输入密码" v-model="password"></b-form-input>
+        <b-form-input type="password" placeholder="输入密码" v-model="password" @keyup.enter="login"></b-form-input>
       </b-input-group>
       <div class="form-row">
         <div class="checkbox icheck-info col-6">
@@ -18,6 +18,7 @@
         </div>
       </div>
     </form>
+    <b-button slot="modal-footer" variant="primary" class="waves-effect" @click="login">登录</b-button>
   </b-modal>
 </template>
 
@@ -56,8 +57,11 @@ export default {
     login (e) {
       if (!this.userName || !this.password) {
         this.$alert('账号或密码不能为空')
-        return e.cancel()
+        return false
       }
+
+      this.$root.$emit('hide::modal', 'loginModal')
+      this.$root.$emit('show::modal', 'captchCodeModal')
     }
   }
 }

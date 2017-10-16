@@ -29,6 +29,10 @@ body {
   overflow: hidden;
 }
 
+a:focus {
+  outline: none;
+}
+
 .table {
   margin-bottom: 0;
 }

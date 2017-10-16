@@ -42,7 +42,6 @@
         </template>
       </b-table>
     </div>
-    <img :src="captchaCode"/>
   </div>
 </template>
 
@@ -74,9 +73,6 @@ export default {
 
     this.$store.dispatch('setStationName', stations)
     this.stationData = stations
-
-    const res = await this.$api.getCaptchaCode()
-    this.captchaCode = res
   },
   methods: {
     // 选择出发地
@@ -108,6 +104,8 @@ export default {
     },
     // 查询
     async queryTrain () {
+      if (!this.fromCity || !this.toCity) return
+
       const trainDate = this.$refs.rideDate.date.time
       // this.$swal('1')
       // this.$alert('1')
