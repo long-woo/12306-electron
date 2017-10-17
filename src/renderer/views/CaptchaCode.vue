@@ -37,6 +37,16 @@ export default {
     // 获取验证码
     async getCaptchaCode () {
       const res = await this.$api.getCaptchaCode()
+
+      this.drawImage(res, 0, 0, true)
+    },
+    change (state) {
+      if (state) {
+        this.getCaptchaCode()
+      }
+    },
+    // 画图
+    drawImage (imgData, x, y, isCode) {
       const img = new Image()
       const canvas = document.getElementById('cvCaptchaCode')
       const context = canvas.getContext('2d')
@@ -44,21 +54,28 @@ export default {
       context.fillStyle = '#fff'
       context.fillRect(0, 0, canvas.clientWidth, canvas.clientHeight)
       context.fill()
-      img.src = res
+
+      // if (!isCode) context.globalCompositeOperation = 'source-in'
+
+      img.src = imgData
       img.onload = () => {
-        context.drawImage(img, 0, 0)
-      }
-    },
-    change (state) {
-      if (state) {
-        this.getCaptchaCode()
+        if (isCode) {
+          context.drawImage(img, x, y)
+        } else {
+          context.drawImage(img, x, y, 30, 30)
+        }
       }
     },
     // 选择验证码
     selectCode (e) {
-      console.log(e)
-      const chkImg = new Image()
-      chkImg.src = require('@/assets/icon_like.png')
+      if (e.offsetY <= 30) return
+
+      const x = e.offsetX
+      const y = e.offsetY - 30
+      console.log(x, y)
+      const chkImg = require('@/assets/icon_like.png')
+
+      this.drawImage(chkImg, x - 15, y + 10, false)
     },
     // 返回
     cancel () {
