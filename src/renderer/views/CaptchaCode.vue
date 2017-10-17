@@ -51,9 +51,11 @@ export default {
       const canvas = document.getElementById('cvCaptchaCode')
       const context = canvas.getContext('2d')
 
-      context.fillStyle = '#fff'
-      context.fillRect(0, 0, canvas.clientWidth, canvas.clientHeight)
-      context.fill()
+      if (isCode) {
+        context.fillStyle = '#fff'
+        context.fillRect(0, 0, canvas.clientWidth, canvas.clientHeight)
+        context.fill()
+      }
 
       // if (!isCode) context.globalCompositeOperation = 'source-in'
 
