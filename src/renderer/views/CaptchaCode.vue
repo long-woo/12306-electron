@@ -24,7 +24,7 @@ export default {
   name: 'CaptchCode',
   data () {
     return {
-      imgCaptchaCode: ''
+      captchaCode: []
     }
   },
   props: {
@@ -38,6 +38,7 @@ export default {
     async getCaptchaCode () {
       const res = await this.$api.getCaptchaCode()
 
+      this.captchaCode = []
       this.drawImage(res, 0, 0, true)
     },
     change (state) {
@@ -57,14 +58,27 @@ export default {
         context.fill()
       }
 
-      // if (!isCode) context.globalCompositeOperation = 'source-in'
-
       img.src = imgData
       img.onload = () => {
         if (isCode) {
           context.drawImage(img, x, y)
         } else {
-          context.drawImage(img, x, y, 30, 30)
+          const index = this.captchaCode.indexOf(`${x}-${y}`)
+          if (index < 0) {
+            context.drawImage(img, x, y, 30, 30)
+            this.captchaCode.push(`${x}-${y}`)
+          } else {
+            // 移除
+            // const startX = x - 15
+            // const endX = x + 15
+            // const startY = y - 15
+            // const endY = y + 15
+            this.captchaCode.splice(index, 1)
+            context.fillStyle = 'rgba(255,255,255,0.5)'
+            context.fillRect(x, y, 30, 30)
+            context.save()
+          }
+          console.log(this.captchaCode)
         }
       }
     },
