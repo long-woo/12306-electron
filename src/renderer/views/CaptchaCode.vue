@@ -2,6 +2,7 @@
   <b-modal id="captchCodeModal" :title="title" :hideHeaderClose="true" @change="change">
     <div class="text-center img-captcha">
       <canvas id="cvCaptchaCode" width="293px" height="190px" @click="selectCode"></canvas>
+      <img :src="require('@/assets/icon_like.png')" v-for="(item, index) in imgCaptchaCode" :key="index" :style="{left: `${item.X}px`, top: `${item.Y}px`}" @click="cancelSelecte(index)" />
     </div>
     <b-button slot="modal-footer" variant="success" class="waves-effect" @click="getCaptchaCode">换一张？</b-button>
     <b-button slot="modal-footer" variant="secondary" class="waves-effect" @click="cancel">返回</b-button>
@@ -12,10 +13,20 @@
 <style scoped>
 .img-captcha {
   height: 190px;
+  width: 293px;
+  margin: 0 auto;
+  position: relative;
 }
 
 .img-captcha canvas {
   box-shadow: 0 6px 20px rgba(225, 225, 225, 1)
+}
+
+.img-captcha img {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  /* pointer-events: none; */
 }
 </style>
 
@@ -24,7 +35,8 @@ export default {
   name: 'CaptchCode',
   data () {
     return {
-      captchaCode: []
+      captchaCode: [],
+      imgCaptchaCode: []
     }
   },
   props: {
@@ -39,7 +51,8 @@ export default {
       const res = await this.$api.getCaptchaCode()
 
       this.captchaCode = []
-      this.drawImage(res, 0, 0, true)
+      this.imgCaptchaCode = []
+      this.drawImage(res, 0, 0)
     },
     change (state) {
       if (state) {
@@ -47,51 +60,36 @@ export default {
       }
     },
     // 画图
-    drawImage (imgData, x, y, isCode) {
+    drawImage (imgData, x, y) {
       const img = new Image()
       const canvas = document.getElementById('cvCaptchaCode')
       const context = canvas.getContext('2d')
 
-      if (isCode) {
-        context.fillStyle = '#fff'
-        context.fillRect(0, 0, canvas.clientWidth, canvas.clientHeight)
-        context.fill()
-      }
+      context.fillStyle = '#fff'
+      context.fillRect(0, 0, canvas.clientWidth, canvas.clientHeight)
+      context.fill()
 
       img.src = imgData
       img.onload = () => {
-        if (isCode) {
-          context.drawImage(img, x, y)
-        } else {
-          const index = this.captchaCode.indexOf(`${x}-${y}`)
-          if (index < 0) {
-            context.drawImage(img, x, y, 30, 30)
-            this.captchaCode.push(`${x}-${y}`)
-          } else {
-            // 移除
-            // const startX = x - 15
-            // const endX = x + 15
-            // const startY = y - 15
-            // const endY = y + 15
-            this.captchaCode.splice(index, 1)
-            context.fillStyle = 'rgba(255,255,255,0.5)'
-            context.fillRect(x, y, 30, 30)
-            context.save()
-          }
-          console.log(this.captchaCode)
-        }
+        context.drawImage(img, x, y)
       }
     },
     // 选择验证码
     selectCode (e) {
-      if (e.offsetY <= 30) return
+      let x = e.offsetX
+      let y = e.offsetY
 
-      const x = e.offsetX
-      const y = e.offsetY - 30
-      console.log(x, y)
-      const chkImg = require('@/assets/icon_like.png')
+      if (y <= 30) return
 
-      this.drawImage(chkImg, x - 15, y + 10, false)
+      y = y - 30
+
+      this.captchaCode.push(`${x}-${y}`)
+      this.imgCaptchaCode.push({X: x - 15, Y: y + 15})
+    },
+    // 取消选择
+    cancelSelecte (index) {
+      this.captchaCode.splice(index, 1)
+      this.imgCaptchaCode.splice(index, 1)
     },
     // 返回
     cancel () {
@@ -100,7 +98,7 @@ export default {
     },
     // 验证
     validCaptcha () {
-      console.log('yanzheng')
+      console.log(this.captchaCode.toString())
     }
   }
 }
