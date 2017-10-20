@@ -26,7 +26,6 @@
   position: absolute;
   width: 30px;
   height: 30px;
-  /* pointer-events: none; */
 }
 </style>
 
@@ -97,8 +96,20 @@ export default {
       this.$root.$emit('show::modal', 'loginModal')
     },
     // 验证
-    validCaptcha () {
-      console.log(this.captchaCode.toString())
+    async validCaptcha () {
+      let code = this.captchaCode.toString()
+
+      if (!code) return
+
+      code = code.replace(/(-)/gi, ',')
+      const res = await this.$api.validCaptchaCode(code)
+
+      if (res.result_code !== '4') {
+        this.$alert(res.result_message)
+      }
+
+      // 验证完成
+      this.$emit('validComplete', res.result_code === '4')
     }
   }
 }

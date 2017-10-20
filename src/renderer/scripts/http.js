@@ -1,16 +1,20 @@
 import axios from 'axios'
 import Vue from 'vue'
+import qs from 'querystring'
 
 // 配置axios
 axios.defaults.baseURL = 'https://kyfw.12306.cn'
 axios.defaults.timeout = 5000
 axios.defaults.withCredentials = true
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8'
 
 // 请求拦截器
 axios.interceptors.request.use(config => {
   Vue.nprogress.start()
 
+  if (config.method === 'post') {
+    config.data = qs.stringify(config.data)
+  }
   return config
 }, error => {
   Vue.nprogress.done()

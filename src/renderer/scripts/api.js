@@ -3,6 +3,7 @@ import Vue from 'vue'
 const urls = {
   getCaptcha: `/passport/captcha/captcha-image?login_site=E&module=login&rand=sjrand&${Math.random()}`, // GET
   checkCaptcha: '/passport/captcha/captcha-check', // POST
+  login: '/passport/web/login', // POST
   getStationName: '/otn/resources/js/framework/station_name.js', // GET
   getQueryUrl: '/otn/leftTicket/query1', // GET
   getTicket: '/otn/' // GET
@@ -105,6 +106,30 @@ const getCaptchaCode = async () => {
   return `data:image/jpeg;base64,${Buffer.from(res).toString('base64')}`
 }
 
+/**
+ * 校验验证码
+ * @param {*} code 验证码
+ */
+const validCaptchaCode = (code) => {
+  let formData = {
+    answer: code,
+    login_site: 'E',
+    rand: 'sjrand'
+  }
+
+  return Vue.http.post(urls.checkCaptcha, formData)
+}
+
+/**
+ * 登录
+ * @param {*} formData 表单数据
+ */
+const login = (formData) => {
+  formData.appid = 'otn'
+
+  return Vue.http.post(urls.login, formData)
+}
+
 const common = {
   // 获取座位代码
   getSeatTypeCode (seatTypeCodes) {
@@ -163,5 +188,7 @@ export default {
   getStationName,
   getQueryUrl,
   getTicket,
-  getCaptchaCode
+  getCaptchaCode,
+  validCaptchaCode,
+  login
 }

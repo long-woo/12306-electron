@@ -23,8 +23,8 @@
         </div>
       </div>
     </footer>
-    <login></login>
-    <captcha-code></captcha-code>
+    <login ref="loginModal"></login>
+    <captcha-code @validComplete="validComplete"></captcha-code>
   </div>
 </template>
 
@@ -42,7 +42,7 @@ export default {
         { text: '任务管理', active: false, icon: 'task-manager', to: '/taskmanager' },
         { text: '我的订单', active: false, icon: 'order-manager', to: '/order' }
       ],
-      showLogin: false
+      captchaCodeType: 'login'
     }
   },
   methods: {
@@ -52,6 +52,26 @@ export default {
       this.navItems.map((val, index) => {
         if (val.text !== nav.text) val.active = false
       })
+    },
+    // 校验验证码完成
+    async validComplete (value) {
+      if (value) {
+        if (this.captchaCodeType === 'login') {
+          const login = this.$refs.loginModal
+          const loginData = {
+            username: login.userName,
+            password: login.password
+          }
+          const res = await this.$api.login(loginData)
+
+          if (res.result_code === 1) {
+            this.$alert(res.result_message)
+            return
+          }
+
+          this.$root.$emit('hide::modal', 'captchCodeModal')
+        }
+      }
     }
   }
 }

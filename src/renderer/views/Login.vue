@@ -33,13 +33,6 @@ export default {
       autoLogin: true
     }
   },
-  props: {
-    showLogin: {
-      type: Boolean,
-      default: false
-    },
-    loginModel: Object
-  },
   watch: {
     rememberme (value) {
       if (!value) {

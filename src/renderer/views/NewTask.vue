@@ -22,7 +22,7 @@
     <div>
       <b-table empty-text="没有找到车次" :fields="fields" :items="ticketData" head-variant="default sticky-top" striped hover show-empty ref="tbTrain" @row-clicked="rowClick">
         <template slot="checkNo" scope="row">
-          <div class="checkbox icheck-info">
+          <div class="checkbox icheck-info waves-effect">
             <input type="checkbox" :id="`chk_${row.index}`" v-model="chkTrains" :value="row.item.trainCode" />
             <label :for="`chk_${row.index}`"></label>
           </div>
