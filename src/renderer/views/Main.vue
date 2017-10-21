@@ -16,7 +16,12 @@
     <footer class="fixed-bottom border border-info border-left-0 border-right-0 border-bottom-0 bg-white">
       <div class="d-flex flex-row font-size-14">
         <div class="p-2">
-          <a class="text-info waves-effect" href="javascript:;" v-b-modal.loginModal>
+          <a href="javascript:;" v-if="loginName">
+            <i class="iconfont icon-user"></i>
+            <span>{{loginName}}，</span>
+            <span @click="logOff">注销</span>
+          </a>
+          <a class="text-info waves-effect" href="javascript:;" v-b-modal.loginModal v-else>
             <i class="iconfont icon-user"></i>
             <span>未登录</span>
           </a>
@@ -42,7 +47,8 @@ export default {
         { text: '任务管理', active: false, icon: 'task-manager', to: '/taskmanager' },
         { text: '我的订单', active: false, icon: 'order-manager', to: '/order' }
       ],
-      captchaCodeType: 'login'
+      captchaCodeType: 'login',
+      loginName: ''
     }
   },
   methods: {
@@ -66,12 +72,18 @@ export default {
 
           if (res.result_code === 1) {
             this.$alert(res.result_message)
+            this.$root.$emit('show::modal', 'loginModal')
             return
           }
 
-          this.$root.$emit('hide::modal', 'captchCodeModal')
+          this.loginName = login.userName
+          this.$store.dispatch('setLoginModel', login.$data)
         }
       }
+    },
+    // 注销
+    logOff () {
+
     }
   }
 }

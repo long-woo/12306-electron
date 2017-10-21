@@ -76,6 +76,7 @@ export default {
 
       let value = e.target.value
       this.selectText = value
+      this.$emit('inputChange', value)
 
       if (!value) {
         this.show = false

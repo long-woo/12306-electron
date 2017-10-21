@@ -102,14 +102,18 @@ export default {
       if (!code) return
 
       code = code.replace(/(-)/gi, ',')
-      const res = await this.$api.validCaptchaCode(code)
 
-      if (res.result_code !== '4') {
+      const res = await this.$api.validCaptchaCode(code)
+      const validResult = res.result_code === '4'
+
+      if (!validResult) {
         this.$alert(res.result_message)
+      } else {
+        this.$root.$emit('hide::modal', 'captchCodeModal')
       }
 
       // 验证完成
-      this.$emit('validComplete', res.result_code === '4')
+      this.$emit('validComplete', validResult)
     }
   }
 }
