@@ -4,9 +4,12 @@ const urls = {
   getCaptcha: `/passport/captcha/captcha-image?login_site=E&module=login&rand=sjrand&${Math.random()}`, // GET
   checkCaptcha: '/passport/captcha/captcha-check', // POST
   login: '/passport/web/login', // POST
+  loginAuthuam: '/passport/web/auth/uamtk', // POST
+  loginAuthClient: '/otn/uamauthclient', // POST
   getStationName: '/otn/resources/js/framework/station_name.js', // GET
   getQueryUrl: '/otn/leftTicket/query1', // GET
-  getTicket: '/otn/' // GET
+  getTicket: '/otn/', // GET
+  getPassengers: '/otn/passengers/query' // POST
 }
 
 /**
@@ -124,10 +127,70 @@ const validCaptchaCode = (code) => {
  * 登录
  * @param {*} formData 表单数据
  */
-const login = (formData) => {
+const login = async (formData) => {
   formData.appid = 'otn'
 
-  return Vue.http.post(urls.login, formData)
+  let loginResult = {}
+  let res = await Vue.http.post(urls.login, formData)
+
+  if (res.result_code !== 0) {
+    loginResult.code = 0
+    loginResult.message = res.result_message
+
+    return loginResult
+  }
+
+  res = await Vue.http.post(urls.loginAuthuam, {appid: 'otn'})
+
+  if (res.result_code !== 0) {
+    loginResult.code = 0
+    loginResult.message = res.result_message
+
+    return loginResult
+  }
+
+  let loginTicket = res.newapptk
+
+  res = await Vue.http.post(urls.loginAuthClient, {tk: loginTicket})
+
+  if (res.result_code !== 0) {
+    loginResult.code = 0
+    loginResult.message = res.result_message
+
+    return loginResult
+  }
+
+  loginResult.ticket = res.apptk
+  loginResult.loginName = res.username
+  loginResult.code = 1
+  loginResult.message = '登录成功'
+
+  return loginResult
+}
+
+/**
+ * 获取乘客
+ * @param {*} name 乘客名
+ * @param {*} pageIndex 当前页
+ * @param {*} pageCount 每页数
+ */
+const getPassengers = async (name, pageIndex, pageCount) => {
+  let formData = {
+    pageIndex: pageIndex || 1,
+    pageSize: pageCount || 10
+  }
+
+  if (name) {
+    formData['passengerDTO.passenger_name'] = name
+  }
+
+  const res = await Vue.http.post(urls.getPassengers, formData)
+
+  if (!res.data) {
+    return []
+  }
+
+  return res.data.datas || []
 }
 
 const common = {
@@ -190,5 +253,6 @@ export default {
   getTicket,
   getCaptchaCode,
   validCaptchaCode,
-  login
+  login,
+  getPassengers
 }

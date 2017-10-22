@@ -17,6 +17,10 @@ export default {
 
 <style>
 /* CSS */
+* {
+  transition: all 0.3s ease;
+}
+
 ::selection {
   background-color: #17a2b8;
   color: #fff;
@@ -25,7 +29,6 @@ export default {
 body {
   -webkit-user-select: none;
   -webkit-app-region: drag;
-  transition: all 0.3s ease;
   overflow: hidden;
 }
 

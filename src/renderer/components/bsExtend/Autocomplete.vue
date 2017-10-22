@@ -29,7 +29,8 @@ export default {
     maxCount: {
       type: Number,
       default: 6
-    }
+    },
+    filterText: Array
   },
   watch: {
     value (newVal) {
@@ -87,7 +88,7 @@ export default {
       let index = 0
 
       this.dropdownData.forEach((val) => {
-        if ((val.text.toLowerCase().indexOf(value) > -1 || val.firstPY.toLowerCase().indexOf(value) > -1 || val.fullPY.toLowerCase().indexOf(value) > -1) && this.maxCount > index) {
+        if ((val.text.toLowerCase().indexOf(value) > -1 || (val.firstPY && val.firstPY.toLowerCase().indexOf(value) > -1) || (val.fullPY && val.fullPY.toLowerCase().indexOf(value) > -1)) && this.maxCount > index) {
           arrData.push(val)
           index++
         }

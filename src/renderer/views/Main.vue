@@ -16,18 +16,20 @@
     <footer class="fixed-bottom border border-info border-left-0 border-right-0 border-bottom-0 bg-white">
       <div class="d-flex flex-row font-size-14">
         <div class="p-2">
-          <a href="javascript:;" v-if="loginName">
+          <div class="text-info" v-if="loginName">
             <i class="iconfont icon-user"></i>
             <span>{{loginName}}，</span>
-            <span @click="logOff">注销</span>
-          </a>
+            <a href="javascript:;" @click="logOff">注销</a>
+          </div>
           <a class="text-info waves-effect" href="javascript:;" v-b-modal.loginModal v-else>
             <i class="iconfont icon-user"></i>
             <span>未登录</span>
           </a>
         </div>
       </div>
+      <task-button ref="taskButton"></task-button>
     </footer>
+
     <login ref="loginModal"></login>
     <captcha-code @validComplete="validComplete"></captcha-code>
   </div>
@@ -38,7 +40,8 @@ export default {
   name: 'Main',
   components: {
     Login: () => import('./Login'),
-    CaptchaCode: () => import('./CaptchaCode')
+    CaptchaCode: () => import('./CaptchaCode'),
+    TaskButton: () => import('./TaskButton')
   },
   data () {
     return {
@@ -70,14 +73,15 @@ export default {
           }
           const res = await this.$api.login(loginData)
 
-          if (res.result_code === 1) {
-            this.$alert(res.result_message)
+          if (res.code !== 1) {
+            this.$alert(res.message)
             this.$root.$emit('show::modal', 'loginModal')
             return
           }
 
-          this.loginName = login.userName
+          this.loginName = res.loginName
           this.$store.dispatch('setLoginModel', login.$data)
+          this.$refs.taskButton.getPassengers()
         }
       }
     },
@@ -102,11 +106,11 @@ main {
   padding-right: 1rem;
 }
 
-.navbar-nav .nav-link i {
+.navbar-nav .nav-link i{
   font-size: 2rem;
 }
 
-.navbar-nav .nav-link p {
+.navbar-nav .nav-link p{
   margin-bottom: 0;
 }
 
