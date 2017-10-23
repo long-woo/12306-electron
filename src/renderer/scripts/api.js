@@ -6,6 +6,7 @@ const urls = {
   login: '/passport/web/login', // POST
   loginAuthuam: '/passport/web/auth/uamtk', // POST
   loginAuthClient: '/otn/uamauthclient', // POST
+  chkeckIsLogin: '/otn/login/checkUser', // POST
   getStationName: '/otn/resources/js/framework/station_name.js', // GET
   getQueryUrl: '/otn/leftTicket/query1', // GET
   getTicket: '/otn/', // GET
@@ -140,30 +141,7 @@ const login = async (formData) => {
     return loginResult
   }
 
-  res = await Vue.http.post(urls.loginAuthuam, {appid: 'otn'})
-
-  if (res.result_code !== 0) {
-    loginResult.code = 0
-    loginResult.message = res.result_message
-
-    return loginResult
-  }
-
-  let loginTicket = res.newapptk
-
-  res = await Vue.http.post(urls.loginAuthClient, {tk: loginTicket})
-
-  if (res.result_code !== 0) {
-    loginResult.code = 0
-    loginResult.message = res.result_message
-
-    return loginResult
-  }
-
-  loginResult.ticket = res.apptk
-  loginResult.loginName = res.username
-  loginResult.code = 1
-  loginResult.message = '登录成功'
+  loginResult = await common.loginAuth()
 
   return loginResult
 }
@@ -191,6 +169,24 @@ const getPassengers = async (name, pageIndex, pageCount) => {
   }
 
   return res.data.datas || []
+}
+
+/**
+ * 检查是否登录
+ */
+const chkeckIsLogin = async () => {
+  let loginResult = {}
+  const {data} = await Vue.http.post(urls.chkeckIsLogin)
+  let res = data.flag || false
+
+  if (!res) {
+    loginResult.code = 0
+    loginResult.message = '用户未登录'
+  }
+
+  loginResult = await common.loginAuth()
+
+  return loginResult
 }
 
 const common = {
@@ -244,6 +240,36 @@ const common = {
       default:
         return seatTypes ? `其他（${seatTypes[22]}）` : '其他'
     }
+  },
+  // 登录授权
+  async loginAuth () {
+    const loginResult = {}
+    let res = await Vue.http.post(urls.loginAuthuam, {appid: 'otn'})
+
+    if (res.result_code !== 0) {
+      loginResult.code = 0
+      loginResult.message = res.result_message
+
+      return loginResult
+    }
+
+    let loginTicket = res.newapptk
+
+    res = await Vue.http.post(urls.loginAuthClient, {tk: loginTicket})
+
+    if (res.result_code !== 0) {
+      loginResult.code = 0
+      loginResult.message = res.result_message
+
+      return loginResult
+    }
+
+    loginResult.ticket = res.apptk
+    loginResult.loginName = res.username
+    loginResult.code = 1
+    loginResult.message = '登录成功'
+
+    return loginResult
   }
 }
 
@@ -254,5 +280,6 @@ export default {
   getCaptchaCode,
   validCaptchaCode,
   login,
-  getPassengers
+  getPassengers,
+  chkeckIsLogin
 }

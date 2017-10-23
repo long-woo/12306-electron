@@ -38,16 +38,17 @@ const mutations = {
     // 保存到localStoreage
     if (loginModel) {
       let models = utils.getLoginModel()
-      const model = models.filter(item => item.userName === loginModel.userName)
-
-      if (model.length) {
-        model[0].password = loginModel.password
-        model[0].rememberme = loginModel.rememberme
-        model[0].autoLogin = loginModel.autoLogin
-      } else {
-        models.push(loginModel)
-        utils.setLoginModel(models)
+      console.log(models)
+      for (let i = 0; i < models.length; i++) {
+        if (models[i].userName === loginModel.userName) {
+          models.splice(i, 1)
+          break
+        }
       }
+      console.log(models)
+      // 保存
+      models.push(loginModel)
+      utils.setLoginModel(models)
     }
   }
 }

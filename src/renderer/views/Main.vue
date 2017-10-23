@@ -36,6 +36,8 @@
 </template>
 
 <script>
+import utils from '../scripts/utils'
+
 export default {
   name: 'Main',
   components: {
@@ -54,6 +56,9 @@ export default {
       loginName: ''
     }
   },
+  mounted () {
+    this.chkeckIsLogin()
+  },
   methods: {
     navChange (nav) {
       nav.active = true
@@ -61,6 +66,21 @@ export default {
       this.navItems.map((val, index) => {
         if (val.text !== nav.text) val.active = false
       })
+    },
+    // 检查是否已经登录
+    async chkeckIsLogin () {
+      const {code, loginName} = await this.$api.chkeckIsLogin()
+
+      if (code !== 1) return
+
+      this.loginName = loginName
+
+      const loginInfo = utils.getLoginModel(loginName)
+
+      if (!loginInfo.length) return
+      // utils.notification.show('', {body: '登录成功'})
+      this.$store.dispatch('setLoginModel', loginInfo[0])
+      this.$refs.taskButton.getPassengers()
     },
     // 校验验证码完成
     async validComplete (value) {
@@ -79,8 +99,16 @@ export default {
             return
           }
 
+          const loginInfo = {
+            loginName: res.loginName,
+            userName: login.userName,
+            password: login.password,
+            rememberme: login.rememberme,
+            autoLogin: login.autoLogin
+          }
+
           this.loginName = res.loginName
-          this.$store.dispatch('setLoginModel', login.$data)
+          this.$store.dispatch('setLoginModel', loginInfo)
           this.$refs.taskButton.getPassengers()
         }
       }
