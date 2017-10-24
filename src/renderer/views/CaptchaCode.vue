@@ -108,6 +108,7 @@ export default {
 
       if (!validResult) {
         this.$alert(res.result_message)
+        this.getCaptchaCode()
       } else {
         this.$root.$emit('hide::modal', 'captchCodeModal')
       }

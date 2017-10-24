@@ -5,7 +5,7 @@
         <div class="bg-info p-2">座位：</div>
         <div class="p-2">
           <div class="checkbox icheck-info" v-for="(item, index) in seatTypes" :key="index">
-            <input type="checkbox" :id="`chk_seat_${index}`" />
+            <input type="checkbox" :id="`chk_seat_${index}`" v-model="chkSeatTypes" />
             <label :for="`chk_seat_${{index}}`">item.text</label>
           </div>
           <span v-if="!seatTypes.length" class="text-secondary">请先选择车次</span>
@@ -13,7 +13,7 @@
       </div>
       <div class="row pl-4 pr-4 pt-2 pb-2">
         <div class="checkbox icheck-info col-sm-2" v-for="(item, index) in passengers" :key="index">
-          <input type="checkbox" :id="`chk_user_${item.first_letter}`" />
+          <input type="checkbox" :id="`chk_user_${item.first_letter}`" v-model="chkPassengers" :value="item" />
           <label :for="`chk_user_${item.first_letter}`">{{item.passenger_name}}</label>
         </div>
         <div class="text-center text-secondary col-md-12" v-if="!passengers.length">请先登录</div>
@@ -27,6 +27,80 @@
     </div>
   </div>
 </template>
+
+<script>
+export default {
+  name: 'TaskButton',
+  data () {
+    return {
+      showPanel: false,
+      buttonIcon: 'icon-add-task',
+      buttonText: '添加任务',
+      passengers: [],
+      chkPassengers: [],
+      disabledPassengers: [],
+      seatTypes: [],
+      chkSeatTypes: []
+    }
+  },
+  watch: {
+    showPanel (value) {
+      if (this.chkPassengers.length) {
+        this.buttonIcon = 'icon-check'
+        this.buttonText = '确定'
+        return
+      }
+
+      if (value) {
+        this.buttonIcon = 'icon-close'
+        this.buttonText = '关闭'
+      } else {
+        this.buttonIcon = 'icon-add-task'
+        this.buttonText = '添加任务'
+      }
+    },
+    chkPassengers (value) {
+      if (value.length > 5) {
+        value.pop()
+        this.$alert('一次只能选择5位乘客')
+        return
+      }
+
+      if (value.length) {
+        this.buttonIcon = 'icon-check'
+        this.buttonText = '确定'
+      } else {
+        this.buttonIcon = 'icon-close'
+        this.buttonText = '关闭'
+      }
+    }
+  },
+  mounted () {
+    this.getPassengers()
+  },
+  methods: {
+    // 获取乘客
+    async getPassengers () {
+      if (!this.$store.getters.loginModel) return
+
+      const res = await this.$api.getPassengers('', 1, 999)
+      console.log(res)
+
+      if (!res.length) return
+
+      this.passengers = res
+    },
+    addTask () {
+      if (this.showPanel && !this.chkPassengers.length) {
+        this.showPanel = false
+        return
+      }
+
+      this.showPanel = true
+    }
+  }
+}
+</script>
 
 <style scoped>
 .btn-add-task {
@@ -55,7 +129,7 @@
 }
 
 .task-add-panel {
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 255, 255, 0.9);
   height: 15rem;
   margin-top: -15rem;
   padding-bottom: 2.9rem;
@@ -69,53 +143,3 @@
   margin-top: 0;
 }
 </style>
-
-<script>
-export default {
-  name: 'TaskButton',
-  data () {
-    return {
-      showPanel: false,
-      buttonIcon: 'icon-add-task',
-      buttonText: '添加任务',
-      passengers: [],
-      seatTypes: []
-    }
-  },
-  watch: {
-    showPanel (value) {
-      if (value) {
-        this.buttonIcon = 'icon-close'
-        this.buttonText = '关闭'
-      } else {
-        this.buttonIcon = 'icon-add-task'
-        this.buttonText = '添加任务'
-      }
-    }
-  },
-  mounted () {
-    this.getPassengers()
-  },
-  methods: {
-    // 获取乘客
-    async getPassengers () {
-      if (!this.$store.getters.loginModel) return
-
-      const res = await this.$api.getPassengers('', 1, 999)
-      console.log(res)
-
-      if (!res.length) return
-
-      this.passengers = res
-    },
-    addTask () {
-      if (this.showPanel) {
-        this.showPanel = false
-        return
-      }
-
-      this.showPanel = true
-    }
-  }
-}
-</script>
