@@ -65,7 +65,7 @@ export default {
       chkTrains: [],
       ticketData: [],
       captchaCode: '',
-      seatCodes: []
+      seatItems: []
     }
   },
   async mounted () {
@@ -91,8 +91,7 @@ export default {
     },
     // 点击行
     rowClick (item) {
-      // let seatCode = this.seatCodes
-      // const seatItems = this.$store.getters.seatItems
+      let seatCodes = item.seatTypeCodes
       const res = this.chkTrains.indexOf(item.trainCode)
 
       if (res === -1) {
@@ -104,13 +103,20 @@ export default {
       }
 
       // 处理座位信息
-      // seatCode.map(seat => {
-      //   if (item.seatTypeCodes.indexOf(seat.code) < 0) {
-      //     this.seatCodes.push(0)
-      //   }
-      // })
+      seatCodes.map((code, index) => {
+        const text = this.$api.getSeatTypeInfo(code)
+
+        this.seatItems.filter((s, i) => {
+          if (s.code === code) {
+            return this.seatItems.splice(i, 1)
+          }
+        })
+
+        this.seatItems.push({code, text})
+      })
 
       this.$refs.tbTrain.refresh()
+      this.$eventBus.$emit('changeSelecte', this.seatItems)
     },
     // 查询
     async queryTrain () {

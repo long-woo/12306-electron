@@ -202,7 +202,7 @@ const common = {
     const seatCodes = this.getSeatTypeCode(trains[35])
     let arrSeatInfo = []
 
-    seatCodes.map((val, idx) => {
+    seatCodes.map(val => {
       const seatDetail = this.getSeatTypeInfo(val, trains)
 
       arrSeatInfo.push({ seatTypeCode: val, seatTypeDetail: seatDetail })
@@ -277,6 +277,7 @@ export default {
   getStationName,
   getQueryUrl,
   getTicket,
+  getSeatTypeInfo: common.getSeatTypeInfo,
   getCaptchaCode,
   validCaptchaCode,
   login,

@@ -3,10 +3,10 @@
     <div class="task-add-panel position-absolute border border-info border-left-0 border-right-0 border-bottom-0" v-show="showPanel">
       <div class="border-b-dashed-1 d-flex flex-row">
         <div class="bg-info p-2">座位：</div>
-        <div class="p-2">
-          <div class="checkbox icheck-info" v-for="(item, index) in seatTypes" :key="index">
-            <input type="checkbox" :id="`chk_seat_${index}`" v-model="chkSeatTypes" />
-            <label :for="`chk_seat_${{index}}`">item.text</label>
+        <div class="p-2" v-for="(item, index) in seatTypes" :key="index">
+          <div class="checkbox icheck-info">
+            <input type="checkbox" :id="`chk_seat_${index}`" v-model="chkSeatTypes" :value="item.code" />
+            <label :for="`chk_seat_${index}`">{{item.text}}</label>
           </div>
           <span v-if="!seatTypes.length" class="text-secondary">请先选择车次</span>
         </div>
@@ -77,6 +77,10 @@ export default {
   },
   mounted () {
     this.getPassengers()
+
+    this.$eventBus.$on('changeSelecte', (seats) => {
+      this.seatTypes = seats
+    })
   },
   methods: {
     // 获取乘客

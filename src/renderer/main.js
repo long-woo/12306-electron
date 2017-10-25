@@ -23,6 +23,7 @@ import nprogress from 'nprogress'
 import bsComponents from './components'
 
 import api from './scripts/api'
+import eventBus from './scripts/eventBus'
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.http = Vue.prototype.$http = axios
@@ -37,6 +38,7 @@ Vue.swal = Vue.prototype.$swal = swal
 Vue.nprogress = Vue.prototype.$nprogress = nprogress
 Vue.prototype.$api = api
 Vue.store = store
+Vue.prototype.$eventBus = eventBus
 
 /* eslint-disable no-new */
 new Vue({
