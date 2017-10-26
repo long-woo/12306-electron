@@ -182,6 +182,7 @@ const chkeckIsLogin = async () => {
   if (!res) {
     loginResult.code = 0
     loginResult.message = '用户未登录'
+    return loginResult
   }
 
   loginResult = await common.loginAuth()

@@ -4,14 +4,16 @@ import utils from '../../scripts/utils'
 const state = {
   queryUrl: 'query',
   stationNames: [],
-  loginModel: null
+  loginModel: null,
+  taskData: []
 }
 
 const getters = {
   queryUrl: state => state.queryUrl,
   stationNames: state => state.stationNames,
   loginModel: state => state.loginModel,
-  seatItems: state => state.seatItems
+  seatItems: state => state.seatItems,
+  taskData: state => state.taskData
 }
 
 const actions = {
@@ -23,6 +25,12 @@ const actions = {
   },
   setLoginModel ({commit, state}, loginModel) {
     commit(types.UPDATE_LOCAL_LOGINMODEL, loginModel)
+  },
+  setTaskData ({commit, state}, taskData) {
+    commit(types.UPDATE_LOCAL_TASKDATA, taskData)
+  },
+  deleteTaskData ({commit, state}, index) {
+    commit(types.UPDATE_LOCAL_TASKDATA, null, index)
   }
 }
 
@@ -50,6 +58,14 @@ const mutations = {
       models.push(loginModel)
       utils.setLoginModel(models)
     }
+  },
+  [types.UPDATE_LOCAL_TASKDATA] (state, taskData, delIndex) {
+    if (delIndex > -1) {
+      state.taskData.splice(delIndex, 1)
+      return
+    }
+
+    state.taskData.push(taskData)
   }
 }
 

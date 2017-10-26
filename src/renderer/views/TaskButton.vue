@@ -1,15 +1,12 @@
 <template>
   <div>
     <div class="task-add-panel position-absolute border border-info border-left-0 border-right-0 border-bottom-0" v-show="showPanel">
-      <div class="border-b-dashed-1 d-flex flex-row">
-        <div class="bg-info p-2">座位：</div>
-        <div class="p-2" v-for="(item, index) in seatTypes" :key="index">
-          <div class="checkbox icheck-info">
-            <input type="checkbox" :id="`chk_seat_${index}`" v-model="chkSeatTypes" :value="item.code" />
-            <label :for="`chk_seat_${index}`">{{item.text}}</label>
-          </div>
-          <span v-if="!seatTypes.length" class="text-secondary">请先选择车次</span>
+      <div class="row pl-4 pr-4 pt-2 pb-2 border-b-dashed-1">
+        <div class="checkbox icheck-info col-sm-2" v-for="(item, index) in seatTypes" :key="index">
+          <input type="checkbox" :id="`chk_seat_${index}`" v-model="chkSeatTypes" :value="item.code" />
+          <label :for="`chk_seat_${index}`">{{item.text}}</label>
         </div>
+        <div v-if="!seatTypes.length" class="text-center text-secondary col-md-12">请先选择车次</div>
       </div>
       <div class="row pl-4 pr-4 pt-2 pb-2">
         <div class="checkbox icheck-info col-sm-2" v-for="(item, index) in passengers" :key="index">
@@ -45,7 +42,7 @@ export default {
   },
   watch: {
     showPanel (value) {
-      if (this.chkPassengers.length) {
+      if (this.chkPassengers.length || this.chkSeatTypes.length) {
         this.buttonIcon = 'icon-check'
         this.buttonText = '确定'
         return
@@ -59,20 +56,11 @@ export default {
         this.buttonText = '添加任务'
       }
     },
+    chkSeatTypes (value) {
+      this.setButton(value, '5种类型的座位')
+    },
     chkPassengers (value) {
-      if (value.length > 5) {
-        value.pop()
-        this.$alert('一次只能选择5位乘客')
-        return
-      }
-
-      if (value.length) {
-        this.buttonIcon = 'icon-check'
-        this.buttonText = '确定'
-      } else {
-        this.buttonIcon = 'icon-close'
-        this.buttonText = '关闭'
-      }
+      this.setButton(value, '5位乘客')
     }
   },
   mounted () {
@@ -83,6 +71,22 @@ export default {
     })
   },
   methods: {
+    // 动态操作按钮
+    setButton (value, text) {
+      if (value.length > 5) {
+        value.pop()
+        this.$alert(`一次只能选择${text}`)
+        return
+      }
+
+      if (value.length) {
+        this.buttonIcon = 'icon-check'
+        this.buttonText = '确定'
+      } else {
+        this.buttonIcon = 'icon-close'
+        this.buttonText = '关闭'
+      }
+    },
     // 获取乘客
     async getPassengers () {
       if (!this.$store.getters.loginModel) return
@@ -95,7 +99,7 @@ export default {
       this.passengers = res
     },
     addTask () {
-      if (this.showPanel && !this.chkPassengers.length) {
+      if (this.showPanel && !this.chkPassengers.length && !this.chkSeatTypes.length) {
         this.showPanel = false
         return
       }

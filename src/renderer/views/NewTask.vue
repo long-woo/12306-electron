@@ -64,8 +64,7 @@ export default {
       },
       chkTrains: [],
       ticketData: [],
-      captchaCode: '',
-      seatItems: []
+      seatCodes: []
     }
   },
   async mounted () {
@@ -91,32 +90,39 @@ export default {
     },
     // 点击行
     rowClick (item) {
-      let seatCodes = item.seatTypeCodes
-      const res = this.chkTrains.indexOf(item.trainCode)
+      let seatCode = item.seatTypeCodes.toString().replace(/(,)/g, '-')
+      const trainIndex = this.chkTrains.indexOf(item.trainCode)
+      let seatItems = []
 
-      if (res === -1) {
+      if (trainIndex === -1) {
         this.chkTrains.push(item.trainCode)
+        this.seatCodes.push(seatCode)
         item._rowVariant = 'success'
       } else {
-        this.chkTrains.splice(res, 1)
+        this.chkTrains.splice(trainIndex, 1)
+        this.seatCodes.splice(trainIndex, 1)
         item._rowVariant = !item.isBuy ? 'danger' : ''
       }
 
       // 处理座位信息
+      const seatCodes = this.seatCodes.toString().replace(/(-)/g, ',').split(',')
+
       seatCodes.map((code, index) => {
+        if (!code) return
+
         const text = this.$api.getSeatTypeInfo(code)
 
-        this.seatItems.filter((s, i) => {
+        seatItems.filter((s, i) => {
           if (s.code === code) {
-            return this.seatItems.splice(i, 1)
+            return seatItems.splice(i, 1)
           }
         })
 
-        this.seatItems.push({code, text})
+        seatItems.push({code, text})
       })
 
       this.$refs.tbTrain.refresh()
-      this.$eventBus.$emit('changeSelecte', this.seatItems)
+      this.$eventBus.$emit('changeSelecte', seatItems)
     },
     // 查询
     async queryTrain () {
@@ -124,12 +130,13 @@ export default {
 
       const trainDate = this.$refs.rideDate.date.time
       // this.$swal('1')
-      // this.$alert('1')
       const data = await this.$api.getTicket(this.fromCity.value, this.toCity.value, trainDate)
 
       console.log(data)
       this.chkTrains = []
       this.ticketData = data
+      this.seatCodes = []
+      this.$eventBus.$emit('changeSelecte', [])
     },
     // 格式化座位信息
     formatSeatType (data) {
