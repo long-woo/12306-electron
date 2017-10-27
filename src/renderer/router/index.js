@@ -8,15 +8,11 @@ export default new Router({
   routes: [
     {
       path: '/:nav',
-      name: 'Main',
       component: Main,
       children: [
-        {path: '', component: () => import('@/views/NewTask')}
+        {path: 'newtask', component: () => import('@/views/NewTask')},
+        {path: 'taskmanager', component: () => import('@/views/TaskManager')}
       ]
-    },
-    {
-      path: '*',
-      redirect: '/newtask'
     }
   ]
 })

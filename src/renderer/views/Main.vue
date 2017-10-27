@@ -11,6 +11,7 @@
       </div>
     </header>
     <main class="container-fluid">
+      <h1>{{$route.params.id}}</h1>
       <router-view></router-view>
     </main>
     <footer class="fixed-bottom border border-info border-left-0 border-right-0 border-bottom-0 bg-white">
@@ -48,9 +49,9 @@ export default {
   data () {
     return {
       navItems: [
-        { text: '新任务', active: true, icon: 'new-task', to: '/newtask' },
-        { text: '任务管理', active: false, icon: 'task-manager', to: '/taskmanager' },
-        { text: '我的订单', active: false, icon: 'order-manager', to: '/order' }
+        { text: '新任务', active: true, icon: 'new-task', to: '/main/newtask' },
+        { text: '任务管理', active: false, icon: 'task-manager', to: '/main/taskmanager' },
+        { text: '我的订单', active: false, icon: 'order-manager', to: '/main/order' }
       ],
       captchaCodeType: 'login',
       loginName: ''
