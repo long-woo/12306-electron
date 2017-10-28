@@ -10,7 +10,7 @@
       </div>
       <div class="row pl-4 pr-4 pt-2 pb-2">
         <div class="checkbox icheck-info col-sm-2" v-for="(item, index) in passengers" :key="index">
-          <input type="checkbox" :id="`chk_user_${item.first_letter}`" v-model="chkPassengers" :value="`${item.PassengerName},${item.PassengerIdTypeCode},${item.PassengerIdNo},${item.PassengerType}_`" />
+          <input type="checkbox" :id="`chk_user_${item.first_letter}`" v-model="chkPassengers" :value="item" />
           <label :for="`chk_user_${item.first_letter}`">{{item.passenger_name}}</label>
         </div>
         <div class="text-center text-secondary col-md-12" v-if="!passengers.length">请先登录</div>
@@ -37,7 +37,9 @@ export default {
       chkPassengers: [],
       disabledPassengers: [],
       seatTypes: [],
-      chkSeatTypes: []
+      chkSeatTypes: [],
+      oldPassengers: [],
+      passengerTickets: []
     }
   },
   watch: {
@@ -60,6 +62,7 @@ export default {
       this.setButton(value, '5种类型的座位')
     },
     chkPassengers (value) {
+      // `${item.PassengerName},${item.PassengerIdTypeCode},${item.PassengerIdNo},${item.PassengerType}_`
       this.setButton(value, '5位乘客')
     }
   },

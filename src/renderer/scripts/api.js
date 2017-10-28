@@ -10,7 +10,11 @@ const urls = {
   getStationName: '/otn/resources/js/framework/station_name.js', // GET
   getQueryUrl: '/otn/leftTicket/query1', // GET
   getTicket: '/otn/', // GET
-  getPassengers: '/otn/passengers/query' // POST
+  getPassengers: '/otn/passengers/query', // POST
+  autoSubmitOrder: '/otn/confirmPassenger/autoSubmitOrderRequest', // POST
+  getQueueInfo: '/otn/confirmPassenger/getQueueCountAsync', // POST
+  confirmQueue: '/otn/confirmPassenger/confirmSingleForQueueAsys', // POST
+  getAwaitTime: `/otn/confirmPassenger/queryOrderWaitTime?random=${Math.random().substr(2)}&tourFlag=dc&_json_att=` // GET
 }
 
 /**
@@ -190,6 +194,74 @@ const chkeckIsLogin = async () => {
   return loginResult
 }
 
+/**
+ * 自动提交订单
+ * @param {*} formData （secretStr,train_date,query_from_station_name,query_to_station_name,passengerTicketStr,oldPassengerStr）
+ */
+const autoSubmitOrder = async (formData) => {
+  formData.tour_flag = 'dc'
+  formData.purpose_codes = 'ADULT'
+  formData.cancel_flag = 2
+  formData.bed_level_order_num = '000000000000000000000000000000'
+
+  const {data, messages} = await Vue.http.post(urls.autoSubmitOrder, formData)
+  let result = {}
+
+  if (!data) {
+    result.code = 0
+    result.message = messages.toString()
+    return result
+  }
+
+  if (!data.submitStatus) {
+    result.code = 0
+    result.message = data.isRelogin ? '请先登录' : data.errMsg
+    return result
+  }
+
+  result.code = 1
+  result.ticket = data.result
+  result.isCaptchaCode = data.ifShowPassCode === 'Y'
+  result.captchaCodeTime = data.ifShowPassCodeTime
+  result.isChooseBed = data.canChooseBeds === 'Y'
+  result.isChooseSeat = data.canChooseSeats === 'Y'
+  result.chooseSeats = data.choose_Seats
+  result.isChooseMid = data.isCanChooseMid === 'Y'
+  result.submitStatus = data.submitStatus
+  result.smoke = data.smokeStr
+  return result
+}
+
+/**
+ * 获取队列信息
+ * @param {*} formData (train_date,train_no,stationTrainCode,seatType,fromStationTelecode,toStationTelecode,leftTicket)
+ */
+const getQueueInfo = async (formData) => {
+  formData.purpose_codes = 'ADULT'
+  formData._json_att = ''
+
+  const {data, messages} = await Vue.http.post(urls.getQueueInfo, formData)
+  let result = {}
+
+  if (!data) {
+    result.code = 0
+    result.message = messages.toString()
+    return result
+  }
+
+  if (data.isRelogin === 'Y') {
+    result.code = 0
+    result.message = '请先登录'
+    return result
+  }
+
+  result.code = 1
+  result.ticketData = data.ticket.split(',') // 可能有无座数
+  result.isCountLess = data.op_2 === 'true'
+  result.queueCount = data.countT
+  return result
+}
+
 const common = {
   // 获取座位代码
   getSeatTypeCode (seatTypeCodes) {
@@ -283,5 +355,7 @@ export default {
   validCaptchaCode,
   login,
   getPassengers,
-  chkeckIsLogin
+  chkeckIsLogin,
+  autoSubmitOrder,
+  getQueueInfo
 }
