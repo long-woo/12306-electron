@@ -36,6 +36,7 @@ export default {
       passengers: [],
       chkPassengers: [],
       disabledPassengers: [],
+      trains: [],
       seatTypes: [],
       chkSeatTypes: [],
       oldPassengers: [],
@@ -69,7 +70,8 @@ export default {
   mounted () {
     this.getPassengers()
 
-    this.$eventBus.$on('changeSelecte', (seats) => {
+    this.$eventBus.$on('changeSelecte', ({trains, seats}) => {
+      this.trains = trains
       this.seatTypes = seats
     })
   },

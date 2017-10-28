@@ -28,7 +28,6 @@
         </div>
       </div>
     </footer>
-
     <login ref="loginModal"></login>
     <captcha-code @validComplete="validComplete"></captcha-code>
   </div>

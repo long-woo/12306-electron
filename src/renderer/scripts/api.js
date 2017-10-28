@@ -12,9 +12,9 @@ const urls = {
   getTicket: '/otn/', // GET
   getPassengers: '/otn/passengers/query', // POST
   autoSubmitOrder: '/otn/confirmPassenger/autoSubmitOrderRequest', // POST
-  getQueueInfo: '/otn/confirmPassenger/getQueueCountAsync', // POST
-  confirmQueue: '/otn/confirmPassenger/confirmSingleForQueueAsys', // POST
-  getAwaitTime: `/otn/confirmPassenger/queryOrderWaitTime?random=${Math.random().substr(2)}&tourFlag=dc&_json_att=` // GET
+  getOrderQueueInfo: '/otn/confirmPassenger/getQueueCountAsync', // POST
+  confirmOrderQueue: '/otn/confirmPassenger/confirmSingleForQueueAsys', // POST
+  getOrderAwaitTime: `/otn/confirmPassenger/queryOrderWaitTime` // GET
 }
 
 /**
@@ -236,11 +236,11 @@ const autoSubmitOrder = async (formData) => {
  * 获取队列信息
  * @param {*} formData (train_date,train_no,stationTrainCode,seatType,fromStationTelecode,toStationTelecode,leftTicket)
  */
-const getQueueInfo = async (formData) => {
+const getOrderQueueInfo = async (formData) => {
   formData.purpose_codes = 'ADULT'
   formData._json_att = ''
 
-  const {data, messages} = await Vue.http.post(urls.getQueueInfo, formData)
+  const {data, messages} = await Vue.http.post(urls.getOrderQueueInfo, formData)
   let result = {}
 
   if (!data) {
@@ -258,7 +258,64 @@ const getQueueInfo = async (formData) => {
   result.code = 1
   result.ticketData = data.ticket.split(',') // 可能有无座数
   result.isCountLess = data.op_2 === 'true'
-  result.queueCount = data.countT
+  result.queueCount = data.countT // 排队人数
+  return result
+}
+
+/**
+ * 确认订单队列
+ * @param {*} formData (passengerTicketStr,oldPassengerStr,randCode,key_check_isChange,leftTicketStr,train_location,choose_seats,seatDetailType)
+ */
+const confirmOrderQueue = async (formData) => {
+  formData.purpose_codes = 'ADULT'
+  formData._json_at = ''
+
+  const {data} = await Vue.http.post(urls.confirmOrderQueue, formData)
+  let result = {}
+
+  if (!data.submitStatus) {
+    result.code = 0
+    result.message = data.errMsg
+    return result
+  }
+
+  result.code = 1
+  result.submitStatus = data.submitStatus
+  return result
+}
+
+/**
+ * 获取订单出票时间
+ */
+const getOrderAwaitTime = async () => {
+  const {data} = await Vue.http.get(urls.getOrderAwaitTime, {
+    params: {
+      random: Math.random().substr(2),
+      tourFlag: 'dc',
+      _json_att: ''
+    }
+  })
+  let result = {}
+
+  if (!data.queryOrderWaitTimeStatus) {
+    result.code = 0
+    result.message = '请先登录'
+    return result
+  }
+
+  if (data.waitTime === -100) {
+    result.code = 0
+    result.message = '出票超时'
+    return result
+  }
+
+  if (!data.orderId) {
+    setTimeout(getOrderAwaitTime, 500)
+    return
+  }
+
+  result.code = 1
+  result.orderId = data.orderId
   return result
 }
 
@@ -357,5 +414,7 @@ export default {
   getPassengers,
   chkeckIsLogin,
   autoSubmitOrder,
-  getQueueInfo
+  getOrderQueueInfo,
+  confirmOrderQueue,
+  getOrderAwaitTime
 }

@@ -122,8 +122,13 @@ export default {
         seatItems.push({code, text})
       })
 
+      const chkTrainInfo = {
+        trains: this.chkTrains,
+        seats: seatItems
+      }
+
       this.$refs.tbTrain.refresh()
-      this.$eventBus.$emit('changeSelecte', seatItems)
+      this.$eventBus.$emit('changeSelecte', chkTrainInfo)
     },
     // 查询
     async queryTrain () {
