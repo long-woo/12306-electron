@@ -3,7 +3,7 @@
     <header class="navbar-dark fixed-top">
       <div class="navbar-nav-scroll">
         <b-nav class="navbar-nav flex-row justify-content-center text-center bg-info">
-          <b-nav-item class="waves-effect" :active="nav.active" v-for="(nav, index) in navItems" :key="index" :to="nav.to" @click="navChange(nav)">
+          <b-nav-item class="waves-effect" :active-class="nav.activeClass" v-for="(nav, index) in navItems" :key="index" :to="nav.to" @click="navChange(nav)">
             <i class="iconfont" :class="`icon-${nav.icon}`"></i>
             <p>{{nav.text}}</p>
           </b-nav-item>
@@ -11,7 +11,6 @@
       </div>
     </header>
     <main class="container-fluid">
-      <h1>{{$route.params.id}}</h1>
       <router-view></router-view>
     </main>
     <footer class="fixed-bottom border border-info border-left-0 border-right-0 border-bottom-0 bg-white">
@@ -28,7 +27,6 @@
           </a>
         </div>
       </div>
-      <task-button ref="taskButton"></task-button>
     </footer>
 
     <login ref="loginModal"></login>
@@ -43,15 +41,14 @@ export default {
   name: 'Main',
   components: {
     Login: () => import('./Login'),
-    CaptchaCode: () => import('./CaptchaCode'),
-    TaskButton: () => import('./TaskButton')
+    CaptchaCode: () => import('./CaptchaCode')
   },
   data () {
     return {
       navItems: [
-        { text: '新任务', active: true, icon: 'new-task', to: '/main/newtask' },
-        { text: '任务管理', active: false, icon: 'task-manager', to: '/main/taskmanager' },
-        { text: '我的订单', active: false, icon: 'order-manager', to: '/main/order' }
+        { text: '新任务', active: false, activeClass: '', icon: 'new-task', to: '/main' },
+        { text: '任务管理', active: false, activeClass: '', icon: 'task-manager', to: '/main/taskmanager' },
+        { text: '我的订单', active: false, activeClass: '', icon: 'order-manager', to: '/main/myorder' }
       ],
       captchaCodeType: 'login',
       loginName: ''
@@ -63,9 +60,13 @@ export default {
   methods: {
     navChange (nav) {
       nav.active = true
+      nav.activeClass = 'active'
 
       this.navItems.map((val, index) => {
-        if (val.text !== nav.text) val.active = false
+        if (val.text !== nav.text) {
+          val.active = false
+          nav.activeClass = ''
+        }
       })
     },
     // 检查是否已经登录

@@ -42,6 +42,7 @@
         </template>
       </b-table>
     </div>
+    <task-button ref="taskButton"></task-button>
   </div>
 </template>
 
@@ -148,6 +149,9 @@ export default {
 
       return seatCount
     }
+  },
+  components: {
+    TaskButton: () => import('./TaskButton')
   }
 }
 </script>
