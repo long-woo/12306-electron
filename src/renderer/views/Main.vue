@@ -5,13 +5,13 @@
         <b-nav class="navbar-nav flex-row justify-content-center text-center bg-info">
           <b-nav-item class="waves-effect" :active-class="nav.activeClass" v-for="(nav, index) in navItems" :key="index" :to="nav.to" @click="navChange(nav)">
             <i class="iconfont" :class="`icon-${nav.icon}`"></i>
-            <p>{{nav.text}}</p>
+            <p>{{nav.text}}<b-badge class="badge-count" pill variant="danger" v-if="index !== 0">0</b-badge></p>
           </b-nav-item>
         </b-nav>
       </div>
     </header>
     <main class="container-fluid">
-      <router-view></router-view>
+      <router-view ref="views"></router-view>
     </main>
     <footer class="fixed-bottom border border-info border-left-0 border-right-0 border-bottom-0 bg-white">
       <div class="d-flex flex-row font-size-14">
@@ -45,9 +45,9 @@ export default {
   data () {
     return {
       navItems: [
-        { text: '新任务', active: false, activeClass: '', icon: 'new-task', to: '/main' },
-        { text: '任务管理', active: false, activeClass: '', icon: 'task-manager', to: '/main/taskmanager' },
-        { text: '我的订单', active: false, activeClass: '', icon: 'order-manager', to: '/main/myorder' }
+        { text: '新任务', active: false, activeClass: '', icon: 'new-task', to: '/' },
+        { text: '任务管理', active: false, activeClass: '', icon: 'task-manager', to: '/taskmanager' },
+        { text: '我的订单', active: false, activeClass: '', icon: 'order-manager', to: '/myorder' }
       ],
       captchaCodeType: 'login',
       loginName: ''
@@ -68,6 +68,14 @@ export default {
         }
       })
     },
+    // 获取乘客
+    getPassengers () {
+      const $newTask = this.$refs.views.$refs
+
+      if ($newTask.taskButton) {
+        $newTask.taskButton.getPassengers()
+      }
+    },
     // 检查是否已经登录
     async chkeckIsLogin () {
       const {code, loginName} = await this.$api.chkeckIsLogin()
@@ -81,7 +89,7 @@ export default {
       if (!loginInfo.length) return
       // utils.notification.show('', {body: '登录成功'})
       this.$store.dispatch('setLoginModel', loginInfo[0])
-      this.$refs.taskButton.getPassengers()
+      this.getPassengers()
     },
     // 校验验证码完成
     async validComplete (value) {
@@ -110,7 +118,7 @@ export default {
 
           this.loginName = res.loginName
           this.$store.dispatch('setLoginModel', loginInfo)
-          this.$refs.taskButton.getPassengers()
+          this.getPassengers()
         }
       }
     },
@@ -145,5 +153,11 @@ main {
 
 .container-fluid {
   padding-top: 1rem;
+}
+
+.badge-count {
+  position: absolute;
+  top: 1rem;
+  right: 0;
 }
 </style>

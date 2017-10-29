@@ -7,7 +7,7 @@ Vue.use(Router)
 export default new Router({
   routes: [
     {
-      path: '/main',
+      path: '/',
       component: Main,
       children: [
         {path: '', component: () => import('@/views/NewTask')},

@@ -91,4 +91,8 @@ label {
   transform: rotateZ(180deg);
   -webkit-transform: rotateZ(180deg);
 }
+
+.border-b-dashed-1 {
+  border-bottom: 0.01rem dashed #17a2b8;
+}
 </style>

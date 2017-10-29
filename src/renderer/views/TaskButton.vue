@@ -35,12 +35,9 @@ export default {
       buttonText: '添加任务',
       passengers: [],
       chkPassengers: [],
-      disabledPassengers: [],
-      trains: [],
+      chooseTrains: [],
       seatTypes: [],
-      chkSeatTypes: [],
-      oldPassengers: [],
-      passengerTickets: []
+      chkSeatTypes: []
     }
   },
   watch: {
@@ -63,16 +60,18 @@ export default {
       this.setButton(value, '5种类型的座位')
     },
     chkPassengers (value) {
-      // `${item.PassengerName},${item.PassengerIdTypeCode},${item.PassengerIdNo},${item.PassengerType}_`
+      // value.filter(item => {
+      //   this.oldPassengers.push(`${item.PassengerName},${item.PassengerIdTypeCode},${item.PassengerIdNo},${item.PassengerType}_`)
+      //   this.passengerTickets.push(`0,${item.PassengerType},${item.PassengerName},${item.PassengerIdTypeCode},${item.PassengerIdNo},${item.Mobile},N_`) // 提交订单时，需要在前面添加座位code
+      // })
+
       this.setButton(value, '5位乘客')
     }
   },
   mounted () {
-    this.getPassengers()
-
-    this.$eventBus.$on('changeSelecte', ({trains, seats}) => {
-      this.trains = trains
-      this.seatTypes = seats
+    this.$eventBus.$on('changeSelecte', (data) => {
+      this.chooseTrains = data.trains || []
+      this.seatTypes = data.seats || []
     })
   },
   methods: {
@@ -110,6 +109,17 @@ export default {
       }
 
       this.showPanel = true
+
+      if (this.chkPassengers.length && this.chkSeatTypes.length) {
+        const taskData = {
+          trains: this.chooseTrains,
+          seats: this.chkSeatTypes,
+          passengers: this.chkPassengers
+        }
+
+        this.showPanel = false
+        this.$store.dispatch('setTaskData', taskData)
+      }
     }
   }
 }
@@ -150,10 +160,6 @@ export default {
   height: 15rem;
   margin-top: -15rem;
   padding-bottom: 2.9rem;
-}
-
-.border-b-dashed-1 {
-  border-bottom: 0.01rem dashed #17a2b8;
 }
 
 .checkbox {
