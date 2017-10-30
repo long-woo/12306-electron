@@ -47,6 +47,8 @@
 </template>
 
 <script>
+import TaskButton from './TaskButton'
+
 export default {
   name: 'NewTask',
   data () {
@@ -160,7 +162,7 @@ export default {
     }
   },
   components: {
-    TaskButton: () => import('./TaskButton')
+    TaskButton
   }
 }
 </script>

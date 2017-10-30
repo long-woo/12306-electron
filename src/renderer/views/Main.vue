@@ -5,7 +5,15 @@
         <b-nav class="navbar-nav flex-row justify-content-center text-center bg-info">
           <b-nav-item class="waves-effect" :active-class="nav.activeClass" v-for="(nav, index) in navItems" :key="index" :to="nav.to" @click="navChange(nav)">
             <i class="iconfont" :class="`icon-${nav.icon}`"></i>
-            <p>{{nav.text}}<b-badge class="badge-count" pill variant="danger" v-if="index !== 0">0</b-badge></p>
+            <p>
+              {{nav.text}}
+              <b-badge class="badge-count" pill variant="danger" v-if="index === 1">
+                {{taskCount}}
+              </b-badge>
+              <b-badge class="badge-count" pill variant="danger" v-else-if="index === 2">
+                {{orderCount}}
+              </b-badge>
+            </p>
           </b-nav-item>
         </b-nav>
       </div>
@@ -49,6 +57,8 @@ export default {
         { text: '任务管理', active: false, activeClass: '', icon: 'task-manager', to: '/taskmanager' },
         { text: '我的订单', active: false, activeClass: '', icon: 'order-manager', to: '/myorder' }
       ],
+      taskCount: this.$store.getters.taskData.length,
+      orderCount: 0,
       captchaCodeType: 'login',
       loginName: ''
     }

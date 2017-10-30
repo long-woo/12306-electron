@@ -30,7 +30,7 @@ const actions = {
     commit(types.UPDATE_LOCAL_TASKDATA, taskData)
   },
   deleteTaskData ({commit, state}, index) {
-    commit(types.UPDATE_LOCAL_TASKDATA, null, index)
+    commit(types.REMOVE_LOCAL_TASKDATA, index)
   }
 }
 
@@ -59,13 +59,11 @@ const mutations = {
       utils.setLoginModel(models)
     }
   },
-  [types.UPDATE_LOCAL_TASKDATA] (state, taskData, delIndex) {
-    if (delIndex > -1) {
-      state.taskData.splice(delIndex, 1)
-      return
-    }
-
+  [types.UPDATE_LOCAL_TASKDATA] (state, taskData) {
     state.taskData.push(taskData)
+  },
+  [types.REMOVE_LOCAL_TASKDATA] (state, index) {
+    state.taskData.splice(index, 1)
   }
 }
 

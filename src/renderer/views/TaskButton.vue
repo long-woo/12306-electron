@@ -42,16 +42,11 @@ export default {
   },
   watch: {
     showPanel (value) {
-      if (this.chkPassengers.length || this.chkSeatTypes.length) {
-        this.buttonIcon = 'icon-check'
-        this.buttonText = '确定'
-        return
-      }
-
       if (value) {
         this.buttonIcon = 'icon-close'
         this.buttonText = '关闭'
       } else {
+        console.log('hide')
         this.buttonIcon = 'icon-add-task'
         this.buttonText = '添加任务'
       }
