@@ -3,7 +3,7 @@
     <div class="row" v-for="(item, index) in taskData" :key="index">
       <div class="col-10 border border-info border-left-0 border-right-0 border-bottom-0 pr-0">
         <div class="task-header border-b-dashed-1 p-2">
-          <span>正在查询G2321二等座...</span>
+          <span>{{item.statusText}}</span>
         </div>
         <div class="task-body border-b-dashed-1 p-2">
           <span v-for="(p, pi) in item.passengers" :key="pi">
@@ -30,10 +30,6 @@ export default {
     }
   },
   methods: {
-    // 处理数据
-    initTaskData () {
-      // const [trains, seats, passengers] = this.$store.getters.taskData
-    },
     // 移除任务
     removeTask (index) {
       this.$store.dispatch('deleteTaskData', index)

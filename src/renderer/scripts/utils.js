@@ -30,6 +30,32 @@ const setLoginModel = (model) => {
 }
 
 /**
+ * 任务
+ */
+const task = {
+  startFunc: [],
+  start (index) {
+    let timeout = 1
+    this.startFunc[index] = setInterval(() => {
+      if (timeout <= 0) {
+        clearInterval(this.startFunc[index]) // 暂停计数器
+        timeout = 1
+        return
+      }
+
+      timeout -= 0.1
+    }, 100)
+  },
+  /**
+   * 暂停任务
+   * @param {*} index 任务索引号
+   */
+  stop (index) {
+    clearInterval(this.startFunc[index])
+  }
+}
+
+/**
  * 通知
  */
 const notification = {
@@ -82,5 +108,6 @@ const notification = {
 export default {
   getLoginModel,
   setLoginModel,
+  task,
   notification
 }

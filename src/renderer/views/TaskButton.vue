@@ -46,7 +46,6 @@ export default {
         this.buttonIcon = 'icon-close'
         this.buttonText = '关闭'
       } else {
-        console.log('hide')
         this.buttonIcon = 'icon-add-task'
         this.buttonText = '添加任务'
       }
@@ -81,9 +80,6 @@ export default {
       if (value.length) {
         this.buttonIcon = 'icon-check'
         this.buttonText = '确定'
-      } else {
-        this.buttonIcon = 'icon-close'
-        this.buttonText = '关闭'
       }
     },
     // 获取乘客
@@ -109,10 +105,16 @@ export default {
         const taskData = {
           trains: this.chooseTrains,
           seats: this.chkSeatTypes,
-          passengers: this.chkPassengers
+          passengers: this.chkPassengers,
+          statusText: '正在查询...'
         }
 
         this.showPanel = false
+        this.chkPassengers = []
+        this.chkSeatTypes = []
+
+        // 执行任务
+
         this.$store.dispatch('setTaskData', taskData)
       }
     }

@@ -8,10 +8,10 @@
             <p>
               {{nav.text}}
               <b-badge class="badge-count" pill variant="danger" v-if="index === 1">
-                {{taskCount}}
+                {{$store.getters.taskData.length}}
               </b-badge>
               <b-badge class="badge-count" pill variant="danger" v-else-if="index === 2">
-                {{orderCount}}
+                0
               </b-badge>
             </p>
           </b-nav-item>
@@ -57,8 +57,6 @@ export default {
         { text: '任务管理', active: false, activeClass: '', icon: 'task-manager', to: '/taskmanager' },
         { text: '我的订单', active: false, activeClass: '', icon: 'order-manager', to: '/myorder' }
       ],
-      taskCount: this.$store.getters.taskData.length,
-      orderCount: 0,
       captchaCodeType: 'login',
       loginName: ''
     }
