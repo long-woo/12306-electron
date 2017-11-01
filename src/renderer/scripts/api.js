@@ -43,7 +43,9 @@ const getQueryUrl = () => {
   const date = new Date()
   const year = date.getFullYear()
   const month = date.getMonth() + 1
-  const day = date.getDate()
+  let day = date.getDate()
+
+  day = day.toString().length === 1 ? `0${day}` : day
 
   return Vue.http.get(urls.getQueryUrl, {
     params: {

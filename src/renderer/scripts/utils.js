@@ -35,11 +35,18 @@ const setLoginModel = (model) => {
 const task = {
   startFunc: [],
   start (index) {
+    this.stop(index)
+
     let timeout = 1
-    this.startFunc[index] = setInterval(() => {
+
+    this.startFunc[index] = setInterval(async () => {
       if (timeout <= 0) {
-        clearInterval(this.startFunc[index]) // 暂停计数器
+        this.stop(index) // 暂停计时器
         timeout = 1
+        // 开始查询
+        const {fromCityCode, toCityCode, trainDate} = Vue.store.getter.taskData[index]
+        const res = await Vue.api.getTicket(fromCityCode, toCityCode, trainDate)
+        console.log(res)
         return
       }
 

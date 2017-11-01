@@ -23,7 +23,7 @@
       <b-table empty-text="没有找到车次^~^" :fields="fields" :items="ticketData" head-variant="default sticky-top" striped hover show-empty ref="tbTrain" @row-clicked="rowClick">
         <template slot="checkNo" scope="row">
           <div class="checkbox icheck-info waves-effect">
-            <input type="checkbox" :id="`chk_${row.index}`" v-model="chkTrains" :value="row.item.trainCode" />
+            <input type="checkbox" :id="`chk_${row.index}`" v-model="chkTrains" :value="`${row.item.trainCode}|${row.item.fromCityCode}|${row.item.toCityCode}|${trainDate}`" />
             <label :for="`chk_${row.index}`"></label>
           </div>
         </template>
@@ -70,6 +70,11 @@ export default {
       seatCodes: []
     }
   },
+  computed: {
+    trainDate () {
+      return this.$refs.rideDate.date.time
+    }
+  },
   async mounted () {
     // 站名
     const stations = await this.$api.getStationName()
@@ -98,11 +103,13 @@ export default {
     // 点击行
     rowClick (item) {
       let seatCode = item.seatTypeCodes.toString().replace(/(,)/g, '-')
-      const trainIndex = this.chkTrains.indexOf(item.trainCode)
+      const trainInfo = `${item.trainCode}|${item.fromCityCode}|${item.toCityCode}|${this.trainDate}`
+      const trainIndex = this.chkTrains.indexOf(trainInfo)
       let seatItems = []
+      let trainItems = []
 
       if (trainIndex === -1) {
-        this.chkTrains.push(item.trainCode)
+        this.chkTrains.push(trainInfo)
         this.seatCodes.push(seatCode)
         item._rowVariant = 'success'
       } else {
@@ -128,8 +135,16 @@ export default {
         seatItems.push({code, text})
       })
 
+      this.chkTrains.map((train, index) => {
+        const arr = train.split('|') || []
+
+        if (!arr.length) return
+
+        trainItems.push({trainCode: arr[0], fromCityCode: arr[1], toCityCode: arr[2], trainDate: arr[3]})
+      })
+
       const chkTrainInfo = {
-        trains: this.chkTrains,
+        trains: trainItems,
         seats: seatItems
       }
 

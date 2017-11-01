@@ -112,10 +112,10 @@ export default {
         this.showPanel = false
         this.chkPassengers = []
         this.chkSeatTypes = []
-
-        // 执行任务
-
         this.$store.dispatch('setTaskData', taskData)
+        // 执行任务
+        const lastIndex = this.$store.getters.taskData.length - 1
+        console.log(lastIndex)
       }
     }
   }

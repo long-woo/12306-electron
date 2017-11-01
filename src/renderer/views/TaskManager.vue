@@ -11,7 +11,12 @@
             <i v-if="pi < item.passengers.length - 1">,</i>
           </span>
         </div>
-        <div class="task-footer p-2">{{item.trains.toString()}}</div>
+        <div class="task-footer p-2">
+          <span v-for="(t, ti) in item.trains" :key="ti">
+            {{t.trainCode}}
+            <i v-if="ti < item.trains.length - 1">,</i>
+          </span>
+        </div>
       </div>
       <div class="col-2 bg-danger text-white d-flex align-items-center justify-content-center btn-task-del" @click="removeTask(index)">
         <span>移除</span>
