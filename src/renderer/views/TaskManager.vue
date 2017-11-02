@@ -12,9 +12,8 @@
           </span>
         </div>
         <div class="task-footer p-2">
-          <span v-for="(t, ti) in item.trains" :key="ti">
-            {{t.trainCode}}
-            <i v-if="ti < item.trains.length - 1">,</i>
+          <span>
+            {{item.trains.toString()}}
           </span>
         </div>
       </div>

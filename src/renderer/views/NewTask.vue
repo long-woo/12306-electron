@@ -23,7 +23,7 @@
       <b-table empty-text="没有找到车次^~^" :fields="fields" :items="ticketData" head-variant="default sticky-top" striped hover show-empty ref="tbTrain" @row-clicked="rowClick">
         <template slot="checkNo" scope="row">
           <div class="checkbox icheck-info waves-effect">
-            <input type="checkbox" :id="`chk_${row.index}`" v-model="chkTrains" :value="`${row.item.trainCode}|${row.item.fromCityCode}|${row.item.toCityCode}|${trainDate}`" />
+            <input type="checkbox" :id="`chk_${row.index}`" v-model="chkTrains" :value="row.item.trainCode" />
             <label :for="`chk_${row.index}`"></label>
           </div>
         </template>
@@ -103,13 +103,11 @@ export default {
     // 点击行
     rowClick (item) {
       let seatCode = item.seatTypeCodes.toString().replace(/(,)/g, '-')
-      const trainInfo = `${item.trainCode}|${item.fromCityCode}|${item.toCityCode}|${this.trainDate}`
-      const trainIndex = this.chkTrains.indexOf(trainInfo)
+      const trainIndex = this.chkTrains.indexOf(item.trainCode)
       let seatItems = []
-      let trainItems = []
 
       if (trainIndex === -1) {
-        this.chkTrains.push(trainInfo)
+        this.chkTrains.push(item.trainCode)
         this.seatCodes.push(seatCode)
         item._rowVariant = 'success'
       } else {
@@ -135,16 +133,8 @@ export default {
         seatItems.push({code, text})
       })
 
-      this.chkTrains.map((train, index) => {
-        const arr = train.split('|') || []
-
-        if (!arr.length) return
-
-        trainItems.push({trainCode: arr[0], fromCityCode: arr[1], toCityCode: arr[2], trainDate: arr[3]})
-      })
-
       const chkTrainInfo = {
-        trains: trainItems,
+        trains: this.chkTrains,
         seats: seatItems
       }
 

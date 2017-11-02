@@ -38,15 +38,22 @@ const task = {
     this.stop(index)
 
     let timeout = 1
+    const item = Vue.store.getters.taskData[index]
 
     this.startFunc[index] = setInterval(async () => {
+      item.statusText = `${timeout}秒后，开始查询...`
+
       if (timeout <= 0) {
         this.stop(index) // 暂停计时器
         timeout = 1
         // 开始查询
-        const {fromCityCode, toCityCode, trainDate} = Vue.store.getter.taskData[index]
+        const {fromCityCode, toCityCode, trainDate} = item.queryInfo
+
+        item.statusText = '正在查询...'
+
         const res = await Vue.api.getTicket(fromCityCode, toCityCode, trainDate)
         console.log(res)
+        // 检查匹配车次是否符合预订条件
         return
       }
 

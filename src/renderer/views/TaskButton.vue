@@ -26,6 +26,8 @@
 </template>
 
 <script>
+import utils from '../scripts/utils'
+
 export default {
   name: 'TaskButton',
   data () {
@@ -102,11 +104,17 @@ export default {
       this.showPanel = true
 
       if (this.chkPassengers.length && this.chkSeatTypes.length) {
+        const $parentData = this.$parent
         const taskData = {
           trains: this.chooseTrains,
           seats: this.chkSeatTypes,
           passengers: this.chkPassengers,
-          statusText: '正在查询...'
+          statusText: '正在查询...',
+          queryInfo: {
+            fromCityCode: $parentData.fromCity.value,
+            toCityCode: $parentData.toCity.value,
+            trainDate: $parentData.trainDate
+          }
         }
 
         this.showPanel = false
@@ -115,7 +123,8 @@ export default {
         this.$store.dispatch('setTaskData', taskData)
         // 执行任务
         const lastIndex = this.$store.getters.taskData.length - 1
-        console.log(lastIndex)
+
+        utils.task.start(lastIndex)
       }
     }
   }
