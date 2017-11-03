@@ -52,8 +52,29 @@ const task = {
         item.statusText = '正在查询...'
 
         const res = await Vue.api.getTicket(fromCityCode, toCityCode, trainDate)
-        console.log(res)
+        let trainSeats = [] // 有票数的座位
         // 检查匹配车次是否符合预订条件
+        const trainData = res.filter(train => {
+          const seatItems = this.isHasTicket(item.seats, train.seatTypes)
+          const arrSeat = trainSeats.concat(seatItems)
+
+          trainSeats = Array.from(new Set(arrSeat))
+
+          if (item.trains.indexOf(train.trainCode) > -1 && seatItems.length) {
+            return train
+          }
+        })
+        console.log(trainData)
+        console.log(trainSeats)
+
+        // 如果没有符合预订条件的车次，则继续启动任务
+        if (!trainData.length) {
+          this.start(index)
+          return
+        }
+
+        // 开始准备提交订单
+        item.statusText = '正在开始准备提交订单...'
         return
       }
 
@@ -66,6 +87,32 @@ const task = {
    */
   stop (index) {
     clearInterval(this.startFunc[index])
+  },
+  /**
+   * 检查是否有票
+   * @param {*} chkSeats 选择的座位
+   * @param {*} seatTypes 车次的座位
+   */
+  isHasTicket (chkSeats, seatTypes) {
+    let result = []
+
+    chkSeats.filter(s => {
+      const ticketCount = seatTypes.find(t => t.seatTypeCode === s).seatTypeDetail
+
+      if (ticketCount.indexOf('无') < 0 && ticketCount.indexOf('-') < 0 && ticketCount.indexOf('*') < 0 && ticketCount.indexOf('0') < 0) {
+        result.push(s)
+      }
+    })
+
+    return result
+  },
+  /**
+   * 开始提交订单
+   * @param {*} trainData 车次
+   * @param {*} trainSeats 座位
+   */
+  startSubmitOder (trainData, trainSeats) {
+
   }
 }
 
