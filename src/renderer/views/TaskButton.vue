@@ -39,7 +39,10 @@ export default {
       chkPassengers: [],
       chkTrainCodes: [],
       seatTypes: [],
-      chkSeatTypes: []
+      chkSeatTypes: [],
+      passengerName: [],
+      oldPassengers: [],
+      passengerTickets: []
     }
   },
   watch: {
@@ -56,10 +59,17 @@ export default {
       this.setButton(value, '5种类型的座位')
     },
     chkPassengers (value) {
-      // value.filter(item => {
-      //   this.oldPassengers.push(`${item.PassengerName},${item.PassengerIdTypeCode},${item.PassengerIdNo},${item.PassengerType}_`)
-      //   this.passengerTickets.push(`0,${item.PassengerType},${item.PassengerName},${item.PassengerIdTypeCode},${item.PassengerIdNo},${item.Mobile},N_`) // 提交订单时，需要在前面添加座位code
-      // })
+      this.passengerName = []
+      this.oldPassengers = []
+      this.passengerTickets = []
+
+      value.filter(item => {
+        this.passengerName.push(item.passenger_name)
+
+        this.oldPassengers.push(`${item.passenger_name},${item.passenger_id_type_code},${item.passenger_id_no},${item.passenger_type}`)
+
+        this.passengerTickets.push(`seatcode,0,${item.passenger_type},${item.passenger_name},${item.passenger_id_type_code},${item.passenger_id_no},${item.mobile_no},N`) // 提交订单时，需要在前面添加座位code
+      })
 
       this.setButton(value, '5位乘客')
     }
@@ -108,11 +118,17 @@ export default {
         const taskData = {
           trains: this.chkTrainCodes,
           seats: this.chkSeatTypes,
-          passengers: this.chkPassengers,
-          statusText: '正在查询...',
+          passengers: {
+            passengerName: this.passengerName.toString(),
+            oldPassengers: this.oldPassengers.join('_'),
+            passengerTickets: this.passengerTickets.join('_')
+          },
+          statusText: '等待启动任务...',
           queryInfo: {
             fromCityCode: $parentData.fromCity.value,
+            fromCityName: $parentData.fromCity.text,
             toCityCode: $parentData.toCity.value,
+            toCityName: $parentData.toCity.text,
             trainDate: $parentData.trainDate
           }
         }

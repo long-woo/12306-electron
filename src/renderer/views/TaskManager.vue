@@ -6,9 +6,8 @@
           <span>{{item.statusText}}</span>
         </div>
         <div class="task-body border-b-dashed-1 p-2">
-          <span v-for="(p, pi) in item.passengers" :key="pi">
-            {{p.passenger_name}}
-            <i v-if="pi < item.passengers.length - 1">,</i>
+          <span>
+            {{item.passengers.passengerName}}
           </span>
         </div>
         <div class="task-footer p-2">

@@ -42,27 +42,26 @@ const task = {
     this.stop(index)
 
     let timeout = 1
-    const item = Vue.store.getters.taskData[index]
+    const taskItem = Vue.store.getters.taskData[index]
 
     this.startFunc[index] = setInterval(async () => {
       this.setStatus(index, `${timeout}秒后，开始查询...`)
-      console.log(`${timeout}秒后，开始查询...`)
+
       if (timeout <= 0) {
         this.stop(index) // 暂停计时器
         timeout = 1
         // 开始查询
-        const {fromCityCode, toCityCode, trainDate} = item.queryInfo
+        const {fromCityCode, toCityCode, trainDate} = taskItem.queryInfo
 
         this.setStatus(index, '正在查询...')
-        console.log('正在查询...')
         const res = await Vue.api.getTicket(fromCityCode, toCityCode, trainDate)
         let trainSeats = [] // 有票数的座位
         // 检查匹配车次是否符合预订条件
         let trainData = []
 
         res.forEach(train => {
-          if (item.trains.indexOf(train.trainCode) > -1) {
-            const seatItems = this.isHasTicket(item.seats, train.seatTypes)
+          if (taskItem.trains.indexOf(train.trainCode) > -1) {
+            const seatItems = this.isHasTicket(taskItem.seats, train.seatTypes)
             const arrSeat = trainSeats.concat(seatItems)
             console.log(seatItems)
             trainSeats = Array.from(new Set(arrSeat))
@@ -81,8 +80,8 @@ const task = {
 
         // 开始准备提交订单
         this.setStatus(index, '正在开始准备提交订单...')
-        console.log('正在开始准备提交订单...')
-        this.startSubmitOder(trainData, trainSeats)
+        console.log(Vue)
+        // this.startSubmitOder(trainData, trainSeats, taskItem)
         return
       }
 
@@ -135,10 +134,35 @@ const task = {
    * 开始提交订单
    * @param {*} trainData 车次
    * @param {*} trainSeats 座位
+   * @param {*} taskItem 任务项
    */
-  startSubmitOder (trainData, trainSeats) {
-    console.log(trainData)
-    console.log(trainSeats)
+  startSubmitOder (trainData, trainSeats, taskItem) {
+    const queryInfo = taskItem.queryInfo
+    const passengers = taskItem.passengers
+
+    trainData.forEach(async (train) => {
+      for (let seat of trainSeats) {
+        const orderData = {
+          secretStr: '',
+          train_date: queryInfo.trainDate,
+          query_from_station_name: queryInfo.fromCityName,
+          query_to_station_name: queryInfo.toCityName,
+          passengerTicketStr: passengers.passengerTickets.replace(/(seatcode)/gi, seat),
+          oldPassengerStr: passengers.oldPassengers
+        }
+
+        const res = await Vue.api.autoSubmitOrder(orderData)
+        console.log(res)
+        if (res.code < 1) {
+          Vue.alert(res.message)
+
+          if (res.message.indexOf('登录') > -1) {
+            // Vue.$root.$emit('show::modal', 'loginModal')
+          }
+          return
+        }
+      }
+    })
   }
 }
 
