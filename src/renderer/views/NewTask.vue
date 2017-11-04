@@ -85,6 +85,10 @@ export default {
     if (this.$refs.taskButton) {
       this.$refs.taskButton.getPassengers()
     }
+
+    this.$eventBus.$on('clearChooseTrain', () => {
+      this.chkTrains = []
+    })
   },
   methods: {
     // 选择出发地

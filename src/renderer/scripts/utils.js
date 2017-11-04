@@ -34,6 +34,10 @@ const setLoginModel = (model) => {
  */
 const task = {
   startFunc: [],
+  /**
+   * 启动任务
+   * @param {*} index 任务索引号
+   */
   start (index) {
     this.stop(index)
 
@@ -41,31 +45,33 @@ const task = {
     const item = Vue.store.getters.taskData[index]
 
     this.startFunc[index] = setInterval(async () => {
-      item.statusText = `${timeout}秒后，开始查询...`
-
+      this.setStatus(index, `${timeout}秒后，开始查询...`)
+      console.log(`${timeout}秒后，开始查询...`)
       if (timeout <= 0) {
         this.stop(index) // 暂停计时器
         timeout = 1
         // 开始查询
         const {fromCityCode, toCityCode, trainDate} = item.queryInfo
 
-        item.statusText = '正在查询...'
-
+        this.setStatus(index, '正在查询...')
+        console.log('正在查询...')
         const res = await Vue.api.getTicket(fromCityCode, toCityCode, trainDate)
         let trainSeats = [] // 有票数的座位
         // 检查匹配车次是否符合预订条件
-        const trainData = res.filter(train => {
-          const seatItems = this.isHasTicket(item.seats, train.seatTypes)
-          const arrSeat = trainSeats.concat(seatItems)
+        let trainData = []
 
-          trainSeats = Array.from(new Set(arrSeat))
+        res.forEach(train => {
+          if (item.trains.indexOf(train.trainCode) > -1) {
+            const seatItems = this.isHasTicket(item.seats, train.seatTypes)
+            const arrSeat = trainSeats.concat(seatItems)
+            console.log(seatItems)
+            trainSeats = Array.from(new Set(arrSeat))
 
-          if (item.trains.indexOf(train.trainCode) > -1 && seatItems.length) {
-            return train
+            if (!seatItems.length) return
+
+            trainData.push(train)
           }
         })
-        console.log(trainData)
-        console.log(trainSeats)
 
         // 如果没有符合预订条件的车次，则继续启动任务
         if (!trainData.length) {
@@ -74,11 +80,13 @@ const task = {
         }
 
         // 开始准备提交订单
-        item.statusText = '正在开始准备提交订单...'
+        this.setStatus(index, '正在开始准备提交订单...')
+        console.log('正在开始准备提交订单...')
+        this.startSubmitOder(trainData, trainSeats)
         return
       }
 
-      timeout -= 0.1
+      timeout = parseFloat(timeout - 0.1).toFixed(1)
     }, 100)
   },
   /**
@@ -97,7 +105,11 @@ const task = {
     let result = []
 
     chkSeats.filter(s => {
-      const ticketCount = seatTypes.find(t => t.seatTypeCode === s).seatTypeDetail
+      const trainSeat = seatTypes.find(t => t.seatTypeCode === s)
+
+      if (!trainSeat) return
+
+      const ticketCount = trainSeat.seatTypeDetail
 
       if (ticketCount.indexOf('无') < 0 && ticketCount.indexOf('-') < 0 && ticketCount.indexOf('*') < 0 && ticketCount.indexOf('0') < 0) {
         result.push(s)
@@ -107,12 +119,26 @@ const task = {
     return result
   },
   /**
+   * 设置任务状态
+   * @param {*} index 任务索引号
+   * @param {*} text 状态内容
+   */
+  setStatus (index, text) {
+    const taskStatusInfo = {
+      index,
+      text
+    }
+
+    Vue.store.dispatch('setTaskDataStatus', taskStatusInfo)
+  },
+  /**
    * 开始提交订单
    * @param {*} trainData 车次
    * @param {*} trainSeats 座位
    */
   startSubmitOder (trainData, trainSeats) {
-
+    console.log(trainData)
+    console.log(trainSeats)
   }
 }
 

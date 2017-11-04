@@ -26,6 +26,8 @@
 </template>
 
 <script>
+import utils from '../scripts/utils'
+
 export default {
   name: 'TaskManager',
   data () {
@@ -36,6 +38,7 @@ export default {
   methods: {
     // 移除任务
     removeTask (index) {
+      utils.task.stop(index)
       this.$store.dispatch('deleteTaskData', index)
     }
   }

@@ -29,6 +29,9 @@ const actions = {
   setTaskData ({commit, state}, taskData) {
     commit(types.UPDATE_LOCAL_TASKDATA, taskData)
   },
+  setTaskDataStatus ({commit, state}, taskStatusInfo) {
+    commit(types.UPDATE_LOCAL_TASKDATASTATUS, taskStatusInfo)
+  },
   deleteTaskData ({commit, state}, index) {
     commit(types.REMOVE_LOCAL_TASKDATA, index)
   }
@@ -61,6 +64,9 @@ const mutations = {
   },
   [types.UPDATE_LOCAL_TASKDATA] (state, taskData) {
     state.taskData.push(taskData)
+  },
+  [types.UPDATE_LOCAL_TASKDATASTATUS] (state, {index, text}) {
+    state.taskData[index].statusText = text
   },
   [types.REMOVE_LOCAL_TASKDATA] (state, index) {
     state.taskData.splice(index, 1)

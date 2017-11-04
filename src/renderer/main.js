@@ -38,7 +38,7 @@ Vue.swal = Vue.prototype.$swal = swal
 Vue.nprogress = Vue.prototype.$nprogress = nprogress
 Vue.api = Vue.prototype.$api = api
 Vue.store = store
-Vue.prototype.$eventBus = eventBus
+Vue.eventBus = Vue.prototype.$eventBus = eventBus
 
 /* eslint-disable no-new */
 new Vue({

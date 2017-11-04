@@ -37,7 +37,7 @@ export default {
       buttonText: '添加任务',
       passengers: [],
       chkPassengers: [],
-      chooseTrains: [],
+      chkTrainCodes: [],
       seatTypes: [],
       chkSeatTypes: []
     }
@@ -66,7 +66,7 @@ export default {
   },
   mounted () {
     this.$eventBus.$on('changeSelecte', (data) => {
-      this.chooseTrains = data.trains || []
+      this.chkTrainCodes = data.trains || []
       this.seatTypes = data.seats || []
     })
   },
@@ -106,7 +106,7 @@ export default {
       if (this.chkPassengers.length && this.chkSeatTypes.length) {
         const $parentData = this.$parent
         const taskData = {
-          trains: this.chooseTrains,
+          trains: this.chkTrainCodes,
           seats: this.chkSeatTypes,
           passengers: this.chkPassengers,
           statusText: '正在查询...',
@@ -120,7 +120,11 @@ export default {
         this.showPanel = false
         this.chkPassengers = []
         this.chkSeatTypes = []
+        this.chkTrainCodes = []
         this.$store.dispatch('setTaskData', taskData)
+        // 添加成功后，清除选择车次
+        this.$eventBus.$emit('clearChooseTrain')
+
         // 执行任务
         const lastIndex = this.$store.getters.taskData.length - 1
 
