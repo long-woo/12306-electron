@@ -80,8 +80,7 @@ const task = {
 
         // 开始准备提交订单
         this.setStatus(index, '正在开始准备提交订单...')
-        console.log(Vue)
-        // this.startSubmitOder(trainData, trainSeats, taskItem)
+        this.startSubmitOder(trainData, trainSeats, taskItem)
         return
       }
 
@@ -139,30 +138,60 @@ const task = {
   startSubmitOder (trainData, trainSeats, taskItem) {
     const queryInfo = taskItem.queryInfo
     const passengers = taskItem.passengers
+    let isStop = false // 是否终止提交（当未登录）
 
     trainData.forEach(async (train) => {
-      for (let seat of trainSeats) {
-        const orderData = {
-          secretStr: '',
-          train_date: queryInfo.trainDate,
-          query_from_station_name: queryInfo.fromCityName,
-          query_to_station_name: queryInfo.toCityName,
-          passengerTicketStr: passengers.passengerTickets.replace(/(seatcode)/gi, seat),
-          oldPassengerStr: passengers.oldPassengers
-        }
+      if (isStop) return
 
-        const res = await Vue.api.autoSubmitOrder(orderData)
-        console.log(res)
-        if (res.code < 1) {
-          Vue.alert(res.message)
+      for (let seatCode of trainSeats) {
+        // 提交订单
+        let res = await this.submitOrder(train.secret, queryInfo, passengers, seatCode)
 
-          if (res.message.indexOf('登录') > -1) {
-            // Vue.$root.$emit('show::modal', 'loginModal')
+        if (res < 1) {
+          if (res === 0) {
+            isStop = true
+            return
           }
-          return
+          continue // 继续下一个座位
         }
+
+        // 获取订单排队信息
       }
     })
+  },
+  /**
+   * 提交订单
+   * @param {*} trainSecret 车次凭证
+   * @param {*} queryInfo 查询信息
+   * @param {*} passengers 乘客信息
+   * @param {*} seatCode 座位代码
+   * @return {*} -1:失败；0:未登录；1:成功
+   */
+  async submitOrder (trainSecret, queryInfo, passengers, seatCode) {
+    const orderData = {
+      secretStr: trainSecret,
+      train_date: queryInfo.trainDate,
+      query_from_station_name: queryInfo.fromCityName,
+      query_to_station_name: queryInfo.toCityName,
+      passengerTicketStr: passengers.passengerTickets.replace(/(seatcode)/gi, seatCode),
+      oldPassengerStr: passengers.oldPassengers
+    }
+
+    const res = await Vue.api.autoSubmitOrder(orderData)
+    console.log(res)
+    if (res.code < 1) {
+      Vue.alert(res.message)
+
+      if (res.message.indexOf('登录') > -1) {
+        Vue.eventBus.$emit('openDialog', 'loginModal')
+        return 0
+      }
+      return -1
+    }
+    return 1
+  },
+  getQueueInfo () {
+    return ''
   }
 }
 

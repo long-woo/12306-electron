@@ -42,6 +42,10 @@ export default {
     title: {
       type: String,
       default: '选择验证码'
+    },
+    type: {
+      type: String,
+      default: 'login'
     }
   },
   methods: {

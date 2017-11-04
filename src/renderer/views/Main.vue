@@ -63,6 +63,9 @@ export default {
   },
   mounted () {
     this.chkeckIsLogin()
+    this.$eventBus.$on('openDialog', (dialog) => {
+      this.$root.$emit('show::modal', dialog)
+    })
   },
   methods: {
     navChange (nav) {
