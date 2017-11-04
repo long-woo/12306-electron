@@ -221,15 +221,16 @@ const autoSubmitOrder = async (formData) => {
     return result
   }
 
+  const ticketData = data.result.split('#')
+
   result.code = 1
-  result.ticket = data.result
+  result.ticketData = ticketData
   result.isCaptchaCode = data.ifShowPassCode === 'Y'
   result.captchaCodeTime = data.ifShowPassCodeTime
   result.isChooseBed = data.canChooseBeds === 'Y'
   result.isChooseSeat = data.canChooseSeats === 'Y'
   result.chooseSeats = data.choose_Seats
   result.isChooseMid = data.isCanChooseMid === 'Y'
-  result.submitStatus = data.submitStatus
   result.smoke = data.smokeStr
   return result
 }
@@ -257,10 +258,21 @@ const getOrderQueueInfo = async (formData) => {
     return result
   }
 
+  const ticketData = data.ticket.split(',') // 可能有无座数
+  let message = `${formData.stationTrainCode}车次剩余【${common.getSeatTypeInfo(formData.seatType)}（${ticketData[0]}）张】`
+
+  if (ticketData.length > 1) {
+    message += `和【无座（${ticketData[1]}）张】`
+  }
+
+  if (data.op_2 === 'true') {
+    result.code = 0
+    result.message = `${message}，当前排队人数【${data.countT}】超过剩余票数，请更换车次或座位`
+    return
+  }
+
   result.code = 1
-  result.ticketData = data.ticket.split(',') // 可能有无座数
-  result.isCountLess = data.op_2 === 'true'
-  result.queueCount = data.countT // 排队人数
+  result.message = message
   return result
 }
 
@@ -282,7 +294,7 @@ const confirmOrderQueue = async (formData) => {
   }
 
   result.code = 1
-  result.submitStatus = data.submitStatus
+  result.message = '订单已确认，等待出票'
   return result
 }
 
@@ -292,7 +304,7 @@ const confirmOrderQueue = async (formData) => {
 const getOrderAwaitTime = async () => {
   const {data} = await Vue.http.get(urls.getOrderAwaitTime, {
     params: {
-      random: Math.random().substr(2),
+      random: new Date().getTime(),
       tourFlag: 'dc',
       _json_att: ''
     }

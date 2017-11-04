@@ -145,17 +145,52 @@ const task = {
 
       for (let seatCode of trainSeats) {
         // 提交订单
-        let res = await this.submitOrder(train.secret, queryInfo, passengers, seatCode)
+        const orderResult = await this.submitOrder(train.secret, queryInfo, passengers, seatCode)
 
-        if (res < 1) {
-          if (res === 0) {
+        if (orderResult.code < 1) {
+          Vue.alert(orderResult.message)
+
+          if (orderResult.message.indexOf('登录') > -1) {
+            Vue.eventBus.$emit('openDialog', 'loginModal')
             isStop = true
             return
           }
-          continue // 继续下一个座位
+          continue
         }
 
         // 获取订单排队信息
+        const queueResult = await this.orderQueueInfo(train, queryInfo.trainDate, seatCode)
+        Vue.alert(queueResult.message)
+
+        if (queueResult.code < 1) {
+          if (queueResult.message.indexOf('登录') > -1) {
+            Vue.eventBus.$emit('openDialog', 'loginModal')
+            isStop = true
+            return
+          }
+          continue
+        }
+
+        // 是否要验证码
+        if (orderResult.isCaptchaCode) {
+          Vue.eventBus.$emit('openDialog', 'captchCodeModal')
+          isStop = true
+          return
+        }
+
+        // 确认提交订单（不需要验证码）
+        const key = orderResult.ticketData[1]
+        const confirmResult = await this.confirmSubmitOrder(train, seatCode, passengers, key, '')
+
+        if (confirmResult.code < 1) {
+          Vue.alert(confirmResult.message)
+
+          if (confirmResult.message.indexOf('登录') > -1) {
+            Vue.eventBus.$emit('openDialog', 'loginModal')
+            isStop = true
+            return
+          }
+        }
       }
     })
   },
@@ -165,9 +200,8 @@ const task = {
    * @param {*} queryInfo 查询信息
    * @param {*} passengers 乘客信息
    * @param {*} seatCode 座位代码
-   * @return {*} -1:失败；0:未登录；1:成功
    */
-  async submitOrder (trainSecret, queryInfo, passengers, seatCode) {
+  submitOrder (trainSecret, queryInfo, passengers, seatCode) {
     const orderData = {
       secretStr: trainSecret,
       train_date: queryInfo.trainDate,
@@ -177,21 +211,53 @@ const task = {
       oldPassengerStr: passengers.oldPassengers
     }
 
-    const res = await Vue.api.autoSubmitOrder(orderData)
-    console.log(res)
-    if (res.code < 1) {
-      Vue.alert(res.message)
-
-      if (res.message.indexOf('登录') > -1) {
-        Vue.eventBus.$emit('openDialog', 'loginModal')
-        return 0
-      }
-      return -1
-    }
-    return 1
+    return Vue.api.autoSubmitOrder(orderData)
   },
-  getQueueInfo () {
-    return ''
+  /**
+   * 订单排队信息
+   * @param {*} train 车次
+   * @param {*} trainDate 乘车日期
+   * @param {*} seatCode 座位代码
+   */
+  orderQueueInfo (train, trainDate, seatCode) {
+    const currentDate = new Date()
+
+    trainDate = `${trainDate} ${currentDate.getHours()}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`
+
+    const queueData = {
+      train_date: new Date(trainDate),
+      train_no: train.trainNo,
+      stationTrainCode: train.trainCode,
+      seatType: seatCode,
+      fromStationTelecode: train.fromCityCode,
+      toStationTelecode: train.toCityCode,
+      leftTicket: train.ypInfo
+    }
+
+    return Vue.api.getOrderQueueInfo(queueData)
+  },
+  /**
+   * 确认提交订单
+   * @param {*} train 车次
+   * @param {*} seatCode 座位代码
+   * @param {*} passengers 乘客
+   * @param {*} key key
+   * @param {*} captchCode 验证码
+   */
+  confirmSubmitOrder (train, seatCode, passengers, key, captchCode) {
+    const formData = {
+      passengerTicketStr: passengers.passengerTickets.replace(/(seatcode)/gi, seatCode),
+      oldPassengerStr: passengers.oldPassengers,
+      randCode: captchCode,
+      key_check_isChange: key,
+      leftTicketStr: train.ypInfo,
+      train_location: train.locationCode,
+      choose_seats: '',
+      seatDetailType: ''
+    }
+
+    return Vue.api.confirmOrderQueue(formData)
+    // 获取订单出票时间
   }
 }
 

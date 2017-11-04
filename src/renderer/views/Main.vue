@@ -37,7 +37,7 @@
       </div>
     </footer>
     <login ref="loginModal"></login>
-    <captcha-code @validComplete="validComplete"></captcha-code>
+    <captcha-code :type="captchaCodeType" @validComplete="validComplete"></captcha-code>
   </div>
 </template>
 
@@ -64,6 +64,7 @@ export default {
   mounted () {
     this.chkeckIsLogin()
     this.$eventBus.$on('openDialog', (dialog) => {
+      this.captchaCodeType = dialog === 'captchCodeModal' ? 'order' : 'login'
       this.$root.$emit('show::modal', dialog)
     })
   },
