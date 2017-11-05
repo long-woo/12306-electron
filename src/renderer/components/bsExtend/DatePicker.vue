@@ -1,5 +1,5 @@
 <template>
-  <date-picker :date="date" :option="option" :limit="limit">
+  <date-picker :date="date" :option="option" :limit="limit" @change="changeDate">
   </date-picker>
 </template>
 
@@ -70,6 +70,11 @@ export default {
   },
   components: {
     datePicker
+  },
+  methods: {
+    changeDate (date) {
+      this.$emit('change', date)
+    }
   }
 }
 </script>

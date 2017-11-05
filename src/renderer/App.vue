@@ -53,7 +53,12 @@ label {
 }
 
 #nprogress .bar {
-  background-color: #35495E;
+  background-color: #17a2b8;
+}
+
+#nprogress .spinner,
+#nprogress .bar {
+  z-index: 999999;
 }
 
 #nprogress .spinner-icon {

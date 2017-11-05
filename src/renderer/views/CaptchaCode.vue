@@ -1,11 +1,11 @@
 <template>
-  <b-modal id="captchCodeModal" :title="title" :hideHeaderClose="true" @change="change">
+  <b-modal id="captchCodeModal" :title="title" :no-close-on-backdrop="true" @change="change">
     <div class="text-center img-captcha">
       <canvas id="cvCaptchaCode" width="293px" height="190px" @click="selectCode"></canvas>
       <img :src="require('@/assets/icon_like.png')" v-for="(item, index) in imgCaptchaCode" :key="index" :style="{left: `${item.X}px`, top: `${item.Y}px`}" @click="cancelSelecte(index)" />
     </div>
     <b-button slot="modal-footer" variant="success" class="waves-effect" @click="getCaptchaCode">换一张？</b-button>
-    <b-button slot="modal-footer" variant="secondary" class="waves-effect" @click="cancel">返回</b-button>
+    <b-button slot="modal-footer" variant="secondary" class="waves-effect" @click="cancel" v-show="type === 'login'">返回</b-button>
     <b-button slot="modal-footer" variant="primary" class="waves-effect" @click="validCaptcha">验证</b-button>
   </b-modal>
 </template>
@@ -96,6 +96,8 @@ export default {
     },
     // 返回
     cancel () {
+      if (this.type !== 'login') return
+
       this.$root.$emit('hide::modal', 'captchCodeModal')
       this.$root.$emit('show::modal', 'loginModal')
     },

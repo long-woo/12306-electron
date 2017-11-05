@@ -11,7 +11,7 @@
         <b-autocomplete class="col pl-sm-0 pr-sm-0" placeholder="输入目的地" inputClass="bl-rounded-0" v-model="toCity" :dropdownData="stationData" ref="toCity" @onSelect="selectToCity"></b-autocomplete>
       </div>
       <div class="col-sm-3">
-        <b-date-picker ref="rideDate"></b-date-picker>
+        <b-date-picker ref="rideDate" @change="changeDate"></b-date-picker>
       </div>
       <div class="col-sm-1">
         <b-button variant="info" class="waves-effect" @click="queryTrain">
@@ -103,6 +103,10 @@ export default {
     // 切换地址
     changeCity () {
       [this.fromCity, this.toCity] = [this.toCity, this.fromCity]
+    },
+    // 选择乘车日期
+    changeDate (date) {
+      this.queryTrain()
     },
     // 点击行
     rowClick (item) {
