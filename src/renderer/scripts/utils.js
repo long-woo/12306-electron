@@ -244,7 +244,7 @@ const task = {
    * @param {*} key key
    * @param {*} captchCode 验证码
    */
-  confirmSubmitOrder (train, seatCode, passengers, key, captchCode) {
+  async confirmSubmitOrder (train, seatCode, passengers, key, captchCode) {
     const formData = {
       passengerTicketStr: passengers.passengerTickets.replace(/(seatcode)/gi, seatCode),
       oldPassengerStr: passengers.oldPassengers,
@@ -256,8 +256,46 @@ const task = {
       seatDetailType: ''
     }
 
-    return Vue.api.confirmOrderQueue(formData)
+    let res = await Vue.api.confirmOrderQueue(formData)
+    let data = {}
+    let awaitTimeFunc = null
+
+    if (res.code < 1) {
+      Vue.alert(res.message)
+
+      if (res.message.indexOf('登录') > -1) {
+        Vue.eventBus.$emit('openDialog', 'loginModal')
+        data.code = 0
+        return data
+      }
+
+      data.code = -1
+      return data
+    }
+
     // 获取订单出票时间
+    clearInterval(awaitTimeFunc)
+    awaitTimeFunc = setInterval(async () => {
+      res = await Vue.api.getOrderAwaitTime()
+
+      if (res.code < 1) {
+        clearInterval(awaitTimeFunc)
+        Vue.alert(res.message)
+
+        if (res.message.indexOf('登录') > -1) {
+          Vue.eventBus.$emit('openDialog', 'loginModal')
+          data.code = 0
+          return data
+        }
+
+        data.code = -1
+        return data
+      }
+
+      if (!res.orderId) {
+
+      }
+    }, 500)
   }
 }
 

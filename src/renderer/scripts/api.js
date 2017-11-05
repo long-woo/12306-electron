@@ -323,11 +323,6 @@ const getOrderAwaitTime = async () => {
     return result
   }
 
-  if (!data.orderId) {
-    setTimeout(getOrderAwaitTime, 500)
-    return
-  }
-
   result.code = 1
   result.orderId = data.orderId
   return result
