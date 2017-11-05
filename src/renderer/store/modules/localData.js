@@ -5,7 +5,8 @@ const state = {
   queryUrl: 'query',
   stationNames: [],
   loginModel: null,
-  taskData: []
+  taskData: [],
+  orderData: {}
 }
 
 const getters = {
@@ -13,7 +14,8 @@ const getters = {
   stationNames: state => state.stationNames,
   loginModel: state => state.loginModel,
   seatItems: state => state.seatItems,
-  taskData: state => state.taskData
+  taskData: state => state.taskData,
+  orderData: state => state.orderData
 }
 
 const actions = {
@@ -34,6 +36,9 @@ const actions = {
   },
   deleteTaskData ({commit, state}, index) {
     commit(types.REMOVE_LOCAL_TASKDATA, index)
+  },
+  setOrderData ({commit, state}, orderData) {
+    commit(types.UPDATE_LOCAL_ORDERDATA, orderData)
   }
 }
 
@@ -70,6 +75,9 @@ const mutations = {
   },
   [types.REMOVE_LOCAL_TASKDATA] (state, index) {
     state.taskData.splice(index, 1)
+  },
+  [types.UPDATE_LOCAL_ORDERDATA] (state, orderData) {
+    state.orderData = orderData
   }
 }
 

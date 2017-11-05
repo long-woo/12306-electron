@@ -139,6 +139,8 @@ const task = {
     const queryInfo = taskItem.queryInfo
     const passengers = taskItem.passengers
     let isStop = false // 是否终止提交（当未登录）
+    let title = '提示'
+    let content = '您的登录状态已失效，请重新登录'
 
     trainData.forEach(async (train) => {
       if (isStop) return
@@ -152,6 +154,11 @@ const task = {
 
           if (orderResult.message.indexOf('登录') > -1) {
             Vue.eventBus.$emit('openDialog', 'loginModal')
+            notification.show(title, {
+              body: content,
+              tag: 'order'
+            })
+
             isStop = true
             return
           }
@@ -165,31 +172,50 @@ const task = {
         if (queueResult.code < 1) {
           if (queueResult.message.indexOf('登录') > -1) {
             Vue.eventBus.$emit('openDialog', 'loginModal')
+            notification.show(title, {
+              body: content,
+              tag: 'order'
+            })
+
             isStop = true
             return
           }
           continue
         }
 
+        const key = orderResult.ticketData[1]
+
         // 是否要验证码
         if (orderResult.isCaptchaCode) {
+          // 将确认提交订单的数据存储到store
+          const orderData = {
+            train,
+            seatCode,
+            passengers,
+            key
+          }
+
+          Vue.store.dispatch('setOrderData', orderData)
+          content = `正在预订【${train.trainCode}】车次，请选择验证码`
           Vue.eventBus.$emit('openDialog', 'captchCodeModal')
+          notification.show(title, {
+            body: content,
+            tag: 'order'
+          })
+
           isStop = true
           return
         }
 
         // 确认提交订单（不需要验证码）
-        const key = orderResult.ticketData[1]
         const confirmResult = await this.confirmSubmitOrder(train, seatCode, passengers, key, '')
 
         if (confirmResult.code < 1) {
-          Vue.alert(confirmResult.message)
-
-          if (confirmResult.message.indexOf('登录') > -1) {
-            Vue.eventBus.$emit('openDialog', 'loginModal')
+          if (confirmResult.code === 0) {
             isStop = true
             return
           }
+          continue
         }
       }
     })
@@ -259,12 +285,19 @@ const task = {
     let res = await Vue.api.confirmOrderQueue(formData)
     let data = {}
     let awaitTimeFunc = null
+    let title = '提示'
+    let content = '您的登录状态已失效，请重新登录'
 
     if (res.code < 1) {
       Vue.alert(res.message)
 
       if (res.message.indexOf('登录') > -1) {
         Vue.eventBus.$emit('openDialog', 'loginModal')
+        notification.show(title, {
+          body: content,
+          tag: 'order'
+        })
+
         data.code = 0
         return data
       }
@@ -279,21 +312,54 @@ const task = {
       res = await Vue.api.getOrderAwaitTime()
 
       if (res.code < 1) {
-        clearInterval(awaitTimeFunc)
         Vue.alert(res.message)
 
         if (res.message.indexOf('登录') > -1) {
+          clearInterval(awaitTimeFunc)
           Vue.eventBus.$emit('openDialog', 'loginModal')
+          notification.show(title, {
+            body: content,
+            tag: 'order'
+          })
+
           data.code = 0
           return data
         }
 
-        data.code = -1
-        return data
+        if (res.message.indexOf('出票超时') > -1) {
+          clearInterval(awaitTimeFunc)
+          notification.show(title, {
+            body: `【${train.trainCode}】出票失败！原因：${res.message}`,
+            tag: 'order'
+          })
+
+          data.code = -2
+          return data
+        }
+
+        // data.code = -1
+        // return data
       }
 
-      if (!res.orderId) {
+      // 出票成功
+      if (res.orderId) {
+        title = 'WOW，恭喜您抢到票了～'
+        content = `您的订单号：【${res.orderId}】，请在30分钟内完成支付`
 
+        clearInterval(awaitTimeFunc)
+        Vue.swal({
+          title: title,
+          text: content,
+          icon: 'success',
+          button: '关闭'
+        })
+        notification.show(title, {
+          body: content
+        })
+
+        data.code = 1
+        data.orderId = res.orderId
+        return data
       }
     }, 500)
   }

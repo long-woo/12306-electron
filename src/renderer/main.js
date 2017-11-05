@@ -20,6 +20,8 @@ import swal from 'sweetalert'
 import 'nprogress/nprogress.css'
 import nprogress from 'nprogress'
 
+import 'animate.css/animate.css'
+
 import bsComponents from './components'
 
 import api from './scripts/api'

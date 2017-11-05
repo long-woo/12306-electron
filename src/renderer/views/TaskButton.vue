@@ -1,6 +1,6 @@
 <template>
   <div class="fixed-bottom task-button-box">
-    <div class="task-add-panel position-absolute border border-info border-left-0 border-right-0 border-bottom-0" v-show="showPanel">
+    <div class="task-add-panel position-absolute border border-info border-left-0 border-right-0 border-bottom-0 animated" :class="[showPanel ? 'slideInUp' : 'slideOutDown']">
       <div class="row pl-4 pr-4 pt-2 pb-2 border-b-dashed-1">
         <div class="checkbox icheck-info col-sm-2" v-for="(item, index) in seatTypes" :key="index">
           <input type="checkbox" :id="`chk_seat_${index}`" v-model="chkSeatTypes" :value="item.code" />

@@ -2,7 +2,7 @@
   <div>
     <header class="navbar-dark fixed-top">
       <div class="navbar-nav-scroll">
-        <b-nav class="navbar-nav flex-row justify-content-center text-center bg-info">
+        <b-nav class="navbar-nav flex-row justify-content-center text-center bg-nav-hue">
           <b-nav-item class="waves-effect" :active-class="nav.activeClass" v-for="(nav, index) in navItems" :key="index" :to="nav.to" @click="navChange(nav)">
             <i class="iconfont" :class="`icon-${nav.icon}`"></i>
             <p>
@@ -143,6 +143,13 @@ export default {
 </script>
 
 <style scoped>
+.bg-nav-hue {
+  background: linear-gradient(15deg, #41B883, #563D7C, #17A2B8);
+  background: -webkit-linear-gradient(15deg, #41B883, #563D7C, #17A2B8);
+  animation: ani-hue 60s infinite linear;
+  -webkit-animation: ani-hue 60s infinite linear;
+}
+
 main {
   position: absolute;
   overflow: auto;

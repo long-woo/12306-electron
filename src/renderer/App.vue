@@ -95,4 +95,24 @@ label {
 .border-b-dashed-1 {
   border-bottom: 0.01rem dashed #17a2b8;
 }
+
+@-webkit-keyframes ani-hue {
+  from {
+    -webkit-filter: hue-rotate(0);
+  }
+
+  to {
+    -webkit-filter: hue-rotate(-360deg);
+  }
+}
+
+@keyframes ani-hue {
+  from {
+    filter: hue-rotate(0);
+  }
+
+  to {
+    filter: hue-rotate(-360deg);
+  }
+}
 </style>
