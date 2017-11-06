@@ -14,7 +14,8 @@ const urls = {
   autoSubmitOrder: '/otn/confirmPassenger/autoSubmitOrderRequest', // POST
   getOrderQueueInfo: '/otn/confirmPassenger/getQueueCountAsync', // POST
   confirmOrderQueue: '/otn/confirmPassenger/confirmSingleForQueueAsys', // POST
-  getOrderAwaitTime: `/otn/confirmPassenger/queryOrderWaitTime` // GET
+  getOrderAwaitTime: `/otn/confirmPassenger/queryOrderWaitTime`, // GET
+  getMyOrder: '/otn/queryOrder/queryMyOrderNoComplete' // POST
 }
 
 /**
@@ -328,6 +329,39 @@ const getOrderAwaitTime = async () => {
   return result
 }
 
+/**
+ * 获取待支付的订单
+ */
+const getMyOrder = async () => {
+  const {data, messages} = await Vue.http.post(urls.getMyOrder)
+  const order = data.orderDBList || []
+  let result = {}
+
+  if (messages.length) {
+    result.code = 0
+    result.message = messages.toString()
+    return result
+  }
+
+  if (data.to_page === 'cache') {
+    result.code = 0
+    result.message = '您的订单还在排队中'
+    return result
+  }
+
+  if (!order.length) {
+    result.code = 0
+    result.message = '没有找到待支付的订单'
+    return result
+  }
+
+  const ticketData = order.tickets
+
+  result.code = 1
+  result.data = ticketData
+  return result
+}
+
 const common = {
   // 获取座位代码
   getSeatTypeCode (seatTypeCodes) {
@@ -425,5 +459,6 @@ export default {
   autoSubmitOrder,
   getOrderQueueInfo,
   confirmOrderQueue,
-  getOrderAwaitTime
+  getOrderAwaitTime,
+  getMyOrder
 }
