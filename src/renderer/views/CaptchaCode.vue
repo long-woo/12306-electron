@@ -51,7 +51,7 @@ export default {
   methods: {
     // 获取验证码
     async getCaptchaCode () {
-      const res = await this.$api.getCaptchaCode()
+      const res = await this.$api.getCaptchaCode(this.type)
 
       this.captchaCode = []
       this.imgCaptchaCode = []
@@ -109,7 +109,7 @@ export default {
 
       code = code.replace(/(-)/gi, ',')
 
-      const res = await this.$api.validCaptchaCode(code)
+      const res = await this.$api.validCaptchaCode(code, this.type)
       const validResult = res.result_code === '4'
 
       if (!validResult) {

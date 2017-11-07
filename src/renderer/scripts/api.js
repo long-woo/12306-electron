@@ -1,8 +1,8 @@
 import Vue from 'vue'
 
 const urls = {
-  getCaptcha: `/passport/captcha/captcha-image?login_site=E&module=login&rand=sjrand&${Math.random()}`, // GET
-  checkCaptcha: '/passport/captcha/captcha-check', // POST
+  getCaptchaCode: `/passport/captcha/captcha-image?login_site=E&module=login&rand=sjrand&${Math.random()}`, // GET
+  checkCaptchaCode: '/passport/captcha/captcha-check', // POST
   login: '/passport/web/login', // POST
   loginAuthuam: '/passport/web/auth/uamtk', // POST
   loginAuthClient: '/otn/uamauthclient', // POST
@@ -13,6 +13,8 @@ const urls = {
   getPassengers: '/otn/passengers/query', // POST
   autoSubmitOrder: '/otn/confirmPassenger/autoSubmitOrderRequest', // POST
   getOrderQueueInfo: '/otn/confirmPassenger/getQueueCountAsync', // POST
+  getOrderCaptchaCode: `/otn/passcodeNew/getPassCodeNew?module=passenger&rand=randp&${Math.random()}`, // GET
+  checkOrderCaptchaCode: '/otn/passcodeNew/checkRandCodeAnsyn', // POST
   confirmOrderQueue: '/otn/confirmPassenger/confirmSingleForQueueAsys', // POST
   getOrderAwaitTime: `/otn/confirmPassenger/queryOrderWaitTime`, // GET
   getMyOrder: '/otn/queryOrder/queryMyOrderNoComplete' // POST
@@ -108,9 +110,11 @@ const getTicket = async (fromCity, toCity, trainDate) => {
 
 /**
  * 获取图片验证码
+ * @param {*} type 验证码类型，默认为登录
  */
-const getCaptchaCode = async () => {
-  const res = await Vue.http.get(urls.getCaptcha, {
+const getCaptchaCode = async (type) => {
+  const url = type === 'order' ? urls.getOrderCaptchaCode : urls.getCaptchaCode
+  const res = await Vue.http.get(url, {
     responseType: 'arraybuffer'
   })
 
@@ -120,15 +124,23 @@ const getCaptchaCode = async () => {
 /**
  * 校验验证码
  * @param {*} code 验证码
+ * @param {*} type 验证码类型，默认为登录
  */
-const validCaptchaCode = (code) => {
-  let formData = {
-    answer: code,
-    login_site: 'E',
-    rand: 'sjrand'
+const validCaptchaCode = (code, type) => {
+  let formData = {}
+  const url = type === 'order' ? urls.checkOrderCaptchaCode : urls.checkCaptchaCode
+
+  if (type === 'order') {
+    formData.randCode = code
+    formData.rand = 'randp'
+    formData.randCode_validate = code
+  } else {
+    formData.answer = code
+    formData.login_site = 'E'
+    formData.rand = 'sjrand'
   }
 
-  return Vue.http.post(urls.checkCaptcha, formData)
+  return Vue.http.post(url, formData)
 }
 
 /**

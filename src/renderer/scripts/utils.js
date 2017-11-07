@@ -186,26 +186,26 @@ const task = {
         const key = orderResult.ticketData[1]
 
         // 是否要验证码
-        if (orderResult.isCaptchaCode) {
-          // 将确认提交订单的数据存储到store
-          const orderData = {
-            train,
-            seatCode,
-            passengers,
-            key
-          }
+        // if (orderResult.isCaptchaCode) {
+        //   // 将确认提交订单的数据存储到store
+        //   const orderData = {
+        //     train,
+        //     seatCode,
+        //     passengers,
+        //     key
+        //   }
 
-          Vue.store.dispatch('setOrderData', orderData)
-          content = `正在预订【${train.trainCode}】车次，请选择验证码`
-          Vue.eventBus.$emit('openDialog', 'captchCodeModal')
-          notification.show(title, {
-            body: content,
-            tag: 'order'
-          })
+        //   Vue.store.dispatch('setOrderData', orderData)
+        //   content = `正在预订【${train.trainCode}】车次，请选择验证码`
+        //   Vue.eventBus.$emit('openDialog', 'captchCodeModal')
+        //   notification.show(title, {
+        //     body: content,
+        //     tag: 'order'
+        //   })
 
-          isStop = true
-          return
-        }
+        //   isStop = true
+        //   return
+        // }
 
         // 确认提交订单（不需要验证码）
         const confirmResult = await this.confirmSubmitOrder(train, seatCode, passengers, key, '')

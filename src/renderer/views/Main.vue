@@ -131,6 +131,8 @@ export default {
           this.loginName = res.loginName
           this.$store.dispatch('setLoginModel', loginInfo)
           this.getPassengers()
+        } else {
+          // 提交订单
         }
       }
     },
