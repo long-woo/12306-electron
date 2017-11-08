@@ -103,17 +103,20 @@ export default {
     },
     // 验证
     async validCaptcha () {
-      let code = this.captchaCode.toString()
+      let verifyCode = this.captchaCode.toString()
 
-      if (!code) return
+      if (!verifyCode) return
 
-      code = code.replace(/(-)/gi, ',')
+      verifyCode = verifyCode.replace(/(-)/gi, ',')
 
-      const res = await this.$api.validCaptchaCode(code, this.type)
-      const validResult = res.result_code === '4'
+      const {code, message} = await this.$api.validCaptchaCode(verifyCode, this.type)
+      const validResult = {
+        result: code === 1,
+        verifyCode
+      }
 
-      if (!validResult) {
-        this.$alert(res.result_message)
+      if (!validResult.result) {
+        this.$alert(message)
         this.getCaptchaCode()
       } else {
         this.$root.$emit('hide::modal', 'captchCodeModal')

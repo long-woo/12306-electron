@@ -105,7 +105,7 @@ export default {
     },
     // 校验验证码完成
     async validComplete (value) {
-      if (value) {
+      if (value.result) {
         if (this.captchaCodeType === 'login') {
           const login = this.$refs.loginModal
           const loginData = {
@@ -133,6 +133,9 @@ export default {
           this.getPassengers()
         } else {
           // 提交订单
+          const orderData = this.$store.getters.orderData
+
+          utils.task.confirmSubmitOrder(orderData.train, orderData.seatCode, orderData.passengers, orderData.key, value.verifyCode)
         }
       }
     },

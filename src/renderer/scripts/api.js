@@ -96,11 +96,11 @@ const getTicket = async (fromCity, toCity, trainDate) => {
       arrivalTime: arrTrain[9],
       useTime: arrTrain[10],
       isBuy: arrTrain[11] === 'Y',
-      ypInfo: arrTrain[12],
+      ypInfo: decodeURIComponent(arrTrain[12]),
       locationCode: arrTrain[15],
       seatTypeCodes: common.getSeatTypeCode(arrTrain[35]),
       seatTypes: common.getSeatTypes(arrTrain),
-      secret: arrTrain[0],
+      secret: decodeURIComponent(arrTrain[0]),
       remark: arrTrain[1]
     })
   })
@@ -126,21 +126,45 @@ const getCaptchaCode = async (type) => {
  * @param {*} code 验证码
  * @param {*} type 验证码类型，默认为登录
  */
-const validCaptchaCode = (code, type) => {
+const validCaptchaCode = async (code, type) => {
   let formData = {}
   const url = type === 'order' ? urls.checkOrderCaptchaCode : urls.checkCaptchaCode
 
   if (type === 'order') {
     formData.randCode = code
     formData.rand = 'randp'
-    formData.randCode_validate = code
   } else {
     formData.answer = code
     formData.login_site = 'E'
     formData.rand = 'sjrand'
   }
 
-  return Vue.http.post(url, formData)
+  const res = await Vue.http.post(url, formData)
+  let result = {}
+
+  if (type === 'login') {
+    if (res.result_code !== '4') {
+      result.code = 0
+      result.message = res.result_message
+
+      return result
+    }
+  }
+
+  if (type === 'order') {
+    const data = res.data
+
+    if (data.result !== '1') {
+      result.code = 0
+      result.message = data.msg
+
+      return result
+    }
+  }
+
+  result.code = 1
+  result.message = '验证通过'
+  return result
 }
 
 /**

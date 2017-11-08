@@ -80,7 +80,11 @@ const task = {
 
         // 开始准备提交订单
         this.setStatus(index, '正在开始准备提交订单...')
-        this.startSubmitOder(trainData, trainSeats, taskItem)
+        notification.show('提示', {
+          body: `【任务${index}】正在执行提交订单`,
+          tag: 'order'
+        })
+        this.startSubmitOder(trainData, trainSeats, taskItem, index)
         return
       }
 
@@ -135,7 +139,7 @@ const task = {
    * @param {*} trainSeats 座位
    * @param {*} taskItem 任务项
    */
-  startSubmitOder (trainData, trainSeats, taskItem) {
+  startSubmitOder (trainData, trainSeats, taskItem, index) {
     const queryInfo = taskItem.queryInfo
     const passengers = taskItem.passengers
     let isStop = false // 是否终止提交（当未登录）
@@ -146,10 +150,14 @@ const task = {
       if (isStop) return
 
       for (let seatCode of trainSeats) {
+        const seatText = Vue.api.getSeatTypeInfo(seatCode)
+        console.log(seatText)
         // 提交订单
+        this.setStatus(index, `正在预订【${train.trainCode}】车次的【${seatText}】...`)
         const orderResult = await this.submitOrder(train.secret, queryInfo, passengers, seatCode)
 
         if (orderResult.code < 1) {
+          this.setStatus(index, `【${train.trainCode}】车次的【${seatText}】预订失败`)
           Vue.alert(orderResult.message)
 
           if (orderResult.message.indexOf('登录') > -1) {
@@ -166,10 +174,13 @@ const task = {
         }
 
         // 获取订单排队信息
+        this.setStatus(index, `【${train.trainCode}】车次的【${seatText}】正在排队...`)
         const queueResult = await this.orderQueueInfo(train, queryInfo.trainDate, seatCode)
-        Vue.alert(queueResult.message)
 
         if (queueResult.code < 1) {
+          this.setStatus(index, `队伍太长，【${train.trainCode}】车次的【${seatText}】没能挤进去`)
+          Vue.alert(queueResult.message)
+
           if (queueResult.message.indexOf('登录') > -1) {
             Vue.eventBus.$emit('openDialog', 'loginModal')
             notification.show(title, {
@@ -186,28 +197,30 @@ const task = {
         const key = orderResult.ticketData[1]
 
         // 是否要验证码
-        // if (orderResult.isCaptchaCode) {
-        //   // 将确认提交订单的数据存储到store
-        //   const orderData = {
-        //     train,
-        //     seatCode,
-        //     passengers,
-        //     key
-        //   }
+        if (orderResult.isCaptchaCode) {
+          // 将确认提交订单的数据存储到store
+          const orderData = {
+            train,
+            seatCode,
+            passengers,
+            key
+          }
 
-        //   Vue.store.dispatch('setOrderData', orderData)
-        //   content = `正在预订【${train.trainCode}】车次，请选择验证码`
-        //   Vue.eventBus.$emit('openDialog', 'captchCodeModal')
-        //   notification.show(title, {
-        //     body: content,
-        //     tag: 'order'
-        //   })
+          Vue.store.dispatch('setOrderData', orderData)
+          content = `正在预订【${train.trainCode}】车次【${seatText}】，请选择验证码`
+          this.setStatus(index, `正在预订【${train.trainCode}】车次【${seatText}】，等待选择验证码...`)
+          Vue.eventBus.$emit('openDialog', 'captchCodeModal')
+          notification.show(title, {
+            body: content,
+            tag: 'order'
+          })
 
-        //   isStop = true
-        //   return
-        // }
+          isStop = true
+          return
+        }
 
         // 确认提交订单（不需要验证码）
+        this.setStatus(index, `正在确认提交【${train.trainCode}】车次【${seatText}】...`)
         const confirmResult = await this.confirmSubmitOrder(train, seatCode, passengers, key, '')
 
         if (confirmResult.code < 1) {
@@ -248,10 +261,10 @@ const task = {
   orderQueueInfo (train, trainDate, seatCode) {
     const currentDate = new Date()
 
-    trainDate = `${trainDate} ${currentDate.getHours()}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`
+    trainDate = new Date(`${trainDate} ${currentDate.getHours()}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`).toString()
 
     const queueData = {
-      train_date: new Date(trainDate),
+      train_date: trainDate,
       train_no: train.trainNo,
       stationTrainCode: train.trainCode,
       seatType: seatCode,
