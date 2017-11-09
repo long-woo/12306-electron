@@ -391,10 +391,8 @@ const getMyOrder = async () => {
     return result
   }
 
-  const ticketData = order.tickets
-
   result.code = 1
-  result.data = ticketData
+  result.data = order
   return result
 }
 

@@ -135,7 +135,7 @@ export default {
           // 提交订单
           const orderData = this.$store.getters.orderData
 
-          utils.task.confirmSubmitOrder(orderData.train, orderData.seatCode, orderData.passengers, orderData.key, value.verifyCode)
+          utils.task.confirmSubmitOrder(orderData.train, orderData.seatCode, orderData.passengers, orderData.key, value.verifyCode, orderData.index)
         }
       }
     },

@@ -1,5 +1,10 @@
 <template>
-  <div>我的订单</div>
+  <div>
+    <div v-for="(item, index) in orderData" :key="index">
+      
+    </div>
+    <div class="alert alert-warning text-center" v-if="!orderData.length">没有<strong>待支付的订单</strong>^~^</div>
+  </div>
 </template>
 
 <script>
@@ -20,7 +25,7 @@ export default {
         return
       }
 
-      console.log(res)
+      this.orderData = res.data
     }
   }
 }

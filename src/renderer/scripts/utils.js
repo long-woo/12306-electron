@@ -138,13 +138,14 @@ const task = {
    * @param {*} trainData 车次
    * @param {*} trainSeats 座位
    * @param {*} taskItem 任务项
+   * @param {*} index 任务索引号
    */
   startSubmitOder (trainData, trainSeats, taskItem, index) {
     const queryInfo = taskItem.queryInfo
     const passengers = taskItem.passengers
     let isStop = false // 是否终止提交（当未登录）
     let title = '提示'
-    let content = '您的登录状态已失效，请重新登录'
+    let content = '哎呀！！！被挤下线了，请重新登录'
 
     trainData.forEach(async (train) => {
       if (isStop) return
@@ -161,6 +162,7 @@ const task = {
           Vue.alert(orderResult.message)
 
           if (orderResult.message.indexOf('登录') > -1) {
+            this.setStatus(index, '您的登录状态已失效，请重新登录')
             Vue.eventBus.$emit('openDialog', 'loginModal')
             notification.show(title, {
               body: content,
@@ -182,6 +184,7 @@ const task = {
           Vue.alert(queueResult.message)
 
           if (queueResult.message.indexOf('登录') > -1) {
+            this.setStatus(index, '您的登录状态已失效，请重新登录')
             Vue.eventBus.$emit('openDialog', 'loginModal')
             notification.show(title, {
               body: content,
@@ -203,7 +206,8 @@ const task = {
             train,
             seatCode,
             passengers,
-            key
+            key,
+            index
           }
 
           Vue.store.dispatch('setOrderData', orderData)
@@ -220,8 +224,7 @@ const task = {
         }
 
         // 确认提交订单（不需要验证码）
-        this.setStatus(index, `正在确认提交【${train.trainCode}】车次【${seatText}】...`)
-        const confirmResult = await this.confirmSubmitOrder(train, seatCode, passengers, key, '')
+        const confirmResult = await this.confirmSubmitOrder(train, seatCode, passengers, key, '', index)
 
         if (confirmResult.code < 1) {
           if (confirmResult.code === 0) {
@@ -282,8 +285,10 @@ const task = {
    * @param {*} passengers 乘客
    * @param {*} key key
    * @param {*} captchCode 验证码
+   * @param {*} index 任务索引号
    */
-  async confirmSubmitOrder (train, seatCode, passengers, key, captchCode) {
+  async confirmSubmitOrder (train, seatCode, passengers, key, captchCode, index) {
+    const seatText = Vue.api.getSeatTypeInfo(seatCode)
     const formData = {
       passengerTicketStr: passengers.passengerTickets.replace(/(seatcode)/gi, seatCode),
       oldPassengerStr: passengers.oldPassengers,
@@ -295,16 +300,19 @@ const task = {
       seatDetailType: ''
     }
 
+    this.setStatus(index, `正在确认提交【${train.trainCode}】车次【${seatText}】...`)
     let res = await Vue.api.confirmOrderQueue(formData)
     let data = {}
     let awaitTimeFunc = null
     let title = '提示'
-    let content = '您的登录状态已失效，请重新登录'
+    let content = '哎呀！！！被挤下线了，请重新登录'
 
     if (res.code < 1) {
+      this.setStatus(index, `【${train.trainCode}】车次【${seatText}】预顶失败...`)
       Vue.alert(res.message)
 
       if (res.message.indexOf('登录') > -1) {
+        this.setStatus(index, '您的登录状态已失效，请重新登录')
         Vue.eventBus.$emit('openDialog', 'loginModal')
         notification.show(title, {
           body: content,
@@ -319,6 +327,7 @@ const task = {
       return data
     }
 
+    this.setStatus(index, `【${train.trainCode}】车次【${seatText}】等待出票...`)
     // 获取订单出票时间
     clearInterval(awaitTimeFunc)
     awaitTimeFunc = setInterval(async () => {
@@ -329,6 +338,8 @@ const task = {
 
         if (res.message.indexOf('登录') > -1) {
           clearInterval(awaitTimeFunc)
+
+          this.setStatus(index, '您的登录状态已失效，请重新登录')
           Vue.eventBus.$emit('openDialog', 'loginModal')
           notification.show(title, {
             body: content,
@@ -341,6 +352,8 @@ const task = {
 
         if (res.message.indexOf('出票超时') > -1) {
           clearInterval(awaitTimeFunc)
+
+          this.setStatus(index, `【${train.trainCode}】车次【${seatText}出票失败...`)
           notification.show(title, {
             body: `【${train.trainCode}】出票失败！原因：${res.message}`,
             tag: 'order'
@@ -360,6 +373,8 @@ const task = {
         content = `您的订单号：【${res.orderId}】，请在30分钟内完成支付`
 
         clearInterval(awaitTimeFunc)
+
+        this.setStatus(index, `【${train.trainCode}】车次【${seatText}出票成功...`)
         Vue.swal({
           title: title,
           text: content,
