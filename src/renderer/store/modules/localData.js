@@ -6,7 +6,7 @@ const state = {
   stationNames: [],
   loginModel: null,
   taskData: [],
-  orderData: {}
+  orderCount: 0
 }
 
 const getters = {
@@ -15,7 +15,7 @@ const getters = {
   loginModel: state => state.loginModel,
   seatItems: state => state.seatItems,
   taskData: state => state.taskData,
-  orderData: state => state.orderData
+  orderCount: state => state.orderCount
 }
 
 const actions = {
@@ -37,8 +37,8 @@ const actions = {
   deleteTaskData ({commit, state}, index) {
     commit(types.REMOVE_LOCAL_TASKDATA, index)
   },
-  setOrderData ({commit, state}, orderData) {
-    commit(types.UPDATE_LOCAL_ORDERDATA, orderData)
+  setOrderCount ({commit, state}, orderCount) {
+    commit(types.UPDATE_LOCAL_ORDERDATA, orderCount)
   }
 }
 
@@ -76,8 +76,8 @@ const mutations = {
   [types.REMOVE_LOCAL_TASKDATA] (state, index) {
     state.taskData.splice(index, 1)
   },
-  [types.UPDATE_LOCAL_ORDERDATA] (state, orderData) {
-    state.orderData = orderData
+  [types.UPDATE_LOCAL_ORDERCOUNT] (state, orderCount) {
+    state.orderCount = orderCount
   }
 }
 

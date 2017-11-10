@@ -10,8 +10,8 @@
               <b-badge class="badge-count" pill variant="danger" v-if="index === 1 && $store.getters.taskData.length">
                 {{$store.getters.taskData.length}}
               </b-badge>
-              <b-badge class="badge-count" pill variant="danger" v-else-if="index === 2">
-                0
+              <b-badge class="badge-count" pill variant="danger" v-else-if="index === 2 && $store.getters.orderCount">
+                {{$store.getters.orderCount}}
               </b-badge>
             </p>
           </b-nav-item>
@@ -149,8 +149,8 @@ export default {
 
 <style scoped>
 .bg-nav-hue {
-  background: linear-gradient(15deg, #41B883, #563D7C, #17A2B8);
-  background: -webkit-linear-gradient(15deg, #41B883, #563D7C, #17A2B8);
+  background: linear-gradient(to top right, #41B883, #563D7C, #17A2B8);
+  background: -webkit-linear-gradient(left bottom, #41B883, #563D7C, #17A2B8);
   animation: ani-hue 60s infinite linear;
   -webkit-animation: ani-hue 60s infinite linear;
 }
