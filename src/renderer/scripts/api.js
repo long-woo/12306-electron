@@ -369,9 +369,16 @@ const getOrderAwaitTime = async () => {
  * 获取待支付的订单
  */
 const getMyOrder = async () => {
-  const {data, messages} = await Vue.http.post(urls.getMyOrder)
-  const order = data.orderDBList || []
   let result = {}
+  const {data, messages} = await Vue.http.post(urls.getMyOrder)
+
+  if (!data) {
+    result.code = 0
+    result.message = '没有找到待支付的订单'
+    return result
+  }
+
+  const order = data.orderDBList || []
 
   if (messages.length) {
     result.code = 0

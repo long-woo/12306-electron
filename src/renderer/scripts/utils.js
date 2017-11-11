@@ -45,6 +45,7 @@ const task = {
     const taskItem = Vue.store.getters.taskData[index]
 
     this.startFunc[index] = setInterval(async () => {
+      console.log(`${timeout}秒后，开始查询...`)
       this.setStatus(index, `${timeout}秒后，开始查询...`)
 
       if (timeout <= 0) {
@@ -63,7 +64,7 @@ const task = {
           if (taskItem.trains.indexOf(train.trainCode) > -1) {
             const seatItems = this.isHasTicket(taskItem.seats, train.seatTypes)
             const arrSeat = trainSeats.concat(seatItems)
-            console.log(seatItems)
+
             trainSeats = Array.from(new Set(arrSeat))
 
             if (!seatItems.length) return
@@ -71,7 +72,7 @@ const task = {
             trainData.push(train)
           }
         })
-
+        console.log(trainData)
         // 如果没有符合预订条件的车次，则继续启动任务
         if (!trainData.length) {
           this.start(index)

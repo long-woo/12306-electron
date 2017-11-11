@@ -38,7 +38,7 @@ const actions = {
     commit(types.REMOVE_LOCAL_TASKDATA, index)
   },
   setOrderCount ({commit, state}, orderCount) {
-    commit(types.UPDATE_LOCAL_ORDERDATA, orderCount)
+    commit(types.UPDATE_LOCAL_ORDERCOUNT, orderCount)
   }
 }
 
