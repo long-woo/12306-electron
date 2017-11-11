@@ -300,7 +300,7 @@ const task = {
       choose_seats: '',
       seatDetailType: ''
     }
-
+    console.log(formData)
     this.setStatus(index, `正在确认提交【${train.trainCode}】车次【${seatText}】...`)
     let res = await Vue.api.confirmOrderQueue(formData)
     let data = {}

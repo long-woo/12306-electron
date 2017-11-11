@@ -55,15 +55,10 @@ export default {
     // 获取订单列表
     async getMyOrder () {
       const res = await this.$api.getMyOrder()
+      const data = res.data || []
 
-      if (res.code !== 1) {
-        this.$alert(res.message)
-        this.$store.dispatch('setOrderCount', 0)
-        return
-      }
-
-      this.orderData = res.data
-      this.$store.dispatch('setOrderCount', res.data.length)
+      this.orderData = data
+      this.$store.dispatch('setOrderCount', data.length)
     }
   }
 }

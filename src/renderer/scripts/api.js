@@ -96,7 +96,7 @@ const getTicket = async (fromCity, toCity, trainDate) => {
       arrivalTime: arrTrain[9],
       useTime: arrTrain[10],
       isBuy: arrTrain[11] === 'Y',
-      ypInfo: decodeURIComponent(arrTrain[12]),
+      ypInfo: arrTrain[12],
       locationCode: arrTrain[15],
       seatTypeCodes: common.getSeatTypeCode(arrTrain[35]),
       seatTypes: common.getSeatTypes(arrTrain),
@@ -278,7 +278,7 @@ const autoSubmitOrder = async (formData) => {
  */
 const getOrderQueueInfo = async (formData) => {
   formData.purpose_codes = 'ADULT'
-  formData._json_att = ''
+  // formData._json_att = ''
 
   const {data, messages} = await Vue.http.post(urls.getOrderQueueInfo, formData)
   let result = {}
@@ -319,7 +319,7 @@ const getOrderQueueInfo = async (formData) => {
  */
 const confirmOrderQueue = async (formData) => {
   formData.purpose_codes = 'ADULT'
-  formData._json_at = ''
+  formData._json_att = ''
 
   const {data} = await Vue.http.post(urls.confirmOrderQueue, formData)
   let result = {}
