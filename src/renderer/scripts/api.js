@@ -1,13 +1,13 @@
 import Vue from 'vue'
 
 const urls = {
+  initPageCookie: '/otn/leftTicket/init', // GET
   getCaptchaCode: `/passport/captcha/captcha-image?login_site=E&module=login&rand=sjrand&${Math.random()}`, // GET
   checkCaptchaCode: '/passport/captcha/captcha-check', // POST
   login: '/passport/web/login', // POST
   loginAuthuam: '/passport/web/auth/uamtk', // POST
   loginAuthClient: '/otn/uamauthclient', // POST
   chkeckIsLogin: '/otn/login/checkUser', // POST
-  initPage: '/otn/leftTicket/init', // GET
   getStationName: '/otn/resources/js/framework/station_name.js', // GET
   getQueryUrl: '/otn/leftTicket/query1', // GET
   getTicket: '/otn/', // GET
@@ -25,6 +25,9 @@ const urls = {
  * 获取站名
  */
 const getStationName = async () => {
+  // await Vue.http.get(urls.initPageCookie)
+  // await getCaptchaCode('order')
+
   const res = await Vue.http.get(urls.getStationName)
   const stationName = res.substring(res.indexOf('\'') + 1, res.lastIndexOf('\''))
   const arrStation = stationName.split('@')
@@ -483,9 +486,6 @@ const common = {
     loginResult.loginName = res.username
     loginResult.code = 1
     loginResult.message = '登录成功'
-
-    // // 初始化预订车次页面
-    // await Vue.http.get(urls.initPage)
 
     return loginResult
   }
