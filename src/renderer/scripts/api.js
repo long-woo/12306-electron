@@ -7,6 +7,7 @@ const urls = {
   loginAuthuam: '/passport/web/auth/uamtk', // POST
   loginAuthClient: '/otn/uamauthclient', // POST
   chkeckIsLogin: '/otn/login/checkUser', // POST
+  initPage: '/otn/leftTicket/init', // GET
   getStationName: '/otn/resources/js/framework/station_name.js', // GET
   getQueryUrl: '/otn/leftTicket/query1', // GET
   getTicket: '/otn/', // GET
@@ -278,7 +279,7 @@ const autoSubmitOrder = async (formData) => {
  */
 const getOrderQueueInfo = async (formData) => {
   formData.purpose_codes = 'ADULT'
-  // formData._json_att = ''
+  formData._json_att = ''
 
   const {data, messages} = await Vue.http.post(urls.getOrderQueueInfo, formData)
   let result = {}
@@ -482,6 +483,9 @@ const common = {
     loginResult.loginName = res.username
     loginResult.code = 1
     loginResult.message = '登录成功'
+
+    // // 初始化预订车次页面
+    // await Vue.http.get(urls.initPage)
 
     return loginResult
   }
