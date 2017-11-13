@@ -13,8 +13,9 @@ axios.interceptors.request.use(config => {
   Vue.nprogress.start()
 
   if (config.method === 'post') {
-    config.data = qs.stringify(config.data)
+    config.data = qs.unescape(qs.stringify(config.data))
   }
+  console.log(config.data)
   return config
 }, error => {
   Vue.nprogress.done()
@@ -26,14 +27,6 @@ axios.interceptors.request.use(config => {
 // 响应拦截器
 axios.interceptors.response.use(res => {
   Vue.nprogress.done()
-
-  // if (res.data.Code !== 20000) {
-  //   const message = res.data.Message
-
-  //   Vue.alert(message)
-
-  //   return message
-  // }
 
   return res.data
 }, error => {

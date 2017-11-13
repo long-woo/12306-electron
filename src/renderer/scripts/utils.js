@@ -153,7 +153,7 @@ const task = {
 
       for (let seatCode of trainSeats) {
         const seatText = Vue.api.getSeatTypeInfo(seatCode)
-        console.log(seatText)
+
         // 提交订单
         this.setStatus(index, `正在预订【${train.trainCode}】车次的【${seatText}】...`)
         const orderResult = await this.submitOrder(train.secret, queryInfo, passengers, seatCode)
@@ -264,11 +264,13 @@ const task = {
    */
   orderQueueInfo (train, trainDate, seatCode) {
     const currentDate = new Date()
+    // Mon+Nov+20+2017+22%3A41%3A48+GMT%2B0800+(CST)
 
-    trainDate = new Date(`${trainDate} ${currentDate.getHours()}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`).toString()
+    const arrDate = trainDate.split('-')
+    currentDate.setFullYear(arrDate[0], arrDate[1] - 1, arrDate[2])
 
     const queueData = {
-      train_date: trainDate,
+      train_date: currentDate.toString(),
       train_no: train.trainNo,
       stationTrainCode: train.trainCode,
       seatType: seatCode,
@@ -300,7 +302,7 @@ const task = {
       choose_seats: '',
       seatDetailType: ''
     }
-    console.log(formData)
+
     this.setStatus(index, `正在确认提交【${train.trainCode}】车次【${seatText}】...`)
     let res = await Vue.api.confirmOrderQueue(formData)
     let data = {}

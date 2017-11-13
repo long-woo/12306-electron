@@ -104,7 +104,7 @@ const getTicket = async (fromCity, toCity, trainDate) => {
       locationCode: arrTrain[15],
       seatTypeCodes: common.getSeatTypeCode(arrTrain[35]),
       seatTypes: common.getSeatTypes(arrTrain),
-      secret: decodeURIComponent(arrTrain[0]),
+      secret: arrTrain[0],
       remark: arrTrain[1]
     })
   })
