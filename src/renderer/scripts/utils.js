@@ -211,7 +211,7 @@ const task = {
             index
           }
 
-          Vue.store.dispatch('setOrderData', orderData)
+          Vue.store.dispatch('setConfirmOrderData', orderData)
           content = `正在预订【${train.trainCode}】车次【${seatText}】，请选择验证码`
           this.setStatus(index, `正在预订【${train.trainCode}】车次【${seatText}】，等待选择验证码...`)
           Vue.eventBus.$emit('openDialog', 'captchCodeModal')
@@ -246,7 +246,7 @@ const task = {
    */
   submitOrder (trainSecret, queryInfo, passengers, seatCode) {
     const orderData = {
-      secretStr: trainSecret,
+      secretStr: decodeURIComponent(trainSecret),
       train_date: queryInfo.trainDate,
       query_from_station_name: queryInfo.fromCityName,
       query_to_station_name: queryInfo.toCityName,
@@ -264,10 +264,10 @@ const task = {
    */
   orderQueueInfo (train, trainDate, seatCode) {
     const currentDate = new Date()
-    // Mon+Nov+20+2017+22%3A41%3A48+GMT%2B0800+(CST)
-
     const arrDate = trainDate.split('-')
+
     currentDate.setFullYear(arrDate[0], arrDate[1] - 1, arrDate[2])
+    // trainDate = encodeURIComponent(currentDate.toString()).replace(/(%20)/g, '+')
 
     const queueData = {
       train_date: currentDate.toString(),
@@ -292,8 +292,9 @@ const task = {
    */
   async confirmSubmitOrder (train, seatCode, passengers, key, captchCode, index) {
     const seatText = Vue.api.getSeatTypeInfo(seatCode)
+    const passengerTicket = passengers.passengerTickets.replace(/(seatcode)/gi, seatCode)
     const formData = {
-      passengerTicketStr: passengers.passengerTickets.replace(/(seatcode)/gi, seatCode),
+      passengerTicketStr: passengerTicket,
       oldPassengerStr: passengers.oldPassengers,
       randCode: captchCode,
       key_check_isChange: key,

@@ -133,7 +133,7 @@ export default {
           this.getPassengers()
         } else {
           // 提交订单
-          const orderData = this.$store.getters.orderData
+          const orderData = this.$store.getters.confirmOrderData
 
           utils.task.confirmSubmitOrder(orderData.train, orderData.seatCode, orderData.passengers, orderData.key, value.verifyCode, orderData.index)
         }

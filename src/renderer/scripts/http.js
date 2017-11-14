@@ -13,7 +13,8 @@ axios.interceptors.request.use(config => {
   Vue.nprogress.start()
 
   if (config.method === 'post') {
-    config.data = qs.unescape(qs.stringify(config.data))
+    // config.data = qs.unescape(qs.stringify(config.data))
+    config.data = qs.stringify(config.data)
   }
   console.log(config.data)
   return config
