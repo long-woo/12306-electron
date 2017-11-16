@@ -101,6 +101,34 @@ label {
   border-bottom: 0.01rem dashed #17a2b8;
 }
 
+.ani-slide-up {
+  animation: slideUp 0.3s ease forwards;
+}
+
+.ani-slide-down {
+  animation: slideDown 0.3s ease forwards;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(0);
+  }
+  
+  to {
+    transform: translateY(100%);
+  }
+}
+
 @-webkit-keyframes ani-hue {
   from {
     -webkit-filter: hue-rotate(0);
