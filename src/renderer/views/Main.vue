@@ -149,8 +149,8 @@ export default {
 
 <style scoped>
 .bg-nav-hue {
-  background: linear-gradient(to top right, #41B883, #563D7C, #17A2B8);
-  background: -webkit-linear-gradient(left bottom, #41B883, #563D7C, #17A2B8);
+  background: linear-gradient(to top right, #563D7C, #17A2B8, #41B883);
+  background: -webkit-linear-gradient(left bottom, #563D7C, #17A2B8, #41B883);
   animation: ani-hue 60s infinite linear;
   -webkit-animation: ani-hue 60s infinite linear;
 }
