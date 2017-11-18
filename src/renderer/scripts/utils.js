@@ -297,6 +297,7 @@ const task = {
       passengerTicketStr: passengerTicket,
       oldPassengerStr: passengers.oldPassengers,
       randCode: captchCode,
+      purpose_codes: '',
       key_check_isChange: key,
       leftTicketStr: train.ypInfo,
       train_location: train.locationCode,
@@ -312,7 +313,7 @@ const task = {
     let content = '哎呀！！！被挤下线了，请重新登录'
 
     if (res.code < 1) {
-      this.setStatus(index, `【${train.trainCode}】车次【${seatText}】预顶失败...`)
+      this.setStatus(index, `【${train.trainCode}】车次【${seatText}】预订失败...`)
       Vue.alert(res.message)
 
       if (res.message.indexOf('登录') > -1) {

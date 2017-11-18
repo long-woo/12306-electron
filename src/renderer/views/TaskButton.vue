@@ -99,7 +99,6 @@ export default {
       if (!this.$store.getters.loginModel) return
 
       const res = await this.$api.getPassengers('', 1, 999)
-      console.log(res)
 
       if (!res.length) return
 
