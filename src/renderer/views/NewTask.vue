@@ -157,7 +157,6 @@ export default {
       // this.$swal('1')
       const data = await this.$api.getTicket(this.fromCity.value, this.toCity.value, trainDate)
 
-      console.log(data)
       this.chkTrains = []
       this.ticketData = data
       this.seatCodes = []

@@ -225,15 +225,27 @@ const task = {
         }
 
         // 确认提交订单（不需要验证码）
-        const confirmResult = await this.confirmSubmitOrder(train, seatCode, passengers, key, '', index)
-
-        if (confirmResult.code < 1) {
-          if (confirmResult.code === 0) {
-            isStop = true
-            return
+        const awaitTime = parseInt(orderResult.captchaCodeTime / 3)
+        console.log(awaitTime)
+        window.setTimeout(async () => {
+          const confirmResult = await this.confirmSubmitOrder(train, seatCode, passengers, key, '', index) // this.awaitConfirmSubmitOrder(3, awaitTime, train, seatCode, passengers, key, '', index)
+          console.log(confirmResult)
+          if (confirmResult.code < 1) {
+            if (confirmResult.code === 0) {
+              isStop = true
+              return false
+            }
           }
-          continue
-        }
+        }, awaitTime)
+        // const confirmResult = await this.confirmSubmitOrder(train, seatCode, passengers, key, '', index) // this.awaitConfirmSubmitOrder(3, awaitTime, train, seatCode, passengers, key, '', index)
+        // console.log(confirmResult)
+        // if (confirmResult.code < 1) {
+        //   if (confirmResult.code === 0) {
+        //     isStop = true
+        //     return
+        //   }
+        //   continue
+        // }
       }
     })
   },
@@ -395,6 +407,29 @@ const task = {
         return data
       }
     }, 500)
+  },
+  confirmOrderTimeFunc: null,
+  /**
+   * 等待确认提交订单
+   * @param {*} count 
+   * @param {*} time 
+   * @param {*} train 
+   * @param {*} seatCode 
+   * @param {*} passengers 
+   * @param {*} key 
+   * @param {*} captchCode 
+   * @param {*} index 
+   */
+  awaitConfirmSubmitOrder (count, time, train, seatCode, passengers, key, captchCode, index) {
+    if (count === 0) {
+      clearTimeout(this.confirmOrderTimeFunc)
+      return this.confirmSubmitOrder(train, seatCode, passengers, key, captchCode, index)
+    }
+
+    count--
+    this.confirmOrderTimeFunc = setTimeout(() => {
+      this.awaitConfirmSubmitOrder(count, time, train, seatCode, passengers, key, captchCode, index)
+    }, time)
   }
 }
 
