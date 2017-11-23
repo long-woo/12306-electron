@@ -225,27 +225,27 @@ const task = {
         }
 
         // 确认提交订单（不需要验证码）
-        const awaitTime = parseInt(orderResult.captchaCodeTime / 3)
-        console.log(awaitTime)
-        window.setTimeout(async () => {
-          const confirmResult = await this.confirmSubmitOrder(train, seatCode, passengers, key, '', index) // this.awaitConfirmSubmitOrder(3, awaitTime, train, seatCode, passengers, key, '', index)
-          console.log(confirmResult)
-          if (confirmResult.code < 1) {
-            if (confirmResult.code === 0) {
-              isStop = true
-              return false
-            }
-          }
-        }, awaitTime)
-        // const confirmResult = await this.confirmSubmitOrder(train, seatCode, passengers, key, '', index) // this.awaitConfirmSubmitOrder(3, awaitTime, train, seatCode, passengers, key, '', index)
-        // console.log(confirmResult)
-        // if (confirmResult.code < 1) {
-        //   if (confirmResult.code === 0) {
-        //     isStop = true
-        //     return
+        // const awaitTime = parseInt(orderResult.captchaCodeTime / 3)
+        // console.log(awaitTime)
+        // window.setTimeout(async () => {
+        //   const confirmResult = await this.confirmSubmitOrder(train, seatCode, passengers, key, '', index) // this.awaitConfirmSubmitOrder(3, awaitTime, train, seatCode, passengers, key, '', index)
+        //   console.log(confirmResult)
+        //   if (confirmResult.code < 1) {
+        //     if (confirmResult.code === 0) {
+        //       isStop = true
+        //       return false
+        //     }
         //   }
-        //   continue
-        // }
+        // }, awaitTime)
+        const confirmResult = await this.confirmSubmitOrder(train, seatCode, passengers, key, '', index) // this.awaitConfirmSubmitOrder(3, awaitTime, train, seatCode, passengers, key, '', index)
+        console.log(confirmResult)
+        if (confirmResult.code < 1) {
+          if (confirmResult.code === 0) {
+            isStop = true
+            return
+          }
+          continue
+        }
       }
     })
   },

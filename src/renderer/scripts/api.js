@@ -11,12 +11,20 @@ const urls = {
   getStationName: '/otn/resources/js/framework/station_name.js', // GET
   getQueryUrl: '/otn/leftTicket/query1', // GET
   getTicket: '/otn/', // GET
-  getPassengers: '/otn/passengers/query', // POST
+  getPassengers: '/otn/confirmPassenger/getPassengerDTOs', // POST
+
   autoSubmitOrder: '/otn/confirmPassenger/autoSubmitOrderRequest', // POST
-  getOrderQueueInfo: '/otn/confirmPassenger/getQueueCountAsync', // POST
+  getOrderQueueInfoAsync: '/otn/confirmPassenger/getQueueCountAsync', // POST
+  confirmOrderQueueAsync: '/otn/confirmPassenger/confirmSingleForQueueAsys', // POST
+
+  submitOrder: '/otn/leftTicket/submitOrderRequest', // POST
+  getSubmitOrderInfo: '/otn/confirmPassenger/initDc', // POST
+  checkOrderInfo: '/otn/confirmPassenger/checkOrderInfo', // POST
+  getOrderQueueInfo: '/otn/confirmPassenger/getQueueCount', // POST
+  confirmOrderQueue: '/otn/confirmPassenger/confirmSingleForQueue', // POST
+
   getOrderCaptchaCode: `/otn/passcodeNew/getPassCodeNew?module=passenger&rand=randp&${Math.random()}`, // GET
   checkOrderCaptchaCode: '/otn/passcodeNew/checkRandCodeAnsyn', // POST
-  confirmOrderQueue: '/otn/confirmPassenger/confirmSingleForQueueAsys', // POST
   getOrderAwaitTime: `/otn/confirmPassenger/queryOrderWaitTime`, // GET
   getMyOrder: '/otn/queryOrder/queryMyOrderNoComplete' // POST
 }
@@ -25,8 +33,7 @@ const urls = {
  * 获取站名
  */
 const getStationName = async () => {
-  // await Vue.http.get(urls.initPageCookie)
-  // await getCaptchaCode('order')
+  await Vue.http.get(urls.initPageCookie)
 
   const res = await Vue.http.get(urls.getStationName)
   const stationName = res.substring(res.indexOf('\'') + 1, res.lastIndexOf('\''))
@@ -200,22 +207,13 @@ const login = async (formData) => {
  * @param {*} pageCount 每页数
  */
 const getPassengers = async (name, pageIndex, pageCount) => {
-  let formData = {
-    pageIndex: pageIndex || 1,
-    pageSize: pageCount || 10
-  }
-
-  if (name) {
-    formData['passengerDTO.passenger_name'] = name
-  }
-
-  const res = await Vue.http.post(urls.getPassengers, formData)
+  const res = await Vue.http.post(urls.getPassengers)
 
   if (!res.data) {
     return []
   }
 
-  return res.data.datas || []
+  return res.data.normal_passengers || []
 }
 
 /**
@@ -284,7 +282,7 @@ const getOrderQueueInfo = async (formData) => {
   formData.purpose_codes = 'ADULT'
   formData._json_att = ''
 
-  const {data, messages} = await Vue.http.post(urls.getOrderQueueInfo, formData)
+  const {data, messages} = await Vue.http.post(urls.getOrderQueueInfoAsync, formData)
   let result = {}
 
   if (!data) {
@@ -325,7 +323,7 @@ const confirmOrderQueue = async (formData) => {
   formData.purpose_codes = 'ADULT'
   formData._json_att = ''
 
-  const {data} = await Vue.http.post(urls.confirmOrderQueue, formData)
+  const {data} = await Vue.http.post(urls.confirmOrderQueueAsync, formData)
   let result = {}
 
   if (!data.submitStatus) {
