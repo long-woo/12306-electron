@@ -9,8 +9,8 @@ export default {
   name: 'App',
   async created () {
     // 查票url
-    const {c_url} = await this.$api.getQueryUrl()
-    this.$store.dispatch('setQueryUrl', c_url)
+    const res = await this.$api.getQueryUrl()
+    this.$store.dispatch('setQueryUrl', res)
   }
 }
 </script>

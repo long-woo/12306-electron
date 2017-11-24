@@ -45,7 +45,6 @@ const task = {
     const taskItem = Vue.store.getters.taskData[index]
 
     this.startFunc[index] = setInterval(async () => {
-      console.log(`${timeout}秒后，开始查询...`)
       this.setStatus(index, `${timeout}秒后，开始查询...`)
 
       if (timeout <= 0) {
@@ -72,7 +71,7 @@ const task = {
             trainData.push(train)
           }
         })
-        console.log(trainData)
+
         // 如果没有符合预订条件的车次，则继续启动任务
         if (!trainData.length) {
           this.start(index)
@@ -225,27 +224,16 @@ const task = {
         }
 
         // 确认提交订单（不需要验证码）
-        // const awaitTime = parseInt(orderResult.captchaCodeTime / 3)
-        // console.log(awaitTime)
-        // window.setTimeout(async () => {
-        //   const confirmResult = await this.confirmSubmitOrder(train, seatCode, passengers, key, '', index) // this.awaitConfirmSubmitOrder(3, awaitTime, train, seatCode, passengers, key, '', index)
-        //   console.log(confirmResult)
-        //   if (confirmResult.code < 1) {
-        //     if (confirmResult.code === 0) {
-        //       isStop = true
-        //       return false
-        //     }
-        //   }
-        // }, awaitTime)
-        const confirmResult = await this.confirmSubmitOrder(train, seatCode, passengers, key, '', index) // this.awaitConfirmSubmitOrder(3, awaitTime, train, seatCode, passengers, key, '', index)
+        const awaitTime = parseInt(orderResult.captchaCodeTime / 3)
+        const confirmResult = await this.awaitConfirmSubmitOrder(3, awaitTime, train, seatCode, passengers, key, '', index)
         console.log(confirmResult)
-        if (confirmResult.code < 1) {
-          if (confirmResult.code === 0) {
-            isStop = true
-            return
-          }
-          continue
-        }
+        // if (confirmResult.code < 1) {
+        //   if (confirmResult.code === 0) {
+        //     isStop = true
+        //     return
+        //   }
+        //   continue
+        // }
       }
     })
   },
@@ -454,7 +442,7 @@ const notification = {
       tag: null, // 识别标签，相同tag时只会打开同一个通知窗口
       timeout: 3000 // 自动关闭时间
     }, option)
-    console.log(option)
+
     Notification.requestPermission().then((permission) => {
       if (permission === 'granted') {
         // 允许

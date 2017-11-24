@@ -1,7 +1,7 @@
 import Vue from 'vue'
 
 const urls = {
-  initPageCookie: '/otn/leftTicket/init', // GET
+  initPage: '/otn/leftTicket/init', // GET
   getCaptchaCode: `/passport/captcha/captcha-image?login_site=E&module=login&rand=sjrand&${Math.random()}`, // GET
   checkCaptchaCode: '/passport/captcha/captcha-check', // POST
   login: '/passport/web/login', // POST
@@ -9,7 +9,6 @@ const urls = {
   loginAuthClient: '/otn/uamauthclient', // POST
   chkeckIsLogin: '/otn/login/checkUser', // POST
   getStationName: '/otn/resources/js/framework/station_name.js', // GET
-  getQueryUrl: '/otn/leftTicket/query1', // GET
   getTicket: '/otn/', // GET
   getPassengers: '/otn/confirmPassenger/getPassengerDTOs', // POST
 
@@ -33,8 +32,6 @@ const urls = {
  * 获取站名
  */
 const getStationName = async () => {
-  await Vue.http.get(urls.initPageCookie)
-
   const res = await Vue.http.get(urls.getStationName)
   const stationName = res.substring(res.indexOf('\'') + 1, res.lastIndexOf('\''))
   const arrStation = stationName.split('@')
@@ -53,22 +50,12 @@ const getStationName = async () => {
 /**
  * 获取查询的url
  */
-const getQueryUrl = () => {
-  const date = new Date()
-  const year = date.getFullYear()
-  const month = date.getMonth() + 1
-  let day = date.getDate()
+const getQueryUrl = async () => {
+  const res = await Vue.http.get(urls.initPage)
+  const regexTicketUrl = res.match(/CLeftTicketUrl\s+=\s+'(.+)'/) || []
+  const queryUrl = regexTicketUrl.length ? regexTicketUrl[1] : ''
 
-  day = day.toString().length === 1 ? `0${day}` : day
-
-  return Vue.http.get(urls.getQueryUrl, {
-    params: {
-      'leftTicketDTO.train_date': `${year}-${month}-${day}`,
-      'leftTicketDTO.from_station': 'SHH',
-      'leftTicketDTO.to_station': 'CSQ',
-      'purpose_codes': 'ADULT'
-    }
-  })
+  return queryUrl
 }
 
 /**
