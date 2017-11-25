@@ -27,10 +27,11 @@ This project was generated with [electron-vue](https://github.com/SimulatedGREG/
 ---
 
 #### 感谢
-[electron-vue](https://github.com/SimulatedGREG/electron-vue)
-[bootstrap-vue](https://github.com/bootstrap-vue/bootstrap-vue)
-[icheck-bootstrap](https://github.com/bantikyan/icheck-bootstrap)
-[node-waves](https://github.com/fians/Waves)
-[nprogress](https://github.com/rstacruz/nprogress)
-[sweetalert](https://github.com/t4t5/sweetalert)
-[vue-datepicker](https://github.com/hilongjw/vue-datepicker)
+
+- [electron-vue](https://github.com/SimulatedGREG/electron-vue)
+- [bootstrap-vue](https://github.com/bootstrap-vue/bootstrap-vue)
+- [icheck-bootstrap](https://github.com/bantikyan/icheck-bootstrap)
+- [node-waves](https://github.com/fians/Waves)
+- [nprogress](https://github.com/rstacruz/nprogress)
+- [sweetalert](https://github.com/t4t5/sweetalert)
+- [vue-datepicker](https://github.com/hilongjw/vue-datepicker)
