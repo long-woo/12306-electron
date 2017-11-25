@@ -1,6 +1,6 @@
 <template>
   <div class="fixed-bottom task-button-box">
-    <div class="task-add-panel position-absolute border border-info border-left-0 border-right-0 border-bottom-0" :class="[showPanel ? 'ani-slide-up' : 'ani-slide-down']">
+    <div class="task-add-panel position-absolute border border-info border-left-0 border-right-0 border-bottom-0" :class="showPanelAnimate">
       <div class="row pl-4 pr-4 pt-2 pb-2 border-b-dashed-1">
         <div class="checkbox icheck-info col-sm-2" v-for="(item, index) in seatTypes" :key="index">
           <input type="checkbox" :id="`chk_seat_${index}`" v-model="chkSeatTypes" :value="item.code" />
@@ -33,6 +33,7 @@ export default {
   data () {
     return {
       showPanel: false,
+      showPanelAnimate: 'task-add-panel-hide',
       buttonIcon: 'icon-add-task',
       buttonText: '添加任务',
       passengers: [],
@@ -50,9 +51,11 @@ export default {
       if (value) {
         this.buttonIcon = 'icon-close'
         this.buttonText = '关闭'
+        this.showPanelAnimate = 'ani-slide-up'
       } else {
         this.buttonIcon = 'icon-add-task'
         this.buttonText = '添加任务'
+        this.showPanelAnimate = 'ani-slide-down'
       }
     },
     chkSeatTypes (value) {
@@ -185,6 +188,10 @@ export default {
   height: 15rem;
   margin-top: -15rem;
   padding-bottom: 2.9rem;
+}
+
+.task-add-panel-hide {
+  display: none;
 }
 
 .checkbox {
