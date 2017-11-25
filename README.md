@@ -23,3 +23,14 @@ npm run lint
 ---
 
 This project was generated with [electron-vue](https://github.com/SimulatedGREG/electron-vue)@[a01d4d6](https://github.com/SimulatedGREG/electron-vue/tree/a01d4d68edff32c432273320f7df716234f56146) using [vue-cli](https://github.com/vuejs/vue-cli). Documentation about the original structure can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/index.html).
+
+---
+
+#### 感谢
+[electron-vue](https://github.com/SimulatedGREG/electron-vue)
+[bootstrap-vue](https://github.com/bootstrap-vue/bootstrap-vue)
+[icheck-bootstrap](https://github.com/bantikyan/icheck-bootstrap)
+[node-waves](https://github.com/fians/Waves)
+[nprogress](https://github.com/rstacruz/nprogress)
+[sweetalert](https://github.com/t4t5/sweetalert)
+[vue-datepicker](https://github.com/hilongjw/vue-datepicker)
