@@ -32,7 +32,7 @@
           <div class="col-sm-4 text-right">{{tick.ticket_status_name}}</div>
         </div>
       </div>
-      <div class="pl-0 pr-0 pt-2 pb-2 text-right">
+      <div class="pl-0 pr-0 pt-2 pb-2 text-right bg-secondary text-white">
         <span>共{{item.ticket_totalnum}}张车票，共¥{{item.ticket_total_price_page}}</span>
       </div>
     </div>

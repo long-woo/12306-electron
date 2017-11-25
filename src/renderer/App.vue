@@ -26,6 +26,10 @@ export default {
   color: #fff;
 }
 
+html,body {
+  height: 100%;
+}
+
 body {
   -webkit-user-select: none;
   -webkit-app-region: drag;

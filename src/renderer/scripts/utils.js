@@ -140,14 +140,14 @@ const task = {
    * @param {*} taskItem 任务项
    * @param {*} index 任务索引号
    */
-  startSubmitOder (trainData, trainSeats, taskItem, index) {
+  async startSubmitOder (trainData, trainSeats, taskItem, index) {
     const queryInfo = taskItem.queryInfo
     const passengers = taskItem.passengers
     let isStop = false // 是否终止提交（当未登录）
     let title = '提示'
     let content = '哎呀！！！被挤下线了，请重新登录'
 
-    trainData.forEach(async (train) => {
+    for (let train of trainData) {
       if (isStop) return
 
       for (let seatCode of trainSeats) {
@@ -235,7 +235,7 @@ const task = {
         //   continue
         // }
       }
-    })
+    }
   },
   /**
    * 提交订单
