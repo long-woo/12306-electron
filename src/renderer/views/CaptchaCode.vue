@@ -98,8 +98,8 @@ export default {
     cancel () {
       if (this.type !== 'login') return
 
-      this.$root.$emit('hide::modal', 'captchCodeModal')
-      this.$root.$emit('show::modal', 'loginModal')
+      this.$root.$emit('bv::hide::modal', 'captchCodeModal')
+      this.$root.$emit('bv::show::modal', 'loginModal')
     },
     // 验证
     async validCaptcha () {
@@ -119,7 +119,7 @@ export default {
         this.$alert(message)
         this.getCaptchaCode()
       } else {
-        this.$root.$emit('hide::modal', 'captchCodeModal')
+        this.$root.$emit('bv::hide::modal', 'captchCodeModal')
       }
 
       // 验证完成

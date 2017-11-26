@@ -27,7 +27,7 @@
           <div class="text-info" v-if="loginName">
             <i class="iconfont icon-user"></i>
             <span>{{loginName}}，</span>
-            <a href="javascript:;" @click="logOff">注销</a>
+            <a href="javascript:;" @click="logOff">退出</a>
           </div>
           <a class="text-info waves-effect" href="javascript:;" v-b-modal.loginModal v-else>
             <i class="iconfont icon-user"></i>
@@ -65,7 +65,7 @@ export default {
     this.chkeckIsLogin()
     this.$eventBus.$on('openDialog', (dialog) => {
       this.captchaCodeType = dialog === 'captchCodeModal' ? 'order' : 'login'
-      this.$root.$emit('show::modal', dialog)
+      this.$root.$emit('bv::show::modal', dialog)
     })
   },
   methods: {
@@ -116,7 +116,7 @@ export default {
 
           if (res.code !== 1) {
             this.$alert(res.message)
-            this.$root.$emit('show::modal', 'loginModal')
+            this.$root.$emit('bv::show::modal', 'loginModal')
             return
           }
 

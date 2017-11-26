@@ -25,15 +25,17 @@
         <div class="row">
           <div class="col-sm-4">{{tick.passengerDTO.passenger_name}}</div>
           <div class="col-sm-6">{{`${tick.seat_type_name}${tick.coach_name}车厢${tick.seat_name}`}}</div>
-          <div class="col-sm-2 text-right">¥{{tick.str_ticket_price_page}}</div>
+          <div class="col-sm-2 text-right text-danger">¥{{tick.str_ticket_price_page}}</div>
         </div>
         <div class="row">
           <div class="col-sm-4 ml-auto">{{tick.train_date.substring(0, tick.train_date.indexOf(' '))}}</div>
-          <div class="col-sm-4 text-right">{{tick.ticket_status_name}}</div>
+          <div class="col-sm-4 text-right text-danger">{{tick.ticket_status_name}}</div>
         </div>
       </div>
-      <div class="pl-0 pr-0 pt-2 pb-2 text-right bg-secondary text-white">
-        <span>共{{item.ticket_totalnum}}张车票，共¥{{item.ticket_total_price_page}}</span>
+      <div class="row pl-0 pr-0 pt-2 pb-2 bg-light text-success">
+        <div class="col-md-12 text-right">
+          <span>共{{item.ticket_totalnum}}张车票，共¥{{item.ticket_total_price_page}}</span>
+        </div>
       </div>
     </div>
     <div class="alert alert-warning text-center" v-if="!orderData.length">没有<strong>待支付的订单</strong>^~^</div>

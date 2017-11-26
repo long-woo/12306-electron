@@ -1,8 +1,8 @@
 <template>
-  <b-modal id="loginModal" title="登录" :okOnly="true">
+  <b-modal id="loginModal" title="登录" :okOnly="true" @shown="dialogShow">
     <form @submit.stop.prevent="login">
       <b-input-group left="账号" class="form-group">
-        <b-autocomplete class="col pl-sm-0 pr-sm-0" inputClass="bl-rounded-0" placeholder="输入用户名/邮箱/手机号" v-model="userInfo" :dropdownData="loginUsers" @onSelect="selectLoginUser" @inputChange="inputChange"></b-autocomplete>
+        <b-autocomplete ref="txtLoginUser" class="col pl-sm-0 pr-sm-0" inputClass="bl-rounded-0" placeholder="输入用户名/邮箱/手机号" v-model="userInfo" :dropdownData="loginUsers" @onSelect="selectLoginUser" @inputChange="inputChange"></b-autocomplete>
       </b-input-group>
       <b-input-group left="密码" class="form-group">
         <b-form-input type="password" placeholder="输入密码" v-model="password" @keyup.enter="login"></b-form-input>
@@ -57,6 +57,9 @@ export default {
     })
   },
   methods: {
+    dialogShow () {
+      this.$refs.txtLoginUser.focus()
+    },
     // 选择登录用户
     selectLoginUser (user) {
       this.userInfo = user
@@ -79,8 +82,8 @@ export default {
         return false
       }
 
-      this.$root.$emit('hide::modal', 'loginModal')
-      this.$root.$emit('show::modal', 'captchCodeModal')
+      this.$root.$emit('bv::hide::modal', 'loginModal')
+      this.$root.$emit('bv::show::modal', 'captchCodeModal')
     }
   }
 }

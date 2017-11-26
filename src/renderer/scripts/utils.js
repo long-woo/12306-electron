@@ -379,7 +379,7 @@ const task = {
 
         clearInterval(awaitTimeFunc)
 
-        this.setStatus(index, `【${train.trainCode}】车次【${seatText}出票成功...`)
+        this.setStatus(index, `【${train.trainCode}】车次【${seatText}】出票成功...`)
         Vue.swal({
           title: title,
           text: content,
@@ -399,14 +399,14 @@ const task = {
   confirmOrderTimeFunc: null,
   /**
    * 等待确认提交订单
-   * @param {*} count 
-   * @param {*} time 
-   * @param {*} train 
-   * @param {*} seatCode 
-   * @param {*} passengers 
-   * @param {*} key 
-   * @param {*} captchCode 
-   * @param {*} index 
+   * @param {*} count
+   * @param {*} time
+   * @param {*} train
+   * @param {*} seatCode
+   * @param {*} passengers
+   * @param {*} key
+   * @param {*} captchCode
+   * @param {*} index
    */
   awaitConfirmSubmitOrder (count, time, train, seatCode, passengers, key, captchCode, index) {
     if (count === 0) {

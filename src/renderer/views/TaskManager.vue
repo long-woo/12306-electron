@@ -2,7 +2,7 @@
   <div>
     <div class="row" v-for="(item, index) in taskData" :key="index">
       <div class="col-10 border border-info border-left-0 border-right-0 border-bottom-0 pr-0">
-        <div class="task-header p-2 bg-success text-white row mr-0">
+        <div class="task-header p-2 bg-info text-white row mr-0">
           <span>{{item.statusText}}</span>
         </div>
         <div class="task-body border-b-dashed-1 p-2">
@@ -10,7 +10,7 @@
             {{item.passengers.passengerName}}
           </span>
         </div>
-        <div class="task-footer p-2">
+        <div class="task-footer p-2 bg-light row mr-0">
           <span>
             {{item.trains.toString()}}
           </span>

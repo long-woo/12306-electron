@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="form-row form-group sticky-top bg-white">
-      <div class="col-sm-8 form-inline">
+      <div class="col-sm-7 form-inline">
         <b-autocomplete class="col pl-sm-0 pr-sm-0" inputClass="br-rounded-0" placeholder="输入出发地" v-model="fromCity" :dropdownData="stationData" @onSelect="selectFromCity"></b-autocomplete>
         <div class="col-auto pl-sm-0 pr-sm-0">
           <b-button variant="info" class="bs-input-center waves-effect" @click="changeCity">
@@ -13,31 +13,32 @@
       <div class="col-sm-3">
         <b-date-picker ref="rideDate" @change="changeDate"></b-date-picker>
       </div>
-      <div class="col-sm-1">
+      <div class="col-sm-2 text-right">
         <b-button variant="info" class="waves-effect" @click="queryTrain">
           <i class="iconfont icon-search"></i>
+          <span>查询</span>
         </b-button>
       </div>
     </div>
     <div>
-      <b-table empty-text="没有找到车次^~^" :fields="fields" :items="ticketData" head-variant="default sticky-top" striped hover show-empty ref="tbTrain" @row-clicked="rowClick">
-        <template slot="checkNo" scope="row">
+      <b-table empty-text="没有找到车次^~^" :fields="fields" :items="ticketData" head-variant="default bg-info text-white" inverse striped hover show-empty ref="tbTrain" @row-clicked="rowClick">
+        <template slot="checkNo" slot-scope="row">
           <div class="checkbox icheck-info waves-effect">
             <input type="checkbox" :id="`chk_${row.index}`" v-model="chkTrains" :value="row.item.trainCode" />
             <label :for="`chk_${row.index}`"></label>
           </div>
         </template>
-        <template slot="trainCode" scope="row">{{row.value}}</template>
-        <template slot="from" scope="row">
+        <template slot="trainCode" slot-scope="row">{{row.value}}</template>
+        <template slot="from" slot-scope="row">
           <p class="mb-0">{{row.item.fromCityName}}</p>
           <p class="mb-0 font-size-14">{{row.item.departureTime}}</p>
         </template>
-        <template slot="to" scope="row">
+        <template slot="to" slot-scope="row">
           <p class="mb-0">{{row.item.toCityName}}</p>
           <p class="mb-0 font-size-14">{{row.item.arrivalTime}}</p>
         </template>
-        <template slot="useTime" scope="row">{{row.value}}</template>
-        <template slot="seatTypes" scope="row">
+        <template slot="useTime" slot-scope="row">{{row.value}}</template>
+        <template slot="seatTypes" slot-scope="row">
           <p class="mb-0 font-size-14">{{row.value}}</p>
         </template>
       </b-table>
@@ -58,7 +59,7 @@ export default {
       toCity: null,
       // table option
       fields: {
-        checkNo: {label: '', class: 'text-center align-middle', thStyle: 'width: 20px;'},
+        checkNo: {label: ' ', class: 'text-center align-middle', thStyle: 'width: 20px;'},
         trainCode: {label: '车次', sortable: true, class: 'align-middle'},
         from: {label: '出发地', class: 'align-middle'},
         to: {label: '目的地', class: 'align-middle'},

@@ -36,6 +36,12 @@ body {
   overflow: hidden;
 }
 
+input,
+a,
+.btn {
+  -webkit-app-region: no-drag;
+}
+
 a:focus {
   outline: none;
 }
@@ -111,6 +117,12 @@ label {
 
 .ani-slide-down {
   animation: slideDown 0.3s ease forwards;
+}
+
+.form-control:focus,
+.sorting {
+  box-shadow: 0 0 0 transparent;
+  outline: none;
 }
 
 @keyframes slideUp {

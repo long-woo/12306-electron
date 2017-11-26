@@ -8,6 +8,10 @@ image: Visual Studio 2017
 platform:
   - x64
 
+environment:
+  GH_TOKEN:
+    secure: b97e6efd5ebe0a03d54ef20557b077fbed2dde18
+
 cache:
   - node_modules
   - '%APPDATA%\npm-cache'
@@ -18,7 +22,7 @@ init:
   - git config --global core.autocrlf input
 
 install:
-  - ps: Install-Product node 8 x64
+  - ps: Install-Product node 9 x64
   - choco install yarn --ignore-dependencies
   - git reset --hard HEAD
   - yarn

@@ -188,6 +188,7 @@ export default {
   height: 15rem;
   margin-top: -15rem;
   padding-bottom: 2.9rem;
+  width: 100%;
 }
 
 .task-add-panel-hide {
