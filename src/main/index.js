@@ -20,9 +20,11 @@ function createWindow () {
    * Initial window options
    */
   mainWindow = new BrowserWindow({
-    height: 563,
+    height: 600,
+    minHeight: 600,
     useContentSize: true,
-    width: 1000,
+    width: process.env.NODE_ENV === 'development' ? 1000 : 888,
+    minWidth: 700,
     titleBarStyle: 'hidden',
     frameLess: true,
     show: true,

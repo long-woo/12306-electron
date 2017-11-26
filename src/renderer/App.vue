@@ -43,7 +43,7 @@ a,
 }
 
 a:focus {
-  outline: none;
+  outline: none !important;
 }
 
 .table {
@@ -55,20 +55,20 @@ button {
 }
 
 label {
-  margin-bottom: 0;
+  margin-bottom: 0 !important;
 }
 
 .font-size-14{
-  font-size: 0.875rem;
+  font-size: 0.875rem !important;
 }
 
 #nprogress .bar {
-  background-color: #17a2b8;
+  background-color: #17a2b8 !important;
 }
 
 #nprogress .spinner,
 #nprogress .bar {
-  z-index: 999999;
+  z-index: 999999 !important;
 }
 
 #nprogress .spinner-icon {
@@ -77,20 +77,20 @@ label {
 }
 
 .radio, .checkbox {
-  margin-bottom: 0;
+  margin-bottom: 0 !important;
 }
 
 .radio > input[type="radio"]:first-child:checked + label::before,
 .checkbox > input[type="checkbox"]:first-child:checked + label::before,
 .radio > input[type="radio"]:first-child:checked + input[type="hidden"] + label::before,
 .checkbox > input[type="checkbox"]:first-child:checked + input[type="hidden"] + label::before {
-  content: "\e7bc";
-  font-family: 'iconfont';
-  font-size: 1.2rem;
+  content: "\e7bc" !important;
+  font-family: 'iconfont' !important;
+  font-size: 1.2rem !important;
 }
 
 .iconfont {
-  display: inline-block;
+  display: inline-block !important;
   transition: all 0.3s ease;
 }
 
@@ -121,7 +121,7 @@ label {
 
 .form-control:focus,
 .sorting {
-  box-shadow: 0 0 0 transparent;
+  box-shadow: 0 0 0 transparent !important;
   outline: none;
 }
 
