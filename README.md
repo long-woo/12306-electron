@@ -2,7 +2,7 @@
 
 > 使用electron-vue构建12306跨平台（Mac、Windows、Linux）客户端
 
-[程序效果（Mac）](https://raw.githubusercontent.com/woo-long/12306-electron/master/app_snapshot.png)
+![程序效果（Mac）](https://raw.githubusercontent.com/woo-long/12306-electron/master/app_snapshot.png)
 
 #### Build Setup
 
