@@ -1,6 +1,8 @@
 'use strict'
 
-import { app, BrowserWindow } from 'electron'
+import {app, BrowserWindow, Menu, autoUpdater} from 'electron'
+
+// const menu = electron.Menu
 
 /**
  * Set `__static` path to static files in production
@@ -14,6 +16,60 @@ let mainWindow
 const winURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080`
   : `file://${__dirname}/index.html`
+
+// 菜单模版
+const menusTemplate = [
+  {}
+]
+
+// mac os
+if (process.platform === 'darwin') {
+  const appName = app.getName()
+  const appVersion = app.getVersion()
+
+  menusTemplate.unshift({
+    label: appName,
+    submenu: [{
+      label: `关于${appName}`,
+      role: 'about'
+    }, {
+      label: `当前版本${appVersion}`,
+      enabled: false
+    }, {
+      label: '正在检查更新...',
+      enabled: false,
+      key: 'checkingForUpdate'
+    }, {
+      label: '检查更新',
+      visible: false,
+      key: 'checkForUpdate',
+      click: () => {
+        autoUpdater.checkForUpdates()
+      }
+    }, {
+      label: '重启并安装更新',
+      enabled: true,
+      visible: false,
+      key: 'restartToUpdate',
+      click: () => {
+        autoUpdater.quitAndInstall()
+      }
+    }, {
+      type: 'separator'
+    }, {
+      label: `退出${appName}`,
+      accelerator: 'Command+Q',
+      click: () => {
+        app.quit()
+      }
+    }]
+  })
+}
+
+// windows os
+if (process.platform === 'win32') {
+
+}
 
 function createWindow () {
   /**
@@ -38,9 +94,11 @@ function createWindow () {
   mainWindow.on('closed', () => {
     mainWindow = null
   })
-}
 
-app.commandLine.appendSwitch('--disable-web-security')
+  // 设置菜单
+  const menu = Menu.buildFromTemplate(menusTemplate)
+  Menu.setApplicationMenu(menu)
+}
 
 app.on('ready', createWindow)
 
