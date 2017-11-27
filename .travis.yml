@@ -33,5 +33,4 @@ script:
 - yarn run build
 branches:
   only:
-  - master
   - dev

@@ -2,9 +2,11 @@
 
 > 使用electron-vue构建12306跨平台（Mac、Windows、Linux）客户端
 
+[![Build Status](https://travis-ci.org/woo-long/12306-electron.svg?branch=dev)](https://travis-ci.org/woo-long/12306-electron)
+
 ![程序效果（Mac）](https://raw.githubusercontent.com/woo-long/12306-electron/master/app_snapshot.png)
 
-#### Build Setup
+## Build Setup
 
 ``` bash
 # install dependencies
@@ -28,7 +30,7 @@ This project was generated with [electron-vue](https://github.com/SimulatedGREG/
 
 ---
 
-#### 感谢
+## 感谢
 
 - [electron-vue](https://github.com/SimulatedGREG/electron-vue)
 - [bootstrap-vue](https://github.com/bootstrap-vue/bootstrap-vue)
