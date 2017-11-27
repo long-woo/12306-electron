@@ -1,7 +1,7 @@
 {
   "name": "12306-electron",
   "version": "1.0.0",
-  "author": "Jason Long <longwunet@gmail.com>",
+  "author": "long.woo <longwunet@gmail.com>",
   "description": "使用electron-vue构建12306跨平台客户端",
   "bugs": {
     "url": "https://github.com/woo-long/12306-electron/issues"
