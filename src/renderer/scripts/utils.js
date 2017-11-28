@@ -134,6 +134,13 @@ const task = {
     Vue.store.dispatch('setTaskDataStatus', taskStatusInfo)
   },
   /**
+   * 休眠
+   * @param {*} time 时间（毫秒）
+   */
+  sleep (time) {
+    return new Promise(resolve => setTimeout(resolve, time))
+  },
+  /**
    * 开始提交订单
    * @param {*} trainData 车次
    * @param {*} trainSeats 座位
@@ -225,15 +232,16 @@ const task = {
 
         // 确认提交订单（不需要验证码）
         const awaitTime = parseInt(orderResult.captchaCodeTime / 3)
-        const confirmResult = await this.awaitConfirmSubmitOrder(3, awaitTime, train, seatCode, passengers, key, '', index)
+        await this.sleep(awaitTime * 3)
+        const confirmResult = await this.confirmSubmitOrder(train, seatCode, passengers, key, '', index)
         console.log(confirmResult)
-        // if (confirmResult.code < 1) {
-        //   if (confirmResult.code === 0) {
-        //     isStop = true
-        //     return
-        //   }
-        //   continue
-        // }
+        if (confirmResult.code < 1) {
+          if (confirmResult.code === 0) {
+            isStop = true
+            return
+          }
+          continue
+        }
       }
     }
   },
@@ -396,10 +404,8 @@ const task = {
       }
     }, 500)
   },
-  confirmOrderTimeFunc: null,
   /**
    * 等待确认提交订单
-   * @param {*} count
    * @param {*} time
    * @param {*} train
    * @param {*} seatCode
@@ -408,16 +414,14 @@ const task = {
    * @param {*} captchCode
    * @param {*} index
    */
-  awaitConfirmSubmitOrder (count, time, train, seatCode, passengers, key, captchCode, index) {
-    if (count === 0) {
-      clearTimeout(this.confirmOrderTimeFunc)
-      return this.confirmSubmitOrder(train, seatCode, passengers, key, captchCode, index)
-    }
+  awaitConfirmSubmitOrder (time, train, seatCode, passengers, key, captchCode, index) {
+    return new Promise(resolve => {
+      setTimeout(async () => {
+        const res = await this.confirmSubmitOrder(train, seatCode, passengers, key, captchCode, index)
 
-    count--
-    this.confirmOrderTimeFunc = setTimeout(() => {
-      this.awaitConfirmSubmitOrder(count, time, train, seatCode, passengers, key, captchCode, index)
-    }, time)
+        resolve(res)
+      }, time * 3)
+    })
   }
 }
 
