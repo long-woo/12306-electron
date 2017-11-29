@@ -205,6 +205,7 @@ const task = {
         }
 
         const key = orderResult.ticketData[1]
+        const awaitTime = parseInt(orderResult.captchaCodeTime)
 
         // 是否要验证码
         if (orderResult.isCaptchaCode) {
@@ -214,6 +215,7 @@ const task = {
             seatCode,
             passengers,
             key,
+            awaitTime,
             index
           }
 
@@ -231,9 +233,7 @@ const task = {
         }
 
         // 确认提交订单（不需要验证码）
-        const awaitTime = parseInt(orderResult.captchaCodeTime / 3)
-        await this.sleep(awaitTime * 3)
-        const confirmResult = await this.confirmSubmitOrder(train, seatCode, passengers, key, '', index)
+        const confirmResult = await this.confirmSubmitOrder(train, seatCode, passengers, key, '', index, awaitTime)
         console.log(confirmResult)
         if (confirmResult.code < 1) {
           if (confirmResult.code === 0) {
@@ -297,8 +297,9 @@ const task = {
    * @param {*} key key
    * @param {*} captchCode 验证码
    * @param {*} index 任务索引号
+   * @param {*} awaitTime 提交订单的等待时间
    */
-  async confirmSubmitOrder (train, seatCode, passengers, key, captchCode, index) {
+  async confirmSubmitOrder (train, seatCode, passengers, key, captchCode, index, awaitTime) {
     const seatText = Vue.api.getSeatTypeInfo(seatCode)
     const passengerTicket = passengers.passengerTickets.replace(/(seatcode)/gi, seatCode)
     const formData = {
@@ -314,11 +315,11 @@ const task = {
     }
 
     this.setStatus(index, `正在确认提交【${train.trainCode}】车次【${seatText}】...`)
+    // 由于12306提交订单的安全周期问题，需要等待一定时间
+    await this.sleep(awaitTime)
+
     let res = await Vue.api.confirmOrderQueue(formData)
     let data = {}
-    let awaitTimeFunc = null
-    let title = '提示'
-    let content = '哎呀！！！被挤下线了，请重新登录'
 
     if (res.code < 1) {
       this.setStatus(index, `【${train.trainCode}】车次【${seatText}】预订失败...`)
@@ -327,8 +328,8 @@ const task = {
       if (res.message.indexOf('登录') > -1) {
         this.setStatus(index, '您的登录状态已失效，请重新登录')
         Vue.eventBus.$emit('openDialog', 'loginModal')
-        notification.show(title, {
-          body: content,
+        notification.show('提示', {
+          body: '哎呀！！！被挤下线了，请重新登录',
           tag: 'order'
         })
 
@@ -342,85 +343,102 @@ const task = {
 
     this.setStatus(index, `【${train.trainCode}】车次【${seatText}】等待出票...`)
     // 获取订单出票时间
-    clearInterval(awaitTimeFunc)
-    awaitTimeFunc = setInterval(async () => {
-      res = await Vue.api.getOrderAwaitTime()
+    return this.getOrderAwaitTime(train, seatText, index)
+  },
+  /**
+   * 获取订单出票时间
+   * @param {*} train 车次
+   * @param {*} seatText 座位
+   * @param {*} index 任务索引号
+   */
+  getOrderAwaitTime (train, seatText, index) {
+    return new Promise(resolve => {
+      let awaitTimeFunc = null
+      let data = {}
+      let title = '提示'
+      let content = '哎呀！！！被挤下线了，请重新登录'
 
-      if (res.code < 1) {
-        Vue.alert(res.message)
+      clearInterval(awaitTimeFunc)
 
-        if (res.message.indexOf('登录') > -1) {
-          clearInterval(awaitTimeFunc)
+      awaitTimeFunc = setInterval(async () => {
+        const res = await Vue.api.getOrderAwaitTime()
 
-          this.setStatus(index, '您的登录状态已失效，请重新登录')
-          Vue.eventBus.$emit('openDialog', 'loginModal')
-          notification.show(title, {
-            body: content,
-            tag: 'order'
-          })
+        if (res.code < 1) {
+          Vue.alert(res.message)
 
-          data.code = 0
-          return data
+          if (res.message.indexOf('登录') > -1) {
+            clearInterval(awaitTimeFunc)
+
+            this.setStatus(index, '您的登录状态已失效，请重新登录')
+            Vue.eventBus.$emit('openDialog', 'loginModal')
+            notification.show(title, {
+              body: content,
+              tag: 'order'
+            })
+
+            data.code = 0
+            resolve(data)
+          }
+
+          if (res.message.indexOf('出票超时') > -1) {
+            clearInterval(awaitTimeFunc)
+
+            this.setStatus(index, `【${train.trainCode}】车次【${seatText}出票失败...`)
+            notification.show(title, {
+              body: `【${train.trainCode}】出票失败！原因：${res.message}`,
+              tag: 'order'
+            })
+
+            data.code = -2
+            resolve(data)
+          }
+
+          data.code = -1
+          resolve(data)
         }
 
-        if (res.message.indexOf('出票超时') > -1) {
+        // 出票成功
+        if (res.orderId) {
+          title = 'WOW，恭喜您抢到票了～'
+          content = `您的订单号：【${res.orderId}】，请在30分钟内完成支付`
+
           clearInterval(awaitTimeFunc)
 
-          this.setStatus(index, `【${train.trainCode}】车次【${seatText}出票失败...`)
+          this.setStatus(index, `【${train.trainCode}】车次【${seatText}】出票成功...`)
+          Vue.swal({
+            title: title,
+            text: content,
+            icon: 'success',
+            button: '关闭'
+          })
           notification.show(title, {
-            body: `【${train.trainCode}】出票失败！原因：${res.message}`,
-            tag: 'order'
+            body: content
           })
 
-          data.code = -2
-          return data
+          data.code = 1
+          data.orderId = res.orderId
+          resolve(data)
         }
-
-        // data.code = -1
-        // return data
-      }
-
-      // 出票成功
-      if (res.orderId) {
-        title = 'WOW，恭喜您抢到票了～'
-        content = `您的订单号：【${res.orderId}】，请在30分钟内完成支付`
-
-        clearInterval(awaitTimeFunc)
-
-        this.setStatus(index, `【${train.trainCode}】车次【${seatText}】出票成功...`)
-        Vue.swal({
-          title: title,
-          text: content,
-          icon: 'success',
-          button: '关闭'
-        })
-        notification.show(title, {
-          body: content
-        })
-
-        data.code = 1
-        data.orderId = res.orderId
-        return data
-      }
-    }, 500)
+      }, 500)
+    })
   },
   /**
    * 等待确认提交订单
-   * @param {*} time
-   * @param {*} train
-   * @param {*} seatCode
-   * @param {*} passengers
-   * @param {*} key
-   * @param {*} captchCode
-   * @param {*} index
+   * @param {*} train 车次
+   * @param {*} seatCode 座位代码
+   * @param {*} passengers 乘客
+   * @param {*} key 提交订单所需的key
+   * @param {*} captchCode 验证码
+   * @param {*} index 任务索引号
+   * @param {*} time 提交订单的等待时间
    */
-  awaitConfirmSubmitOrder (time, train, seatCode, passengers, key, captchCode, index) {
+  awaitConfirmSubmitOrder (train, seatCode, passengers, key, captchCode, index, time) {
     return new Promise(resolve => {
       setTimeout(async () => {
         const res = await this.confirmSubmitOrder(train, seatCode, passengers, key, captchCode, index)
 
         resolve(res)
-      }, time * 3)
+      }, time)
     })
   }
 }
