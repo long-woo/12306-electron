@@ -2,8 +2,6 @@
 
 import {app, BrowserWindow, Menu, autoUpdater} from 'electron'
 
-// const menu = electron.Menu
-
 /**
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
@@ -18,9 +16,7 @@ const winURL = process.env.NODE_ENV === 'development'
   : `file://${__dirname}/index.html`
 
 // 菜单模版
-const menusTemplate = [
-  {}
-]
+const menusTemplate = []
 
 // mac os
 if (process.platform === 'darwin') {
@@ -96,6 +92,8 @@ function createWindow () {
   })
 
   // 设置菜单
+  if (!menusTemplate.length) return
+
   const menu = Menu.buildFromTemplate(menusTemplate)
   Menu.setApplicationMenu(menu)
 }

@@ -6,6 +6,10 @@
   "bugs": {
     "url": "https://github.com/woo-long/12306-electron/issues"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/woo-long/12306-electron.git"
+  },
   "license": "MIT",
   "keywords": [
     "12306",
@@ -35,9 +39,7 @@
       "output": "build"
     },
     "files": [
-      "dist/electron",
-      "node_modules/",
-      "package.json"
+      "dist/electron/**/*"
     ],
     "dmg": {
       "contents": [
