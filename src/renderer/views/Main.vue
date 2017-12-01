@@ -22,7 +22,7 @@
       <router-view ref="views"></router-view>
     </main>
     <footer class="fixed-bottom border border-info border-left-0 border-right-0 border-bottom-0 bg-white">
-      <div class="d-flex flex-row font-size-14">
+      <div class="d-flex flex-row justify-content-between font-size-14">
         <div class="p-2">
           <div class="text-info" v-if="loginName">
             <i class="iconfont icon-user"></i>
@@ -32,6 +32,12 @@
           <a class="text-info waves-effect" href="javascript:;" v-b-modal.loginModal v-else>
             <i class="iconfont icon-user"></i>
             <span>未登录</span>
+          </a>
+        </div>
+        <div class="p-2">
+          <a class="text-info waves-effect" href="javascript:;" @click="openAbout">
+            <i class="iconfont icon-help"></i>
+            <span>关于</span>
           </a>
         </div>
       </div>
@@ -139,7 +145,12 @@ export default {
         }
       }
     },
-    // 注销
+    // 关于
+    openAbout () {
+      console.log(process.env)
+      this.$swal(`${process.env.npm_package_name}`, `版本 ${process.env.npm_package_version}（${new Date().getFullYear()}）<br/>${process.env.npm_package_author_name}`, require('../assets/logo.png'))
+    },
+    // 退出登录
     logOff () {
 
     }
