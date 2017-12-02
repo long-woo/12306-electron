@@ -26,10 +26,10 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
   },
   overrides: [{
-    files: ['dist/electron/*.js'],
-    excludedFiles: 'iconfont.js',
-    rules: {
-      quotes: [ 2, 'single' ]
-    }
+    files: ['dist/electron/*.js', 'iconfont.js']
+    // excludedFiles: 'iconfont.js',
+    // rules: {
+    //   quotes: [ 2, 'single' ]
+    // }
   }]
 }

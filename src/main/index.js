@@ -78,7 +78,7 @@ function createWindow () {
     width: process.env.NODE_ENV === 'development' ? 1000 : 888,
     minWidth: 700,
     titleBarStyle: 'hidden',
-    frameLess: true,
+    frame: false,
     show: true,
     webPreferences: {
       webSecurity: false

@@ -147,8 +147,14 @@ export default {
     },
     // 关于
     openAbout () {
-      console.log(process.env)
-      this.$swal(`${process.env.npm_package_name}`, `版本 ${process.env.npm_package_version}（${new Date().getFullYear()}）<br/>${process.env.npm_package_author_name}`, require('../assets/logo.png'))
+      const appInfo = this.$electron.remote.app
+      const pakInfo = this.$electron.remote.require('../../package.json')
+      const author = pakInfo.author.split(' ') || ['long.woo']
+      const authorName = author[0]
+
+      this.$swal(`${appInfo.getName()}`, `版本 ${appInfo.getVersion()}（${new Date().getFullYear()}）- ${authorName}`, require('../assets/logo.png'), {
+        buttons: false
+      })
     },
     // 退出登录
     logOff () {
