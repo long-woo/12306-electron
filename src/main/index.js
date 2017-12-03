@@ -26,9 +26,9 @@ if (process.platform === 'darwin') {
   menusTemplate.unshift({
     label: appName,
     submenu: [{
-      label: `关于${appName}`,
-      role: 'about'
-    }, {
+    //   label: `关于${appName}`,
+    //   role: 'about'
+    // }, {
       label: `当前版本${appVersion}`,
       enabled: false
     }, {

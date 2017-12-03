@@ -155,7 +155,7 @@ export default {
 
 <style scoped>
 .task-button-box {
-  z-index: 2048;
+  z-index: 1031;
 }
 
 .btn-add-task {

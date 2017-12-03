@@ -44,6 +44,7 @@
     </footer>
     <login ref="loginModal"></login>
     <captcha-code :type="captchaCodeType" @validComplete="validComplete"></captcha-code>
+    <about :show.sync="showAbout" />
   </div>
 </template>
 
@@ -54,7 +55,8 @@ export default {
   name: 'Main',
   components: {
     Login: () => import('./Login'),
-    CaptchaCode: () => import('./CaptchaCode')
+    CaptchaCode: () => import('./CaptchaCode'),
+    About: () => import('./About')
   },
   data () {
     return {
@@ -64,7 +66,8 @@ export default {
         { text: '我的订单', active: false, activeClass: '', icon: 'order-manager', to: '/myorder' }
       ],
       captchaCodeType: 'login',
-      loginName: ''
+      loginName: '',
+      showAbout: false
     }
   },
   mounted () {
@@ -147,18 +150,11 @@ export default {
     },
     // 关于
     openAbout () {
-      const appInfo = this.$electron.remote.app
-      const pakInfo = this.$electron.remote.require('../../package.json')
-      const author = pakInfo.author.split(' ') || ['long.woo']
-      const authorName = author[0]
-
-      this.$swal(`${appInfo.getName()}`, `版本 ${appInfo.getVersion()}（${new Date().getFullYear()}）- ${authorName}`, require('../assets/logo.png'), {
-        buttons: false
-      })
+      this.showAbout = true
     },
     // 退出登录
     logOff () {
-
+      alert('1')
     }
   }
 }

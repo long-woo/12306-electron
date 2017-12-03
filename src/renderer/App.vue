@@ -120,9 +120,14 @@ label {
 }
 
 .form-control:focus,
-.sorting {
+.sorting,
+.close:focus {
   box-shadow: 0 0 0 transparent !important;
   outline: none;
+}
+
+.swal-about .swal-icon--custom {
+  width: 6rem;
 }
 
 @keyframes slideUp {

@@ -1,22 +1,129 @@
 <template>
-  <div class="swal-modal">
-    <div class="swal-icon swal-icon--custom">
-      <img src="data:image/png;base64,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">
+  <div class="swal-about-overlay" :class="{'swal-about-show': show}" tabindex="-1">
+    <div class="swal-about-modal">
+      <button type="button" class="close mr-1" aria-label="Close" @click="close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <div class="swal-icon swal-icon--custom">
+        <img :src="appIcon">
       </div>
-      <div class="swal-title">12306-electron</div>
-      <div class="swal-text">版本 1.0.0（2017）&lt;br/&gt;long.woo</div>
-      <div class="swal-footer">
-        <div class="swal-button-container">
-
-    <button class="swal-button swal-button--confirm">OK</button>
-
-    <div class="swal-button__loader">
-      <div></div>
-      <div></div>
-      <div></div>
+      <div class="swal-title pt-0">{{appName}}</div>
+      <div class="swal-text mb-0 text-center">
+        <p class="mb-1">版本&nbsp;{{appVersion}}（<a href="javascript:;" @click="openUrl('https://github.com/woo-long/12306-electron/releases')">检查更新</a>）</p>
+        <p>Copyright&nbsp;&copy;&nbsp;{{currentYear}}&nbsp;<a href="javascript:;" class="text-info" @click="openUrl('https://about.me/longwu')">{{appAuthorName}}</a></p>
+      </div>
     </div>
-
-  </div>
-  </div>
   </div>
 </template>
+
+<script>
+export default {
+  name: 'About',
+  data () {
+    return {
+      appIcon: require('../assets/logo.png'),
+      appName: '',
+      appVersion: '',
+      appAuthorName: '',
+      currentYear: ''
+    }
+  },
+  props: {
+    show: {
+      type: Boolean,
+      default: false
+    }
+  },
+  mounted () {
+    const appInfo = this.$electron.remote.app
+    const pakInfo = this.$electron.remote.require('../../package.json')
+    const author = pakInfo.author.split(' ') || ['long.woo']
+    const authorName = author[0]
+
+    this.appName = appInfo.getName()
+    this.appVersion = appInfo.getVersion()
+    this.appAuthorName = authorName
+    this.currentYear = new Date().getFullYear()
+  },
+  methods: {
+    // 打开url
+    openUrl (url) {
+      this.$electron.shell.openExternal(url)
+    },
+    // 关闭
+    close () {
+      this.$emit('update:show', false)
+    }
+  }
+}
+</script>
+
+<style scoped>
+.swal-about-overlay {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 0;
+  overflow-y: scroll;
+  background-color: rgba(0,0,0,.4);
+  z-index: 10000;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .3s;
+}
+
+.swal-about-overlay:before {
+  content: " ";
+  display: inline-block;
+  vertical-align: middle;
+  height: 100%;
+}
+
+.swal-about-show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.swal-about-show .swal-about-modal {
+  opacity: 1;
+  pointer-events: auto;
+  box-sizing: border-box;
+  -webkit-animation: showSweetAlert .3s;
+  animation: showSweetAlert .3s;
+  will-change: transform;
+}
+
+.swal-about-modal {
+  width: 478px;
+  opacity: 0;
+  pointer-events: none;
+  background-color: #fff;
+  text-align: center;
+  border-radius: 5px;
+  position: static;
+  margin: 20px auto;
+  display: inline-block;
+  vertical-align: middle;
+  -webkit-transform: scale(1);
+  transform: scale(1);
+  -webkit-transform-origin: 50% 50%;
+  transform-origin: 50% 50%;
+  z-index: 10001;
+  transition: opacity .2s,-webkit-transform .3s;
+  transition: transform .3s,opacity .2s;
+  transition: transform .3s,opacity .2s,-webkit-transform .3s;
+}
+
+.swal-icon--custom {
+  width: 6rem;
+}
+
+@media (max-width: 500px) {
+  .swal-about-modal {
+      width: calc(100% - 20px);
+  }
+}
+</style>
