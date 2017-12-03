@@ -5,7 +5,7 @@
 [![Build Status-(trvis)](https://travis-ci.org/woo-long/12306-electron.svg?branch=dev)](https://travis-ci.org/woo-long/12306-electron)
 [![Build status-(appveyor)](https://ci.appveyor.com/api/projects/status/kp0lj6hh4cdkusxg?svg=true)](https://ci.appveyor.com/project/Woo-Long/12306-electron)
 
-![程序效果（Mac）](https://raw.githubusercontent.com/woo-long/12306-electron/master/app_snapshot.png)
+![程序效果（Mac）](https://raw.githubusercontent.com/woo-long/12306-electron/dev/app_snapshot.png)
 
 ## Build Setup
 
