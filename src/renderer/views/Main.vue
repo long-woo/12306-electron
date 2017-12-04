@@ -154,7 +154,6 @@ export default {
     },
     // 退出登录
     logOff () {
-      alert('1')
     }
   }
 }

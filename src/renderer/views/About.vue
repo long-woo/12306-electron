@@ -67,16 +67,15 @@ export default {
   right: 0;
   text-align: center;
   font-size: 0;
-  overflow-y: scroll;
+  overflow-y: hidden;
   background-color: rgba(0,0,0,.4);
-  z-index: 10000;
-  pointer-events: none;
   opacity: 0;
   transition: opacity .3s;
+  display: none;
 }
 
 .swal-about-overlay:before {
-  content: " ";
+  content: ' ';
   display: inline-block;
   vertical-align: middle;
   height: 100%;
@@ -84,12 +83,12 @@ export default {
 
 .swal-about-show {
   opacity: 1;
-  pointer-events: auto;
+  display: block;
+  z-index: 10000;
 }
 
 .swal-about-show .swal-about-modal {
   opacity: 1;
-  pointer-events: auto;
   box-sizing: border-box;
   -webkit-animation: showSweetAlert .3s;
   animation: showSweetAlert .3s;
@@ -99,7 +98,6 @@ export default {
 .swal-about-modal {
   width: 478px;
   opacity: 0;
-  pointer-events: none;
   background-color: #fff;
   text-align: center;
   border-radius: 5px;
