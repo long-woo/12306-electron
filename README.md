@@ -11,7 +11,7 @@
 
 ``` bash
 # install dependencies
-npm install
+npm install   # or use `yarn`
 
 # serve with hot reload at localhost:9080
 npm run dev
@@ -33,6 +33,7 @@ This project was generated with [electron-vue](https://github.com/SimulatedGREG/
 
 ## 感谢
 
+- [vue](https://github.com/vuejs/vue)
 - [electron-vue](https://github.com/SimulatedGREG/electron-vue)
 - [bootstrap-vue](https://github.com/bootstrap-vue/bootstrap-vue)
 - [icheck-bootstrap](https://github.com/bantikyan/icheck-bootstrap)
