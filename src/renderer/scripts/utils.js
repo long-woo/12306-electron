@@ -234,7 +234,7 @@ const task = {
 
         // 确认提交订单（不需要验证码）
         const confirmResult = await this.confirmSubmitOrder(train, seatCode, passengers, key, '', index, awaitTime)
-        console.log(confirmResult)
+
         if (confirmResult.code < 1) {
           if (confirmResult.code === 0) {
             isStop = true
@@ -403,6 +403,10 @@ const task = {
           content = `您的订单号：【${res.orderId}】，请在30分钟内完成支付`
 
           clearInterval(awaitTimeFunc)
+
+          // 开发者为您发来一个彩蛋
+          // const audio = document.querySelector('#audioEgg')
+          // audio.play()
 
           this.setStatus(index, `【${train.trainCode}】车次【${seatText}】出票成功...`)
           Vue.swal({

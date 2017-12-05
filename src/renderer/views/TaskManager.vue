@@ -10,7 +10,7 @@
             {{item.passengers.passengerName}}
           </span>
         </div>
-        <div class="task-footer p-2 bg-light row mr-0">
+        <div class="task-footer p-2 bg-light row mr-0 pl-3">
           <span>
             {{item.trains.toString()}}
           </span>
