@@ -187,10 +187,6 @@ main {
   margin-bottom: 0;
 }
 
-.container-fluid {
-  padding-top: 1rem;
-}
-
 .badge-count {
   position: absolute;
   top: 1rem;

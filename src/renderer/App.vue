@@ -26,11 +26,16 @@ export default {
   color: #fff;
 }
 
+::-webkit-scrollbar {
+  width: 0.3rem;
+}
+
 html,body {
   height: 100%;
 }
 
 body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Microsoft YaHei";
   -webkit-user-select: none;
   -webkit-app-region: drag;
   overflow: hidden;
@@ -38,7 +43,14 @@ body {
 
 input,
 a,
-.btn {
+button,
+tr,
+thead,
+.checkbox,
+.img-captcha,
+.btn,
+.datepicker-overlay,
+.btn-task-del {
   -webkit-app-region: no-drag;
 }
 

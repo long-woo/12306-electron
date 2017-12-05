@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="mt-3">
     <div class="form-row form-group sticky-top bg-white">
       <div class="col-sm-7 form-inline">
         <b-autocomplete class="col pl-sm-0 pr-sm-0" inputClass="br-rounded-0" placeholder="输入出发地" v-model="fromCity" :dropdownData="stationData" @onSelect="selectFromCity"></b-autocomplete>

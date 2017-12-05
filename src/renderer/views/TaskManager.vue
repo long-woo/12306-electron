@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="mt-3">
     <div class="row" v-for="(item, index) in taskData" :key="index">
       <div class="col-10 border border-info border-left-0 border-right-0 border-bottom-0 pr-0">
         <div class="task-header p-2 bg-info text-white row mr-0">

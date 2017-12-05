@@ -169,6 +169,11 @@ export default {
   position: absolute;
 }
 
+.btn-add-task a {
+  display: block;
+  height: 100%;
+}
+
 .btn-add-task:hover {
   background-color: rgba(23, 162, 184, 0.8);
 }
