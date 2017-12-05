@@ -7,10 +7,21 @@
 <script>
 export default {
   name: 'App',
-  async created () {
-    // 查票url
-    const res = await this.$api.getQueryUrl()
-    this.$store.dispatch('setQueryUrl', res)
+  created () {
+    this.checkTickUrl()
+  },
+  methods: {
+    // 检查url是否可用
+    async checkTickUrl () {
+      const res = await this.$api.getQueryUrl()
+
+      if (res) {
+        this.$store.dispatch('setQueryUrl', res)
+        return
+      }
+
+      this.checkTickUrl()
+    }
   }
 }
 </script>
