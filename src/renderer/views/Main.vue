@@ -108,7 +108,7 @@ export default {
       const loginInfo = utils.getLoginModel(loginName)
 
       if (!loginInfo.length) return
-      // utils.notification.show('', {body: '登录成功'})
+
       this.$store.dispatch('setLoginModel', loginInfo[0])
       this.getPassengers()
     },
@@ -153,7 +153,9 @@ export default {
       this.showAbout = true
     },
     // 退出登录
-    logOff () {
+    async logOff () {
+      await this.$api.loginOff()
+      this.chkeckIsLogin()
     }
   }
 }

@@ -457,8 +457,8 @@ const notification = {
     title = title || '提示'
     option = Object.assign({
       body: '', // 通知内容
-      // icon: null, // 通知中显示的图标的URL
-      // image: null, // 通知中显示的图像的URL
+      icon: null || require('../assets/logo.png'), // 通知中显示的图标的URL
+      // image: null || require('../assets/logo.png'), // 通知中显示的图像的URL
       data: null, // 通知关联的任务类型的数据
       requireInteraction: false, // 通知保持有效不自动关闭，默认为false
       tag: null, // 识别标签，相同tag时只会打开同一个通知窗口

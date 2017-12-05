@@ -142,6 +142,16 @@ label {
   width: 6rem;
 }
 
+.bl-rounded-0{
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.br-rounded-0 {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
 @keyframes slideUp {
   from {
     transform: translateY(100%);

@@ -8,6 +8,7 @@ const urls = {
   loginAuthuam: '/passport/web/auth/uamtk', // POST
   loginAuthClient: '/otn/uamauthclient', // POST
   chkeckIsLogin: '/otn/login/checkUser', // POST
+  logOff: '/otn/login/loginOut', // GET
   getStationName: '/otn/resources/js/framework/station_name.js', // GET
   getTicket: '/otn/', // GET
   getPassengers: '/otn/confirmPassenger/getPassengerDTOs', // POST
@@ -185,6 +186,13 @@ const login = async (formData) => {
   loginResult = await common.loginAuth()
 
   return loginResult
+}
+
+/**
+ * 退出登录
+ */
+const loginOff = () => {
+  return Vue.http.get(urls.logOff)
 }
 
 /**
@@ -484,6 +492,7 @@ export default {
   getCaptchaCode,
   validCaptchaCode,
   login,
+  loginOff,
   getPassengers,
   chkeckIsLogin,
   autoSubmitOrder,

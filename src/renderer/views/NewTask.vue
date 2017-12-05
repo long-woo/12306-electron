@@ -180,22 +180,12 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .bs-input-center {
   border-radius: 0;
 }
 
 .bs-input-center:focus {
   box-shadow: 0 0 0 transparent;
-}
-
-.bl-rounded-0{
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-}
-
-.br-rounded-0 {
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
 }
 </style>
