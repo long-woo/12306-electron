@@ -399,8 +399,10 @@ const task = {
 
         // 出票成功
         if (res.orderId) {
+          const orderNo = res.orderId
+
           title = 'WOW，恭喜您抢到票了～'
-          content = `您的订单号：【${res.orderId}】，请在30分钟内完成支付`
+          content = `您的订单号：【${orderNo}】，请在30分钟内完成支付`
 
           clearInterval(awaitTimeFunc)
 
@@ -408,6 +410,7 @@ const task = {
           // const audio = document.querySelector('#audioEgg')
           // audio.play()
 
+          Vue.say(`${title}您的订单号：【${orderNo.replace(/\s*/g, '|')}】，请在30分钟内完成支付`)
           this.setStatus(index, `【${train.trainCode}】车次【${seatText}】出票成功...`)
           Vue.swal({
             title: title,
@@ -420,7 +423,7 @@ const task = {
           })
 
           data.code = 1
-          data.orderId = res.orderId
+          data.orderId = orderNo
           resolve(data)
         }
       }, 500)

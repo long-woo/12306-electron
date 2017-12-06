@@ -8,6 +8,7 @@
 export default {
   name: 'App',
   created () {
+    this.$say.speak('Hello！欢迎使用1|2|3|0|6-Electron，祝您购票成功')
     this.checkTickUrl()
   },
   methods: {
