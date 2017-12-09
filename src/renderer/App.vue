@@ -15,6 +15,10 @@ export default {
     ipcRender.send('checkUpdate')
     ipcRender.on('autoUpdateStatus', (event, res) => {
       this.$alert(res)
+
+      if (res.indexOf('发现') > -1) {
+        this.$electron.shell.openExternal('https://github.com/woo-long/12306-electron/releases')
+      }
     })
   },
   mounted () {

@@ -36,7 +36,7 @@ if (process.platform === 'darwin') {
       label: '检查更新',
       key: 'checkForUpdate',
       click: () => {
-        autoUpdater.checkForUpdates()
+        autoUpdater.checkForUpdatesAndNotify()
       }
     }, {
       label: '正在检查更新...',
@@ -119,7 +119,7 @@ app.on('activate', () => {
 })
 
 ipcMain.on('checkUpdate', (event, arg) => {
-  autoUpdater.checkForUpdates()
+  autoUpdater.checkForUpdatesAndNotify()
 })
 
 /**
@@ -133,25 +133,27 @@ autoUpdater.on('checking-for-update', () => {
   sendAutoUpdateStatus('正在检查更新...')
 })
 
-autoUpdater.on('update-available', (info) => {
-  sendAutoUpdateStatus('发现新版本～')
+autoUpdater.on('update-available', info => {
+  sendAutoUpdateStatus('发现新版本～，开始下载...')
+  // autoUpdater.downloadUpdate()
 })
 
-autoUpdater.on('update-not-available', (info) => {
+autoUpdater.on('update-not-available', info => {
   sendAutoUpdateStatus('已经是最新版本~')
 })
 
-autoUpdater.on('error', (errInfo) => {
-  sendAutoUpdateStatus(`更新出错：${errInfo}`)
+autoUpdater.on('error', info => {
+  sendAutoUpdateStatus(`更新出错：${info}`)
 })
 
 autoUpdater.on('download-progress', (processObj) => {
-  let text = `速度：${processObj.bytesPerSecond}，已下载${processObj.percent}（${processObj.transferred}/${processObj.total}）`
+  // let text = `下载速度${processObj.bytesPerSecond}，已下载${processObj.percent}%（${processObj.transferred}/${processObj.total}）`
+  let text = `已下载${parseInt(processObj.percent)}%`
 
   sendAutoUpdateStatus(text)
 })
 
-autoUpdater.on('update-downloaded', () => {
+autoUpdater.on('update-downloaded', info => {
   sendAutoUpdateStatus('下载完成，准备安装...')
   autoUpdater.quitAndInstall()
 })
