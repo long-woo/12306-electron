@@ -9,7 +9,7 @@
       </div>
       <div class="swal-title pt-0">{{appName}}</div>
       <div class="swal-text mb-0 text-center">
-        <p class="mb-1">版本&nbsp;{{appVersion}}（<a href="javascript:;" @click="openUrl('https://github.com/woo-long/12306-electron/releases')">检查更新</a>）</p>
+        <p class="mb-1">版本&nbsp;{{appVersion}}（<a href="javascript:;" @click="checkAppUpdate">检查更新</a>）</p>
         <p>Copyright&nbsp;&copy;&nbsp;{{currentYear}}&nbsp;<a href="javascript:;" class="text-info" @click="openUrl('https://about.me/longwu')">{{appAuthorName}}</a></p>
       </div>
     </div>
@@ -46,8 +46,18 @@ export default {
     this.currentYear = new Date().getFullYear()
   },
   methods: {
+    // 检查更新
+    checkAppUpdate () {
+      const ipcRender = this.$electron.ipcRenderer
+
+      ipcRender.send('checkUpdate')
+      ipcRender.on('autoUpdateStatus', (event, res) => {
+        this.$alert(res)
+      })
+    },
     // 打开url
     openUrl (url) {
+      // https://github.com/woo-long/12306-electron/releases
       this.$electron.shell.openExternal(url)
     },
     // 关闭

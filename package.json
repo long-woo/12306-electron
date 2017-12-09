@@ -101,6 +101,8 @@
     "electron-builder": "^19.46.6",
     "electron-debug": "^1.4.0",
     "electron-devtools-installer": "^2.2.1",
+    "electron-log": "^2.2.11",
+    "electron-updater": "^2.17.2",
     "eslint": "^4.11.0",
     "eslint-config-standard": "^10.2.1",
     "eslint-friendly-formatter": "^3.0.0",
