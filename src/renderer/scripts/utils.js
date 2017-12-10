@@ -410,7 +410,7 @@ const task = {
           // const audio = document.querySelector('#audioEgg')
           // audio.play()
 
-          Vue.say(`${title}您的订单号：【${orderNo.replace(/\s*/g, '|')}】，请在30分钟内完成支付`)
+          speech.textToSpeech(`${title}您的订单号：【${orderNo.replace(/\s*/g, '|')}】，请在30分钟内完成支付`)
           this.setStatus(index, `【${train.trainCode}】车次【${seatText}】出票成功...`)
           Vue.swal({
             title: title,
@@ -500,9 +500,25 @@ const notification = {
   }
 }
 
+/**
+ * 语音
+ */
+const speech = {
+  /**
+   * 文本转语音（语音合成）
+   * @param {*} text 文本
+   */
+  textToSpeech (text) {
+    const sayText = new window.SpeechSynthesisUtterance(text)
+
+    window.speechSynthesis.speak(sayText)
+  }
+}
+
 export default {
   getLoginModel,
   setLoginModel,
   task,
-  notification
+  notification,
+  speech
 }

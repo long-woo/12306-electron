@@ -10,8 +10,6 @@ export default {
   created () {
     const ipcRender = this.$electron.ipcRenderer
 
-    this.$say.speak('Hello！欢迎使用1|2|3|0|6-Electron，祝您购票成功')
-
     ipcRender.send('checkUpdate')
     ipcRender.on('autoUpdateStatus', (event, res) => {
       this.$alert(res)

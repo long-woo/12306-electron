@@ -118,7 +118,6 @@
     "moment": "^2.19.2",
     "multispinner": "^0.2.1",
     "node-loader": "^0.6.0",
-    "say": "^0.14.0",
     "style-loader": "^0.18.2",
     "url-loader": "^0.5.9",
     "vue-html-loader": "^1.2.4",

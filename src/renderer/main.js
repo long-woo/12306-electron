@@ -22,8 +22,6 @@ import nprogress from 'nprogress'
 
 import 'animate.css/animate.css'
 
-import say from 'say'
-
 import bsComponents from './components'
 
 import api from './scripts/api'
@@ -40,7 +38,6 @@ Wavas.init()
 
 Vue.swal = Vue.prototype.$swal = swal
 Vue.nprogress = Vue.prototype.$nprogress = nprogress
-Vue.say = Vue.prototype.$say = say
 Vue.api = Vue.prototype.$api = api
 Vue.store = store
 Vue.eventBus = Vue.prototype.$eventBus = eventBus
