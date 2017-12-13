@@ -2,6 +2,10 @@
 
 import {app, BrowserWindow, Menu, ipcMain} from 'electron'
 import { autoUpdater } from 'electron-updater'
+import log from 'electron-log'
+
+log.transports.file.level = 'debug'
+autoUpdater.logger = log
 
 /**
  * Set `__static` path to static files in production
@@ -62,11 +66,6 @@ if (process.platform === 'darwin') {
   })
 }
 
-// windows os
-if (process.platform === 'win32') {
-
-}
-
 function createWindow () {
   /**
    * Initial window options
@@ -103,6 +102,7 @@ function createWindow () {
  * @param {*} text 更新描述
  */
 function sendAutoUpdateStatus (text) {
+  log.info(text)
   mainWindow.webContents.send('autoUpdateStatus', text)
 }
 
@@ -119,7 +119,7 @@ app.on('activate', () => {
 })
 
 ipcMain.on('checkUpdate', (event, arg) => {
-  autoUpdater.checkForUpdatesAndNotify()
+  autoUpdater.checkForUpdates()
 })
 
 /**
@@ -134,8 +134,7 @@ autoUpdater.on('checking-for-update', () => {
 })
 
 autoUpdater.on('update-available', info => {
-  sendAutoUpdateStatus('发现新版本～，开始下载...')
-  // autoUpdater.downloadUpdate()
+  sendAutoUpdateStatus(`发现新版本（${info.version}）～，开始下载...`)
 })
 
 autoUpdater.on('update-not-available', info => {
@@ -146,9 +145,10 @@ autoUpdater.on('error', info => {
   sendAutoUpdateStatus(`更新出错：${info}`)
 })
 
-autoUpdater.on('download-progress', (processObj) => {
-  // let text = `下载速度${processObj.bytesPerSecond}，已下载${processObj.percent}%（${processObj.transferred}/${processObj.total}）`
-  let text = `已下载${parseInt(processObj.percent)}%`
+autoUpdater.on('download-progress', (progressInfo) => {
+  let speed = progressInfo.bytesPerSecond
+  speed = speed.toString().length > 6 ? `${parseFloat((speed / 1024 / 1024)).toFixed(2)}mb/s` : `${(speed / 1024).toFixed(2)}kb/s`
+  let text = `已下载${Math.ceil(progressInfo.percent)}%（${speed}）`
 
   sendAutoUpdateStatus(text)
 })

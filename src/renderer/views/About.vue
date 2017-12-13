@@ -51,13 +51,6 @@ export default {
       const ipcRender = this.$electron.ipcRenderer
 
       ipcRender.send('checkUpdate')
-      ipcRender.on('autoUpdateStatus', (event, res) => {
-        this.$alert(res)
-
-        if (res.indexOf('发现') > -1) {
-          this.openUrl('https://github.com/woo-long/12306-electron/releases')
-        }
-      })
     },
     // 打开url
     openUrl (url) {

@@ -8,21 +8,30 @@
 export default {
   name: 'App',
   created () {
-    const ipcRender = this.$electron.ipcRenderer
-
-    ipcRender.send('checkUpdate')
-    ipcRender.on('autoUpdateStatus', (event, res) => {
-      this.$alert(res)
-
-      if (res.indexOf('发现') > -1) {
-        this.$electron.shell.openExternal('https://github.com/woo-long/12306-electron/releases')
-      }
-    })
+    this.checkUpdate()
   },
   mounted () {
     this.checkTickUrl()
   },
   methods: {
+    // 检查是否有新版本
+    checkUpdate () {
+      const ipcRender = this.$electron.ipcRenderer
+
+      if (!navigator.onLine) {
+        this.$alert('网络没有连接^~^')
+        return
+      }
+
+      ipcRender.send('checkUpdate')
+      ipcRender.on('autoUpdateStatus', (event, res) => {
+        this.$alert(res)
+
+        if (res.indexOf('Error') > -1) {
+          this.$electron.shell.openExternal('https://github.com/woo-long/12306-electron/releases')
+        }
+      })
+    },
     // 检查url是否可用
     async checkTickUrl () {
       const res = await this.$api.getQueryUrl()
@@ -156,7 +165,8 @@ label {
 
 .form-control:focus,
 .sorting,
-.close:focus {
+.close:focus,
+.no-outline {
   box-shadow: 0 0 0 transparent !important;
   outline: none;
 }

@@ -1,6 +1,14 @@
 <template>
-  <date-picker :date="date" :option="option" :limit="limit" @change="changeDate">
-  </date-picker>
+  <b-input-group>
+    <b-input-group-button>
+      <b-button variant="info" class="no-outline waves-effect" @click="changeDate('-')">-</b-button>
+    </b-input-group-button>
+    <date-picker :date="date" :option="option" :limit="limit" @change="changeDate">
+    </date-picker>
+    <b-input-group-button>
+      <b-button variant="info" class="no-outline waves-effect" @click="changeDate('+')">+</b-button>
+    </b-input-group-button>
+  </b-input-group>
 </template>
 
 <script>
@@ -36,7 +44,6 @@ export default {
           backgroundImage: 'none',
           backgroundClip: 'padding-box',
           border: '1px solid rgba(0, 0, 0, 0.15)',
-          borderRadius: '0.25rem',
           transition: 'border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s'
         },
         inputClass: this.inputClass
@@ -72,7 +79,17 @@ export default {
     datePicker
   },
   methods: {
+    // 更改乘车日期
     changeDate (date) {
+      const value = moment(this.date.time)
+
+      if (date === '-') {
+        date = value.subtract(1, 'd').format('YYYY-MM-DD')
+      } else if (date === '+') {
+        date = value.add(1, 'd').format('YYYY-MM-DD')
+      }
+
+      this.date.time = date
       this.$emit('change', date)
     }
   }

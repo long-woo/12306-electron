@@ -5,8 +5,7 @@ import Vue from 'vue'
  * @param {*} userName 账号
  */
 const getLoginModel = (userName) => {
-  const model = localStorage.LOGINMODEL || null
-  const data = JSON.parse(model) || []
+  const data = getLocalStorage('LOGINMODEL') || []
 
   if (userName) {
     return data.filter(item => item.userName === userName || item.loginName === userName) || []
@@ -20,13 +19,44 @@ const getLoginModel = (userName) => {
  * @param {*} model 登录信息
  */
 const setLoginModel = (model) => {
-  model = JSON.stringify(model)
+  setLocalStorage('LOGINMODEL', model)
+}
 
-  if (localStorage.LOGINMODEL) {
-    localStorage.LOGINMODEL = model
-  } else {
-    localStorage.setItem('LOGINMODEL', model)
-  }
+/**
+ * 获取查询车次信息
+ */
+const getQueryInfo = () => {
+  const data = getLocalStorage('QUERYINFO')
+
+  return data
+}
+
+/**
+ * 保存查询车次信息
+ * @param {*} model 查询车次信息
+ */
+const setQueryInfo = (model) => {
+  setLocalStorage('QUERYINFO', model)
+}
+
+/**
+ * 设置localStorage
+ * @param {*} name 名称
+ * @param {*} value 值
+ */
+function setLocalStorage (name, value) {
+  localStorage[name] = JSON.stringify(value)
+}
+
+/**
+ * 获取localStorage
+ * @param {*} name 名称
+ */
+function getLocalStorage (name) {
+  const value = localStorage[name] || null
+  const data = JSON.parse(value)
+
+  return data
 }
 
 /**
@@ -518,6 +548,8 @@ const speech = {
 export default {
   getLoginModel,
   setLoginModel,
+  getQueryInfo,
+  setQueryInfo,
   task,
   notification,
   speech

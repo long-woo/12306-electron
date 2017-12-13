@@ -74,9 +74,12 @@ const getTicket = async (fromCity, toCity, trainDate) => {
       'purpose_codes': 'ADULT'
     }
   })
+  let ticketData = []
+
+  if (!data) return ticketData
+
   const result = data.result || []
   const stationNames = data.map || []
-  let ticketData = []
 
   result.map((val, inx) => {
     const arrTrain = val.split('|')

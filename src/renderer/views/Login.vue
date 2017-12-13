@@ -18,7 +18,7 @@
         </div>
       </div>
     </form>
-    <b-button slot="modal-footer" variant="primary" class="waves-effect" @click="login">登录</b-button>
+    <b-button slot="modal-footer" variant="info" class="waves-effect" @click="login">登录</b-button>
   </b-modal>
 </template>
 

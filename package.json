@@ -10,6 +10,7 @@
     "type": "git",
     "url": "https://github.com/woo-long/12306-electron.git"
   },
+  "releases": "https://github.com/woo-long/12306-electron/releases",
   "license": "MIT",
   "keywords": [
     "12306",
@@ -70,6 +71,8 @@
     "animate.css": "^3.5.2",
     "axios": "^0.16.1",
     "bootstrap-vue": "^1.2.0",
+    "electron-log": "^2.2.12",
+    "electron-updater": "^2.17.5",
     "icheck-bootstrap": "^1.0.7",
     "node-waves": "^0.7.5",
     "nprogress": "^0.2.0",
@@ -101,8 +104,6 @@
     "electron-builder": "^19.46.6",
     "electron-debug": "^1.4.0",
     "electron-devtools-installer": "^2.2.1",
-    "electron-log": "^2.2.11",
-    "electron-updater": "^2.17.2",
     "eslint": "^4.11.0",
     "eslint-config-standard": "^10.2.1",
     "eslint-friendly-formatter": "^3.0.0",

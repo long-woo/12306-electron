@@ -6,7 +6,7 @@
     </div>
     <b-button slot="modal-footer" variant="success" class="waves-effect" @click="getCaptchaCode">换一张？</b-button>
     <b-button slot="modal-footer" variant="secondary" class="waves-effect" @click="cancel" v-show="type === 'login'">返回</b-button>
-    <b-button slot="modal-footer" variant="primary" class="waves-effect" @click="validCaptcha">验证</b-button>
+    <b-button slot="modal-footer" variant="info" class="waves-effect" @click="validCaptcha">验证</b-button>
   </b-modal>
 </template>
 

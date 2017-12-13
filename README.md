@@ -7,6 +7,10 @@
 
 ![程序效果（Mac）](https://raw.githubusercontent.com/woo-long/12306-electron/dev/app_snapshot.png)
 
+## 下载
+
+[12306-electron](https://github.com/woo-long/12306-electron/releases)
+
 ## Build Setup
 
 ``` bash
