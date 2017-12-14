@@ -159,7 +159,9 @@ export default {
     // 退出登录
     async logOff () {
       await this.$api.loginOff()
-      window.top.location.reload()
+      // 清除登录信息
+      this.loginName = ''
+      this.$eventBus.$emit('loginOff')
     }
   }
 }

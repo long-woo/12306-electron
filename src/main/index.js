@@ -119,7 +119,9 @@ app.on('activate', () => {
 })
 
 ipcMain.on('checkUpdate', (event, arg) => {
-  autoUpdater.checkForUpdates()
+  if (process.env.NODE_ENV !== 'development') {
+    autoUpdater.checkForUpdates()
+  }
 })
 
 /**

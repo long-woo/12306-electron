@@ -42,6 +42,7 @@ export default {
       seatTypes: [],
       chkSeatTypes: [],
       passengerName: [],
+      // 提交订单所需参数
       oldPassengers: [],
       passengerTickets: []
     }
@@ -78,9 +79,15 @@ export default {
     }
   },
   mounted () {
+    // 监听选择车次事件
     this.$eventBus.$on('changeSelecte', (data) => {
       this.chkTrainCodes = data.trains || []
       this.seatTypes = data.seats || []
+    })
+
+    // 监听退出登录事件
+    this.$eventBus.$on('loginOff', () => {
+      this.passengers = []
     })
   },
   methods: {

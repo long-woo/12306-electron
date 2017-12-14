@@ -18,10 +18,11 @@ export default {
     checkUpdate () {
       const ipcRender = this.$electron.ipcRenderer
 
-      if (!navigator.onLine) {
+      window.addEventListener('offline', () => {
         this.$alert('网络没有连接^~^')
-        return
-      }
+      })
+
+      if (!navigator.onLine) return
 
       ipcRender.send('checkUpdate')
       ipcRender.on('autoUpdateStatus', (event, res) => {

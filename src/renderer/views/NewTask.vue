@@ -20,8 +20,8 @@
         </b-button>
       </div>
     </div>
-    <div>
-      <b-table empty-text="没有找到车次^~^" :fields="fields" :items="ticketData" head-variant="default bg-info text-white" inverse striped hover show-empty ref="tbTrain" @row-clicked="rowClick">
+    <div class="table-responsive">
+      <b-table empty-text="没有找到车次^~^" :fields="fields" :items="ticketData" head-variant="default bg-info text-white" inverse striped hover show-empty  ref="tbTrain" @row-clicked="rowClick">
         <template slot="checkNo" slot-scope="row">
           <div class="checkbox icheck-info waves-effect">
             <input type="checkbox" :id="`chk_${row.index}`" v-model="chkTrains" :value="row.item.trainCode" />
@@ -98,6 +98,7 @@ export default {
 
     this.$eventBus.$on('clearChooseTrain', () => {
       this.chkTrains = []
+      this.$refs.tbTrain.refresh()
     })
   },
   methods: {
