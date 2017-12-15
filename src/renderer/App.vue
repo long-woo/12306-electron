@@ -69,7 +69,7 @@ html,body {
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Microsoft YaHei";
-  -webkit-user-select: none;
+  user-select: none;
   -webkit-app-region: drag;
   overflow: hidden;
 }
