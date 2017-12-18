@@ -19,7 +19,9 @@
       </div>
     </header>
     <main class="container-fluid">
-      <router-view ref="views"></router-view>
+      <transition appear enter-active-class="animated zoomInDown">
+        <router-view ref="views"></router-view>
+      </transition>
     </main>
     <footer class="fixed-bottom border border-info border-left-0 border-right-0 border-bottom-0 bg-white">
       <div class="d-flex flex-row justify-content-between font-size-14">
@@ -73,7 +75,7 @@ export default {
     }
   },
   mounted () {
-    utils.speech.textToSpeech('Hello！欢迎使用1|2|3|0|6-Electron，祝您购票成功')
+    // utils.speech.textToSpeech('Hello！欢迎使用1|2|3|0|6-Electron，祝您购票成功')
 
     this.chkeckIsLogin()
     this.$eventBus.$on('openDialog', (dialog) => {
