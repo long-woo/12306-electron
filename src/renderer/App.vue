@@ -37,12 +37,22 @@ export default {
     async checkTickUrl () {
       const res = await this.$api.getQueryUrl()
 
-      if (res) {
-        this.$store.dispatch('setQueryUrl', res)
+      if (!res) {
+        this.$swal('查询车票地址不可用^~^', '请重试', 'warning', {
+          buttons: {
+            cancel: '取消',
+            default: '确定'
+          }
+        }).then(conf => {
+          if (!conf) return
+
+          this.checkTickUrl()
+        })
+
         return
       }
 
-      this.checkTickUrl()
+      this.$store.dispatch('setQueryUrl', res)
     }
   }
 }
