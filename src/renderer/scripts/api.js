@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import order from './order'
 
 const urls = {
   initPage: '/otn/leftTicket/init', // GET
@@ -11,7 +12,8 @@ const urls = {
   logOff: '/otn/login/loginOut', // GET
   getStationName: '/otn/resources/js/framework/station_name.js', // GET
   getTicket: '/otn/', // GET
-  getPassengers: '/otn/confirmPassenger/getPassengerDTOs', // POST
+  // getPassengers: '/otn/confirmPassenger/getPassengerDTOs', // POST
+  getPassengers: '/otn/passengers/query', // POST
 
   autoSubmitOrder: '/otn/confirmPassenger/autoSubmitOrderRequest', // POST
   getOrderQueueInfoAsync: '/otn/confirmPassenger/getQueueCountAsync', // POST
@@ -205,13 +207,23 @@ const loginOff = () => {
  * @param {*} pageCount 每页数
  */
 const getPassengers = async (name, pageIndex, pageCount) => {
-  const res = await Vue.http.post(urls.getPassengers)
+  let formData = {
+    pageIndex: pageIndex || 1,
+    pageSize: pageCount || 10
+  }
+
+  if (name) {
+    formData['passengerDTO.passenger_name'] = name
+  }
+
+  const res = await Vue.http.post(urls.getPassengers, formData)
 
   if (!res.data) {
     return []
   }
 
-  return res.data.normal_passengers || []
+  // return res.data.normal_passengers || []
+  return res.data.datas || []
 }
 
 /**
@@ -273,6 +285,20 @@ const autoSubmitOrder = async (formData) => {
 }
 
 /**
+ * 提交订单
+ * @param {*} formData 参数
+ */
+const submitOrder = async (formData) => {
+  let res = await order.submitOrder(urls.submitOrder, formData)
+
+  if (res.code !== 1) return res
+
+  res = await order.getSubmitOrderInfo(urls.getSubmitOrderInfo)
+
+  return res
+}
+
+/**
  * 获取队列信息
  * @param {*} formData (train_date,train_no,stationTrainCode,seatType,fromStationTelecode,toStationTelecode,leftTicket)
  */
@@ -296,7 +322,7 @@ const getOrderQueueInfo = async (formData) => {
   }
 
   const ticketData = data.ticket.split(',') // 可能有无座数
-  let message = `${formData.stationTrainCode}车次剩余【${common.getSeatTypeInfo(formData.seatType)}（${ticketData[0]}）张】`
+  let message = `${formData.stationTrainCode}车次【${common.getSeatTypeInfo(formData.seatType)}】剩余【${ticketData[0]}】张`
 
   if (ticketData.length > 1) {
     message += `和【无座（${ticketData[1]}）张】`
@@ -501,6 +527,7 @@ export default {
   autoSubmitOrder,
   getOrderQueueInfo,
   confirmOrderQueue,
+  submitOrder,
   getOrderAwaitTime,
   getMyOrder
 }
