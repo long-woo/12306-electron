@@ -192,7 +192,7 @@ const task = {
 
         // 提交订单
         this.setStatus(index, `正在预订【${train.trainCode}】车次的【${seatText}】...`)
-        const orderResult = await this.submitOrder(train.secret, queryInfo, passengers, seatCode)
+        const orderResult = await this.autoSubmitOrder(train.secret, queryInfo, passengers, seatCode)
 
         if (orderResult.code < 1) {
           this.setStatus(index, `【${train.trainCode}】车次的【${seatText}】预订失败`)
@@ -276,13 +276,13 @@ const task = {
     }
   },
   /**
-   * 提交订单
+   * 自动提交订单
    * @param {*} trainSecret 车次凭证
    * @param {*} queryInfo 查询信息
    * @param {*} passengers 乘客信息
    * @param {*} seatCode 座位代码
    */
-  submitOrder (trainSecret, queryInfo, passengers, seatCode) {
+  autoSubmitOrder (trainSecret, queryInfo, passengers, seatCode) {
     const orderData = {
       secretStr: decodeURIComponent(trainSecret),
       train_date: queryInfo.trainDate,
@@ -294,6 +294,7 @@ const task = {
 
     return Vue.api.autoSubmitOrder(orderData)
   },
+
   /**
    * 订单排队信息
    * @param {*} train 车次
@@ -305,7 +306,6 @@ const task = {
     const arrDate = trainDate.split('-')
 
     currentDate.setFullYear(arrDate[0], arrDate[1] - 1, arrDate[2])
-    // trainDate = encodeURIComponent(currentDate.toString()).replace(/(%20)/g, '+')
 
     const queueData = {
       train_date: currentDate.toString(),
@@ -317,7 +317,7 @@ const task = {
       leftTicket: train.ypInfo
     }
 
-    return Vue.api.getOrderQueueInfo(queueData)
+    return Vue.api.getOrderQueueInfoAsync(queueData)
   },
   /**
    * 确认提交订单
@@ -348,7 +348,7 @@ const task = {
     // 由于12306提交订单的安全周期问题，需要等待一定时间
     await this.sleep(awaitTime)
 
-    let res = await Vue.api.confirmOrderQueue(formData)
+    let res = await Vue.api.confirmOrderQueueAsync(formData)
     let data = {}
 
     if (res.code < 1) {
@@ -477,6 +477,41 @@ const task = {
         resolve(res)
       }, time)
     })
+  },
+
+  /**
+   * 提交订单
+   * @param {*} trainSecret 车次凭证
+   * @param {*} queryInfo 查询信息
+   */
+  submitOrder (trainSecret, queryInfo) {
+    const currentDate = new Date()
+    const formData = {
+      secretStr: trainSecret,
+      train_date: queryInfo.trainDate,
+      back_train_date: `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1)}-${currentDate.getDate()}`,
+      tour_flag: 'dc',
+      query_from_station_name: queryInfo.fromCityName,
+      query_to_station_name: queryInfo.toCityName
+    }
+
+    return Vue.api.submitOrder(formData)
+  },
+  /**
+   * 检查订单
+   * @param {*} passengers 乘客
+   * @param {*} token 订单token
+   * @param {*} captchCode 验证码
+   */
+  checkOrderInfo (passengers, token, captchCode, seatCode) {
+    const formData = {
+      passengerTicketStr: passengers.passengerTickets.replace(/(seatcode)/gi, seatCode),
+      oldPassengerStr: passengers.oldPassengers,
+      REPEAT_SUBMIT_TOKEN: token,
+      randCode: captchCode
+    }
+
+    return Vue.api.checkOrderInfo(formData)
   }
 }
 

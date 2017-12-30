@@ -285,24 +285,10 @@ const autoSubmitOrder = async (formData) => {
 }
 
 /**
- * 提交订单
- * @param {*} formData 参数
- */
-const submitOrder = async (formData) => {
-  let res = await order.submitOrder(urls.submitOrder, formData)
-
-  if (res.code !== 1) return res
-
-  res = await order.getSubmitOrderInfo(urls.getSubmitOrderInfo)
-
-  return res
-}
-
-/**
- * 获取队列信息
+ * 获取队列信息（自动提交）
  * @param {*} formData (train_date,train_no,stationTrainCode,seatType,fromStationTelecode,toStationTelecode,leftTicket)
  */
-const getOrderQueueInfo = async (formData) => {
+const getOrderQueueInfoAsync = async (formData) => {
   formData.purpose_codes = 'ADULT'
   formData._json_att = ''
 
@@ -340,10 +326,10 @@ const getOrderQueueInfo = async (formData) => {
 }
 
 /**
- * 确认订单队列
+ * 确认订单队列（自动提交）
  * @param {*} formData (passengerTicketStr,oldPassengerStr,randCode,key_check_isChange,leftTicketStr,train_location,choose_seats,seatDetailType)
  */
-const confirmOrderQueue = async (formData) => {
+const confirmOrderQueueAsync = async (formData) => {
   formData.purpose_codes = 'ADULT'
   formData._json_att = ''
 
@@ -359,6 +345,45 @@ const confirmOrderQueue = async (formData) => {
   result.code = 1
   result.message = '订单已确认，等待出票'
   return result
+}
+
+/**
+ * 提交订单
+ * @param {*} formData 参数
+ */
+const submitOrder = async (formData) => {
+  let res = await order.submitOrder(urls.submitOrder, formData)
+
+  if (res.code !== 1) return res
+
+  res = await order.getSubmitOrderInfo(urls.getSubmitOrderInfo)
+
+  return res
+}
+
+/**
+ * 检查提交订单信息
+ * @param {*} formData 参数
+ */
+const checkOrderInfo = (formData) => {
+  return order.checkOrderInfo(urls.checkOrderInfo, formData)
+}
+
+/**
+ * 获取订单队列信息
+ * @param {*} formData 参数
+ * @param {*} seatText 座位名称
+ */
+const getOrderQueueInfo = (formData, seatText) => {
+  return order.getOrderQueueInfo(urls.getOrderQueueInfo, formData, seatText)
+}
+
+/**
+ * 确认提交订单
+ * @param {*} formData 参数
+ */
+const confirmOrderQueue = (formData) => {
+  return order.confirmOrderQueue(urls.confirmOrderQueue, formData)
 }
 
 /**
@@ -525,9 +550,12 @@ export default {
   getPassengers,
   chkeckIsLogin,
   autoSubmitOrder,
+  getOrderQueueInfoAsync,
+  confirmOrderQueueAsync,
+  submitOrder,
+  checkOrderInfo,
   getOrderQueueInfo,
   confirmOrderQueue,
-  submitOrder,
   getOrderAwaitTime,
   getMyOrder
 }

@@ -6,6 +6,7 @@ import Vue from 'vue'
  * @param {*} formData 参数 (secretStr、train_date、back_train_date、tour_flag、purpose_codes、query_from_station_name、query_to_station_name)
  */
 const submitOrder = async (url, formData) => {
+  formData.purpose_codes = 'ADULT'
   const {data} = await Vue.http.post(url, formData)
   let result = {
     code: 0,
