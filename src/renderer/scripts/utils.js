@@ -114,7 +114,8 @@ const task = {
           body: `【任务${index}】正在执行提交订单`,
           tag: 'order'
         })
-        this.startSubmitOder(trainData, trainSeats, taskItem, index)
+        // this.startAutoSubmitOder(trainData, trainSeats, taskItem, index)
+        this.startSubmitOrder(trainData, trainSeats, taskItem, index)
         return
       }
 
@@ -171,13 +172,13 @@ const task = {
     return new Promise(resolve => setTimeout(resolve, time))
   },
   /**
-   * 开始提交订单
+   * 开始提交订单（自动提交）
    * @param {*} trainData 车次
    * @param {*} trainSeats 座位
    * @param {*} taskItem 任务项
    * @param {*} index 任务索引号
    */
-  async startSubmitOder (trainData, trainSeats, taskItem, index) {
+  async startAutoSubmitOder (trainData, trainSeats, taskItem, index) {
     const queryInfo = taskItem.queryInfo
     const passengers = taskItem.passengers
     let isStop = false // 是否终止提交（当未登录）
@@ -214,7 +215,7 @@ const task = {
 
         // 获取订单排队信息
         this.setStatus(index, `【${train.trainCode}】车次的【${seatText}】正在排队...`)
-        const queueResult = await this.orderQueueInfo(train, queryInfo.trainDate, seatCode)
+        const queueResult = await this.getOrderQueueInfoAsync(train, queryInfo.trainDate, seatCode)
 
         if (queueResult.code < 1) {
           this.setStatus(index, `队伍太长，【${train.trainCode}】车次的【${seatText}】没能挤进去`)
@@ -263,7 +264,7 @@ const task = {
         }
 
         // 确认提交订单（不需要验证码）
-        const confirmResult = await this.confirmSubmitOrder(train, seatCode, passengers, key, '', index, awaitTime)
+        const confirmResult = await this.confirmOrderQueueAsync(train, seatCode, passengers, key, '', index, awaitTime)
 
         if (confirmResult.code < 1) {
           if (confirmResult.code === 0) {
@@ -296,12 +297,12 @@ const task = {
   },
 
   /**
-   * 订单排队信息
+   * 订单排队信息（自动提交）
    * @param {*} train 车次
    * @param {*} trainDate 乘车日期
    * @param {*} seatCode 座位代码
    */
-  orderQueueInfo (train, trainDate, seatCode) {
+  getOrderQueueInfoAsync (train, trainDate, seatCode) {
     const currentDate = new Date()
     const arrDate = trainDate.split('-')
 
@@ -320,7 +321,7 @@ const task = {
     return Vue.api.getOrderQueueInfoAsync(queueData)
   },
   /**
-   * 确认提交订单
+   * 确认提交订单（自动提交）
    * @param {*} train 车次
    * @param {*} seatCode 座位代码
    * @param {*} passengers 乘客
@@ -329,7 +330,7 @@ const task = {
    * @param {*} index 任务索引号
    * @param {*} awaitTime 提交订单的等待时间
    */
-  async confirmSubmitOrder (train, seatCode, passengers, key, captchCode, index, awaitTime) {
+  async confirmOrderQueueAsync (train, seatCode, passengers, key, captchCode, index, awaitTime) {
     const seatText = Vue.api.getSeatTypeInfo(seatCode)
     const passengerTicket = passengers.passengerTickets.replace(/(seatcode)/gi, seatCode)
     const formData = {
@@ -459,26 +460,124 @@ const task = {
       }, 500)
     })
   },
+
   /**
-   * 等待确认提交订单
-   * @param {*} train 车次
-   * @param {*} seatCode 座位代码
-   * @param {*} passengers 乘客
-   * @param {*} key 提交订单所需的key
-   * @param {*} captchCode 验证码
-   * @param {*} index 任务索引号
-   * @param {*} time 提交订单的等待时间
+   * 开始提交订单
+   * @param {*} trainData 车次
+   * @param {*} trainSeats 座位
+   * @param {*} taskItem 任务项
+   * @param {*} index 任务序号
    */
-  awaitConfirmSubmitOrder (train, seatCode, passengers, key, captchCode, index, time) {
-    return new Promise(resolve => {
-      setTimeout(async () => {
-        const res = await this.confirmSubmitOrder(train, seatCode, passengers, key, captchCode, index)
+  async startSubmitOrder (trainData, trainSeats, taskItem, index) {
+    const queryInfo = taskItem.queryInfo
+    const passengers = taskItem.passengers
+    let isStop = false // 是否终止提交（当未登录）
+    let title = '提示'
+    let content = '哎呀！！！被挤下线了，请重新登录'
 
-        resolve(res)
-      }, time)
-    })
+    for (let train of trainData) {
+      if (isStop) return
+
+      for (let seatCode of trainSeats) {
+        const seatText = Vue.api.getSeatTypeInfo(seatCode)
+
+        // 提交订单
+        this.setStatus(index, `正在预订【${train.trainCode}】车次的【${seatText}】...`)
+        const orderResult = await this.submitOrder(train.secret, queryInfo)
+
+        if (orderResult.code < 1) {
+          this.setStatus(index, `【${train.trainCode}】车次的【${seatText}】预订失败`)
+          Vue.alert(orderResult.message)
+
+          continue
+        }
+
+        const orderResultData = orderResult.data
+
+        // 检查订单
+        this.setStatus(index, `【${train.trainCode}】车次的【${seatText}】正在检查订单信息...`)
+        const checkResult = await this.checkOrderInfo(passengers, orderResultData.orderToken, '', seatCode)
+
+        if (checkResult.code < 1) {
+          this.setStatus(index, `【${train.trainCode}】车次的【${seatText}无法提交订单`)
+          Vue.alert(checkResult.message)
+
+          if (checkResult.message.indexOf('登录') > -1) {
+            this.setStatus(index, '您的登录状态已失效，请重新登录')
+            Vue.eventBus.$emit('openDialog', 'loginModal')
+            notification.show(title, {
+              body: content,
+              tag: 'order'
+            })
+
+            isStop = true
+            return
+          }
+          continue
+        }
+
+        const awaitTime = parseInt(checkResult.captchaCodeTime)
+
+        // 是否要验证码
+        if (checkResult.isCaptchaCode) {
+          // 将确认提交订单的数据存储到store
+          const orderData = {
+            train,
+            seatCode,
+            passengers,
+            key: orderResultData.orderKey,
+            awaitTime,
+            index
+          }
+
+          Vue.store.dispatch('setConfirmOrderData', orderData)
+          content = `正在预订【${train.trainCode}】车次【${seatText}】，请选择验证码`
+          this.setStatus(index, `正在预订【${train.trainCode}】车次【${seatText}】，等待选择验证码...`)
+          Vue.eventBus.$emit('openDialog', 'captchCodeModal')
+          notification.show(title, {
+            body: content,
+            tag: 'order'
+          })
+
+          isStop = true
+          return
+        }
+
+        // 获取订单排队信息
+        this.setStatus(index, `【${train.trainCode}】车次的【${seatText}】正在排队...`)
+        const queueResult = await this.getOrderQueueInfo(train, queryInfo.trainDate, seatCode, orderResultData.orderToken)
+
+        if (queueResult.code < 1) {
+          this.setStatus(index, `队伍太长，【${train.trainCode}】车次的【${seatText}】没能挤进去`)
+          Vue.alert(queueResult.message)
+
+          if (queueResult.message.indexOf('登录') > -1) {
+            this.setStatus(index, '您的登录状态已失效，请重新登录')
+            Vue.eventBus.$emit('openDialog', 'loginModal')
+            notification.show(title, {
+              body: content,
+              tag: 'order'
+            })
+
+            isStop = true
+            return
+          }
+          continue
+        }
+
+        // 确认提交订单（不需要验证码）
+        const confirmResult = await this.confirmOrderQueue(train, passengers, orderResultData.orderKey, orderResultData.orderToken, seatCode, '', index, awaitTime)
+
+        if (confirmResult.code < 1) {
+          if (confirmResult.code === 0) {
+            isStop = true
+            return
+          }
+          continue
+        }
+      }
+    }
   },
-
   /**
    * 提交订单
    * @param {*} trainSecret 车次凭证
@@ -487,10 +586,9 @@ const task = {
   submitOrder (trainSecret, queryInfo) {
     const currentDate = new Date()
     const formData = {
-      secretStr: trainSecret,
+      secretStr: decodeURIComponent(trainSecret),
       train_date: queryInfo.trainDate,
       back_train_date: `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1)}-${currentDate.getDate()}`,
-      tour_flag: 'dc',
       query_from_station_name: queryInfo.fromCityName,
       query_to_station_name: queryInfo.toCityName
     }
@@ -512,6 +610,90 @@ const task = {
     }
 
     return Vue.api.checkOrderInfo(formData)
+  },
+  /**
+   * 获取提交订单队列信息
+   * @param {*} train 车次
+   * @param {*} trainDate 乘车日期
+   * @param {*} seatCode 座位code
+   * @param {*} token token
+   */
+  getOrderQueueInfo (train, trainDate, seatCode, token) {
+    const currentDate = new Date()
+    const arrDate = trainDate.split('-')
+
+    currentDate.setFullYear(arrDate[0], arrDate[1] - 1, arrDate[2])
+
+    const formData = {
+      train_date: currentDate.toString(),
+      train_no: train.trainNo,
+      stationTrainCode: train.trainCode,
+      seatType: seatCode,
+      fromStationTelecode: train.fromCityCode,
+      toStationTelecode: train.toCityCode,
+      leftTicket: train.ypInfo,
+      train_location: train.locationCode,
+      REPEAT_SUBMIT_TOKEN: token
+    }
+    const seatText = Vue.api.getSeatTypeInfo(seatCode)
+
+    return Vue.api.getOrderQueueInfo(formData, seatText)
+  },
+  /**
+   * 确认提交订单
+   * @param {*} train 车次
+   * @param {*} passengers 乘客
+   * @param {*} key key
+   * @param {*} token token
+   * @param {*} seatCode 座位code
+   * @param {*} captchCode 验证码
+   * @param {*} index 任务索引号
+   * @param {*} awaitTime 提交订单的等待时间
+   */
+  async confirmOrderQueue (train, passengers, key, token, seatCode, captchCode, index, awaitTime) {
+    const seatText = Vue.api.getSeatTypeInfo(seatCode)
+    const formData = {
+      passengerTicketStr: passengers.passengerTickets.replace(/(seatcode)/gi, seatCode),
+      oldPassengerStr: passengers.oldPassengers,
+      randCode: captchCode,
+      key_check_isChange: key,
+      leftTicketStr: train.ypInfo,
+      train_location: train.locationCode,
+      choose_seats: '',
+      seatDetailType: '',
+      REPEAT_SUBMIT_TOKEN: token
+    }
+
+    this.setStatus(index, `正在确认提交【${train.trainCode}】车次【${seatText}】...`)
+    // 由于12306提交订单的安全周期问题，需要等待一定时间
+    await this.sleep(awaitTime)
+
+    let res = await Vue.api.confirmOrderQueue(formData)
+    let data = {}
+
+    if (res.code < 1) {
+      this.setStatus(index, `【${train.trainCode}】车次【${seatText}】预订失败...`)
+      Vue.alert(res.message)
+
+      if (res.message.indexOf('登录') > -1) {
+        this.setStatus(index, '您的登录状态已失效，请重新登录')
+        Vue.eventBus.$emit('openDialog', 'loginModal')
+        notification.show('提示', {
+          body: '哎呀！！！被挤下线了，请重新登录',
+          tag: 'order'
+        })
+
+        data.code = 0
+        return data
+      }
+
+      data.code = -1
+      return data
+    }
+
+    this.setStatus(index, `【${train.trainCode}】车次【${seatText}】等待出票...`)
+    // 获取订单出票时间
+    return this.getOrderAwaitTime(train, seatText, index)
   }
 }
 

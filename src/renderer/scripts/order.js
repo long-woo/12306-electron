@@ -7,6 +7,8 @@ import Vue from 'vue'
  */
 const submitOrder = async (url, formData) => {
   formData.purpose_codes = 'ADULT'
+  formData.tour_flag = 'dc'
+
   const {data} = await Vue.http.post(url, formData)
   let result = {
     code: 0,
@@ -28,11 +30,11 @@ const submitOrder = async (url, formData) => {
 const getSubmitOrderInfo = async (url) => {
   const res = await Vue.http.post(url)
   // token
-  const rgxToken = res.match(/globalRepeatSubmitToken\s+=\s+'(.+)'/) || []
+  const rgxToken = res.match(/globalRepeatSubmitToken\s+=\s+'(.+)';/) || []
   console.log(rgxToken)
   const orderToken = rgxToken.length ? rgxToken[1] : ''
   // keyischange 'key_check_isChange':'A9B10220CE8ABC25EFB68C1CADA21FA79F07219C68157AB466B000C7'
-  const rgxKey = res.match(/'key_check_isChange':'(.+)'/) || []
+  const rgxKey = res.match(/'key_check_isChange':'(.+)','leftDetails':/) || []
   console.log(rgxKey)
   const orderKey = rgxKey.length ? rgxKey[1] : ''
   const result = {

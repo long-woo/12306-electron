@@ -12,8 +12,8 @@ const urls = {
   logOff: '/otn/login/loginOut', // GET
   getStationName: '/otn/resources/js/framework/station_name.js', // GET
   getTicket: '/otn/', // GET
-  // getPassengers: '/otn/confirmPassenger/getPassengerDTOs', // POST
-  getPassengers: '/otn/passengers/query', // POST
+  getPassengers: '/otn/confirmPassenger/getPassengerDTOs', // POST
+  // getPassengers: '/otn/passengers/query', // POST
 
   autoSubmitOrder: '/otn/confirmPassenger/autoSubmitOrderRequest', // POST
   getOrderQueueInfoAsync: '/otn/confirmPassenger/getQueueCountAsync', // POST
@@ -216,14 +216,14 @@ const getPassengers = async (name, pageIndex, pageCount) => {
     formData['passengerDTO.passenger_name'] = name
   }
 
-  const res = await Vue.http.post(urls.getPassengers, formData)
+  const res = await Vue.http.post(urls.getPassengers)
 
   if (!res.data) {
     return []
   }
 
-  // return res.data.normal_passengers || []
-  return res.data.datas || []
+  return res.data.normal_passengers || []
+  // return res.data.datas || []
 }
 
 /**
