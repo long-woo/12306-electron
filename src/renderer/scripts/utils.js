@@ -526,6 +526,7 @@ const task = {
             seatCode,
             passengers,
             key: orderResultData.orderKey,
+            token: orderResultData.orderToken,
             awaitTime,
             index
           }
