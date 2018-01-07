@@ -9,8 +9,6 @@ export default {
   name: 'App',
   created () {
     this.checkUpdate()
-  },
-  mounted () {
     this.checkTickUrl()
   },
   methods: {
@@ -107,6 +105,10 @@ a:focus {
 
 button {
   cursor: pointer;
+}
+
+[disabled], .disabled {
+  cursor:not-allowed;
 }
 
 label {

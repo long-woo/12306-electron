@@ -98,8 +98,11 @@ export default {
 
     this.$eventBus.$on('clearChooseTrain', () => {
       this.chkTrains = []
-      this.$refs.tbTrain.refresh()
     })
+
+    setTimeout(() => {
+      this.queryTrain()
+    }, 1000)
   },
   methods: {
     // 选择出发地

@@ -1,12 +1,12 @@
 <template>
   <b-input-group>
     <b-input-group-button>
-      <b-button variant="info" class="no-outline waves-effect" @click="changeDate('-')">-</b-button>
+      <b-button variant="info" class="no-outline waves-effect" :disabled="prevState" @click="changeDate('-')">-</b-button>
     </b-input-group-button>
     <date-picker :date="date" :option="option" :limit="limit" @change="changeDate">
     </date-picker>
     <b-input-group-button>
-      <b-button variant="info" class="no-outline waves-effect" @click="changeDate('+')">+</b-button>
+      <b-button variant="info" class="no-outline waves-effect" :disabled="nextState" @click="changeDate('+')">+</b-button>
     </b-input-group-button>
   </b-input-group>
 </template>
@@ -19,8 +19,10 @@ export default {
   name: 'bDatePicker',
   data () {
     return {
+      prevState: false,
+      nextState: true,
       date: {
-        time: moment().format('YYYY-MM-DD')
+        time: this.max
       },
       option: {
         type: 'day',
@@ -63,13 +65,22 @@ export default {
       type: String,
       default: 'form-control'
     },
+    min: {
+      type: String,
+      default: moment().format('YYYY-MM-DD')
+    },
+    max: {
+      type: String,
+      default: moment().add(29, 'd').format('YYYY-MM-DD')
+    },
     limit: {
       type: Array,
       default () {
         return [
           {
             type: 'fromto',
-            from: new Date().setDate(new Date().getDate() - 1)
+            from: moment().subtract(1, 'd').format('YYYY-MM-DD'),
+            to: moment().add(30, 'd').format('YYYY-MM-DD')
           }
         ]
       }
@@ -89,6 +100,18 @@ export default {
         date = value.add(1, 'd').format('YYYY-MM-DD')
       }
 
+      if (moment(date) < moment(this.min)) {
+        this.prevState = true
+        return
+      }
+
+      if (moment(date) > moment(this.max)) {
+        this.nextState = true
+        return
+      }
+
+      this.prevState = false
+      this.nextState = false
       this.date.time = date
       this.$emit('change', date)
     }
