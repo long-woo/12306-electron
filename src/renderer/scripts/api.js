@@ -122,6 +122,8 @@ const getCaptchaCode = async (type) => {
     responseType: 'arraybuffer'
   })
 
+  if (res.toString().indexOf('Error') > -1) return ''
+
   return `data:image/jpeg;base64,${Buffer.from(res).toString('base64')}`
 }
 

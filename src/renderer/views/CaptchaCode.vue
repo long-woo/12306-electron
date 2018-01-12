@@ -53,6 +53,8 @@ export default {
     async getCaptchaCode () {
       const res = await this.$api.getCaptchaCode(this.type)
 
+      if (!res) return
+
       this.captchaCode = []
       this.imgCaptchaCode = []
       this.drawImage(res, 0, 0)
