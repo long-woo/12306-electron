@@ -377,6 +377,16 @@ const task = {
     return this.getOrderAwaitTime(train, seatText, index)
   },
   /**
+   * 启动订单出票任务
+   */
+  startOrderAwaitFunc: null,
+  /**
+   * 停止订单出票时间任务
+   */
+  stopOrderAwaitFunc () {
+    clearInterval(this.startOrderAwaitFunc)
+  },
+  /**
    * 获取订单出票时间
    * @param {*} train 车次
    * @param {*} seatText 座位
@@ -384,21 +394,20 @@ const task = {
    */
   getOrderAwaitTime (train, seatText, index) {
     return new Promise(resolve => {
-      let awaitTimeFunc = null
       let data = {}
       let title = '提示'
       let content = '哎呀！！！被挤下线了，请重新登录'
 
-      clearInterval(awaitTimeFunc)
+      this.stopOrderAwaitFunc()
 
-      awaitTimeFunc = setInterval(async () => {
+      this.startOrderAwaitFunc = setInterval(async () => {
         const res = await Vue.api.getOrderAwaitTime()
 
         if (res.code < 1) {
           Vue.alert(res.message)
 
           if (res.message.indexOf('登录') > -1) {
-            clearInterval(awaitTimeFunc)
+            this.stopOrderAwaitFunc()
 
             this.setStatus(index, '您的登录状态已失效，请重新登录')
             Vue.eventBus.$emit('openDialog', 'loginModal')
@@ -412,7 +421,7 @@ const task = {
           }
 
           if (res.message.indexOf('出票超时') > -1) {
-            clearInterval(awaitTimeFunc)
+            this.stopOrderAwaitFunc()
 
             this.setStatus(index, `【${train.trainCode}】车次【${seatText}出票失败...`)
             notification.show(title, {
@@ -435,12 +444,7 @@ const task = {
           title = 'WOW，恭喜您抢到票了～'
           content = `您的订单号：【${orderNo}】，请在30分钟内完成支付`
 
-          clearInterval(awaitTimeFunc)
-
-          // 开发者为您发来一个彩蛋
-          // const audio = document.querySelector('#audioEgg')
-          // audio.play()
-
+          this.stopOrderAwaitFunc()
           speech.textToSpeech(`${title}您的订单号：【${orderNo.replace(/\s*/g, '|')}】，请在30分钟内完成支付`)
           this.setStatus(index, `【${train.trainCode}】车次【${seatText}】出票成功...`)
           Vue.swal({

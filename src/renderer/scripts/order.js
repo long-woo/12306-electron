@@ -9,10 +9,11 @@ const submitOrder = async (url, formData) => {
   formData.purpose_codes = 'ADULT'
   formData.tour_flag = 'dc'
 
-  const {data} = await Vue.http.post(url, formData)
+  const {data, messages} = await Vue.http.post(url, formData)
+  const message = messages.indexOf('有未处理的订单') > -1 ? '您还有未完成支付的订单，请先进行处理' : messages.toString()
   let result = {
     code: 0,
-    message: '提交订单失败'
+    message: message
   }
 
   if (data === 'N') {

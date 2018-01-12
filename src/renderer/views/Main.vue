@@ -71,7 +71,7 @@ export default {
       captchaCodeType: 'login',
       loginName: '',
       showAbout: false,
-      audioEggUrl: 'http://dl.stream.qqmusic.qq.com/C400000Pf4Mm18IBYT.m4a?vkey=88CB0751036350F8A286D9FD2A19F38378A12CA232539AFC2903716FA343C309A004D041B73BC994BEA904FB103838D84E1A9C45DA0B665B&guid=8689695976&uin=906040179&fromtag=66'
+      audioEggUrl: ''
     }
   },
   mounted () {
