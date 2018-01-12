@@ -91,7 +91,8 @@ const task = {
 
         res.forEach(train => {
           if (taskItem.trains.indexOf(train.trainCode) > -1) {
-            const seatItems = this.isHasTicket(taskItem.seats, train.seatTypes)
+            const arrPassenger = taskItem.passengers.passengerName.split(',')
+            const seatItems = this.isHasTicket(taskItem.seats, train.seatTypes, arrPassenger)
             const arrSeat = trainSeats.concat(seatItems)
 
             trainSeats = Array.from(new Set(arrSeat))
@@ -133,18 +134,23 @@ const task = {
    * 检查是否有票
    * @param {*} chkSeats 选择的座位
    * @param {*} seatTypes 车次的座位
+   * @param {*} arrPassenger 乘客
    */
-  isHasTicket (chkSeats, seatTypes) {
+  isHasTicket (chkSeats, seatTypes, arrPassenger) {
     let result = []
+    const passengerCount = arrPassenger.length
 
     chkSeats.filter(s => {
       const trainSeat = seatTypes.find(t => t.seatTypeCode === s)
 
       if (!trainSeat) return
 
-      const ticketCount = trainSeat.seatTypeDetail
+      const ticketRemark = trainSeat.seatTypeDetail
+      let ticketCount = ticketRemark.match(/（(.+)）/)[1]
 
-      if (ticketCount.indexOf('无') < 0 && ticketCount.indexOf('-') < 0 && ticketCount.indexOf('*') < 0 && ticketCount.indexOf('0') < 0) {
+      ticketCount = Number(ticketCount)
+
+      if ('无-*0'.indexOf(ticketCount.toString()) < 0 && (ticketCount.toString() !== 'NaN' && ticketCount >= passengerCount)) {
         result.push(s)
       }
     })

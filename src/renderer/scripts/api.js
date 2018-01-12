@@ -162,7 +162,7 @@ const validCaptchaCode = async (code, type) => {
 
     if (data.result !== '1') {
       result.code = 0
-      result.message = data.msg
+      result.message = data.msg === 'FALSE' ? '验证码不正确' : data.msg
 
       return result
     }

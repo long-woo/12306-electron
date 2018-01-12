@@ -107,7 +107,10 @@ export default {
     async validCaptcha () {
       let verifyCode = this.captchaCode.toString()
 
-      if (!verifyCode) return
+      if (!verifyCode) {
+        this.$alert('请选择验证码')
+        return
+      }
 
       verifyCode = verifyCode.replace(/(-)/gi, ',')
 
