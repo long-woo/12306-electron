@@ -38,6 +38,7 @@ export default {
     // 移除任务
     removeTask (index) {
       utils.task.stop(index)
+      utils.task.stopOrderAwaitFunc()
       this.$store.dispatch('deleteTaskData', index)
     }
   }
