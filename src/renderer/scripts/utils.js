@@ -150,7 +150,7 @@ const task = {
 
       ticketCount = Number(ticketCount)
 
-      if ('无-*0'.indexOf(ticketCount.toString()) < 0 && (ticketCount.toString() !== 'NaN' && ticketCount >= passengerCount)) {
+      if ('有'.indexOf(ticketCount.toString()) > -1 || (ticketCount.toString() !== 'NaN' && ticketCount >= passengerCount)) {
         result.push(s)
       }
     })
