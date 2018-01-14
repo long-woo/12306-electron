@@ -62,6 +62,9 @@ export default {
     chkSeatTypes (value) {
       this.setButton(value, '5种类型的座位')
     },
+    chkTrainCodes (value) {
+      if (!value.length) this.chkSeatTypes = []
+    },
     chkPassengers (value) {
       this.passengerName = []
       this.oldPassengers = []
