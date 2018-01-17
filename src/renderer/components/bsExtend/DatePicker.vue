@@ -1,12 +1,12 @@
 <template>
   <b-input-group>
     <b-input-group-button>
-      <b-button variant="info" class="no-outline waves-effect" :disabled="prevState" @click="changeDate('-')">-</b-button>
+      <b-button variant="info" class="no-outline waves-effect" :disabled="prevState" @click="changeDate('-')">&lt;</b-button>
     </b-input-group-button>
     <date-picker :date="date" :option="option" :limit="limit" @change="changeDate">
     </date-picker>
     <b-input-group-button>
-      <b-button variant="info" class="no-outline waves-effect" :disabled="nextState" @click="changeDate('+')">+</b-button>
+      <b-button variant="info" class="no-outline waves-effect" :disabled="nextState" @click="changeDate('+')">&gt;</b-button>
     </b-input-group-button>
   </b-input-group>
 </template>

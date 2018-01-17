@@ -232,17 +232,7 @@ const getPassengers = async (name, pageIndex, pageCount) => {
  * 检查是否登录
  */
 const chkeckIsLogin = async () => {
-  let loginResult = {}
-  const {data} = await Vue.http.post(urls.chkeckIsLogin)
-  let res = data.flag || false
-
-  if (!res) {
-    loginResult.code = 0
-    loginResult.message = '用户未登录'
-    return loginResult
-  }
-
-  loginResult = await common.loginAuth()
+  const loginResult = await common.loginAuth()
 
   return loginResult
 }
