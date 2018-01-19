@@ -100,18 +100,20 @@ export default {
         date = value.add(1, 'd').format('YYYY-MM-DD')
       }
 
-      if (moment(date) < moment(this.min)) {
+      if (moment(date) <= moment(this.min)) {
         this.prevState = true
-        return
+      } else {
+        this.prevState = false
       }
 
-      if (moment(date) > moment(this.max)) {
+      if (moment(date) >= moment(this.max)) {
         this.nextState = true
-        return
+      } else {
+        this.nextState = false
       }
 
-      this.prevState = false
-      this.nextState = false
+      if (moment(date) < moment(this.min) || moment(date) > moment(this.max)) return
+
       this.date.time = date
       this.$emit('change', date)
     }
