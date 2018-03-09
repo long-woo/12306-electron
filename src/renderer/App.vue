@@ -8,6 +8,12 @@
 export default {
   name: 'App',
   created () {
+    window.addEventListener('offline', () => {
+      this.$alert('网络没有连接^~^')
+    })
+
+    if (!navigator.onLine) return
+
     this.checkUpdate()
     this.checkTickUrl()
   },
@@ -15,12 +21,6 @@ export default {
     // 检查是否有新版本
     checkUpdate () {
       const ipcRender = this.$electron.ipcRenderer
-
-      window.addEventListener('offline', () => {
-        this.$alert('网络没有连接^~^')
-      })
-
-      if (!navigator.onLine) return
 
       ipcRender.send('checkUpdate')
       ipcRender.on('autoUpdateStatus', (event, res) => {
