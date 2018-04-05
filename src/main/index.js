@@ -23,7 +23,7 @@ const winURL = process.env.NODE_ENV === 'development'
 // 菜单模版
 const menusTemplate = []
 
-// 是否退出
+// 是否退出应用
 let isQuit = false
 
 // mac os
@@ -31,12 +31,10 @@ if (process.platform === 'darwin') {
   const appName = app.getName()
   const appVersion = app.getVersion()
 
+  // 顶部菜单
   menusTemplate.unshift({
     label: appName,
     submenu: [{
-    //   label: `关于${appName}`,
-    //   role: 'about'
-    // }, {
       label: `当前版本${appVersion}`,
       enabled: false
     }, {
@@ -63,7 +61,6 @@ if (process.platform === 'darwin') {
       label: `退出${appName}`,
       accelerator: 'Command+Q',
       click: () => {
-        isQuit = true
         app.quit()
       }
     }]
@@ -97,7 +94,6 @@ function createWindow () {
 
   mainWindow.on('close', event => {
     mainWindow.hide()
-
     if (!isQuit) {
       event.preventDefault()
     }
@@ -122,6 +118,25 @@ function sendAutoUpdateStatus (text) {
   log.info(text)
   mainWindow.webContents.send('autoUpdateStatus', text)
 }
+
+/**
+ * 确保应用只有一个实例
+ */
+const isSecondInstance = app.makeSingleInstance((command, workingDirectory) => {
+  if (mainWindow) {
+    if (mainWindow.isMinimized()) mainWindow.restore()
+    mainWindow.focus()
+  }
+})
+
+if (isSecondInstance) {
+  app.quit()
+  // return
+}
+
+app.on('before-quit', () => {
+  isQuit = true
+})
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
@@ -180,6 +195,4 @@ autoUpdater.on('update-downloaded', info => {
   autoUpdater.quitAndInstall()
 })
 
-app.on('ready', () => {
-  createWindow()
-})
+app.on('ready', createWindow)
