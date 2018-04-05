@@ -3,7 +3,7 @@
 > 使用electron-vue构建12306跨平台（Mac、Windows、Linux）客户端
 
 [![Build Status-(trvis)](https://travis-ci.org/long-woo/12306-electron.svg?branch=dev)](https://travis-ci.org/woo-long/12306-electron)
-[![Build status-(appveyor)](https://ci.appveyor.com/api/projects/status/iosiwiwmruul7wr8/branch/dev)](https://ci.appveyor.com/project/Woo-Long/12306-electron)
+[![Build status-(appveyor)](https://ci.appveyor.com/api/projects/status/iosiwiwmruul7wr8/branch/dev?svg=true)](https://ci.appveyor.com/project/Woo-Long/12306-electron)
 
 ![程序效果（Mac）](https://raw.githubusercontent.com/woo-long/12306-electron/dev/app_snapshot.png)
 
