@@ -23,6 +23,9 @@ const winURL = process.env.NODE_ENV === 'development'
 // 菜单模版
 const menusTemplate = []
 
+// 是否退出
+let isQuit = false
+
 // mac os
 if (process.platform === 'darwin') {
   const appName = app.getName()
@@ -60,6 +63,7 @@ if (process.platform === 'darwin') {
       label: `退出${appName}`,
       accelerator: 'Command+Q',
       click: () => {
+        isQuit = true
         app.quit()
       }
     }]
@@ -76,9 +80,10 @@ function createWindow () {
     useContentSize: true,
     width: process.env.NODE_ENV === 'development' ? 1000 : 888,
     minWidth: 700,
+    backgroundColor: '#17a2b8',
     titleBarStyle: 'hidden',
     frame: false,
-    show: true,
+    show: false,
     webPreferences: {
       webSecurity: false
     }
@@ -88,6 +93,18 @@ function createWindow () {
 
   mainWindow.on('closed', () => {
     mainWindow = null
+  })
+
+  mainWindow.on('close', event => {
+    mainWindow.hide()
+
+    if (!isQuit) {
+      event.preventDefault()
+    }
+  })
+
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.show()
   })
 
   // 设置菜单
@@ -115,7 +132,10 @@ app.on('window-all-closed', () => {
 app.on('activate', () => {
   if (mainWindow === null) {
     createWindow()
+    return
   }
+
+  mainWindow.show()
 })
 
 ipcMain.on('checkUpdate', (event, arg) => {
