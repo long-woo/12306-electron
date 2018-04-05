@@ -1,10 +1,10 @@
 <template>
   <b-modal id="loginModal" title="登录" :okOnly="true" @shown="dialogShow">
     <form @submit.stop.prevent="login">
-      <b-input-group left="账号" class="form-group">
+      <b-input-group prepend="账号" class="form-group">
         <b-autocomplete ref="txtLoginUser" class="col pl-sm-0 pr-sm-0" inputClass="bl-rounded-0 rounded-right" placeholder="输入用户名/邮箱/手机号" v-model="userInfo" :dropdownData="loginUsers" @onSelect="selectLoginUser" @inputChange="inputChange"></b-autocomplete>
       </b-input-group>
-      <b-input-group left="密码" class="form-group">
+      <b-input-group prepend="密码" class="form-group">
         <b-form-input type="password" placeholder="输入密码" v-model="password" @keyup.enter="login"></b-form-input>
       </b-input-group>
       <div class="form-row">
