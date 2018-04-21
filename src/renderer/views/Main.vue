@@ -182,7 +182,8 @@ main {
   position: absolute;
   overflow: auto;
   top: 5.5rem;
-  bottom: 2.5rem;
+  bottom: 2.8rem;
+  -webkit-overflow-scrolling: touch;
 }
 
 .navbar-nav .nav-link {

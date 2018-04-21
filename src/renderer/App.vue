@@ -68,7 +68,7 @@ export default {
 }
 
 ::-webkit-scrollbar {
-  width: 0.3rem;
+  width: 0;
 }
 
 html,body {

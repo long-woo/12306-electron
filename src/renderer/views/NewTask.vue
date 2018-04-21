@@ -1,19 +1,19 @@
 <template>
-  <div class="mt-3">
-    <div class="form-row form-group sticky-top bg-white">
-      <div class="col-sm-6 form-inline">
-        <b-autocomplete class="col pl-sm-0 pr-sm-0" inputClass="br-rounded-0" placeholder="输入出发地" v-model="fromCity" :dropdownData="stationData" @onSelect="selectFromCity"></b-autocomplete>
-        <div class="col-auto pl-sm-0 pr-sm-0">
+  <div>
+    <div class="form-row sticky-top bg-white pt-3">
+      <div class="col-sm-6 form-inline mb-3">
+        <b-autocomplete class="col pl-0 pr-0" inputClass="br-rounded-0" placeholder="输入出发地" v-model="fromCity" :dropdownData="stationData" @onSelect="selectFromCity"></b-autocomplete>
+        <div class="col-auto pl-0 pr-0">
           <b-button variant="info" class="bs-input-center waves-effect" @click="changeCity">
             <i class="iconfont icon-change"></i>
           </b-button>
         </div>
-        <b-autocomplete class="col pl-sm-0 pr-sm-0" placeholder="输入目的地" inputClass="bl-rounded-0" v-model="toCity" :dropdownData="stationData" ref="toCity" @onSelect="selectToCity"></b-autocomplete>
+        <b-autocomplete class="col pl-0 pr-0" placeholder="输入目的地" inputClass="bl-rounded-0" v-model="toCity" :dropdownData="stationData" ref="toCity" @onSelect="selectToCity"></b-autocomplete>
       </div>
-      <div class="col-sm-4">
+      <div class="col-sm-4 mb-3">
         <b-date-picker ref="rideDate" @change="changeDate"></b-date-picker>
       </div>
-      <div class="col-sm-2 text-right">
+      <div class="col-sm-2 mb-3 text-right">
         <b-button variant="info" class="waves-effect" @click="queryTrain">
           <i class="iconfont icon-search"></i>
           <span>查询</span>

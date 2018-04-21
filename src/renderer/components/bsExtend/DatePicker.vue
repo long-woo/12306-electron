@@ -3,7 +3,7 @@
     <b-input-group-prepend>
       <b-button variant="info" class="no-outline waves-effect" :disabled="prevState" @click="changeDate('-')">&lt;</b-button>
     </b-input-group-prepend>
-    <date-picker :date="date" :option="option" :limit="limit" @change="changeDate">
+    <date-picker class="col pl-0 pr-0" :date="date" :option="option" :limit="limit" @change="changeDate">
     </date-picker>
     <b-input-group-append>
       <b-button variant="info" class="no-outline waves-effect" :disabled="nextState" @click="changeDate('+')">&gt;</b-button>
@@ -121,8 +121,8 @@ export default {
 }
 </script>
 
-<style>
-.cov-vue-date .cov-date-body[data-v-46d671c2] {
+<style scoped>
+  /deep/ .cov-vue-date .cov-date-body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   font-size: 1rem;
   font-weight: normal;
