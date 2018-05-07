@@ -169,10 +169,11 @@ export default {
 }
 
 .btn-add-task {
-  box-shadow: 0 0 0.5rem #17a2b8;
-  margin: -4.6rem auto 0;
+  box-shadow: 0 0 0.5rem var(--cyan);
+  margin: 0 auto;
   width: 4.5rem;
   height: 4.5rem;
+  bottom: 0;
   right: 0;
   left: 0;
   background-color: rgba(23, 162, 184, 1);
@@ -182,6 +183,11 @@ export default {
 .btn-add-task a {
   display: block;
   height: 100%;
+}
+
+.btn-add-task:active {
+  width: 4.3rem;
+  height: 4.3rem;
 }
 
 .btn-add-task:hover {
@@ -200,6 +206,7 @@ export default {
 
 .task-add-panel {
   background-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 3rem var(--cyan);
   height: 15rem;
   margin-top: -15rem;
   padding-bottom: 2.9rem;

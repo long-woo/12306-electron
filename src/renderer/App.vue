@@ -120,7 +120,7 @@ label {
 }
 
 #nprogress .bar {
-  background-color: #17a2b8 !important;
+  background-color: var(--cyan) !important;
 }
 
 #nprogress .spinner,
@@ -165,7 +165,7 @@ label {
 }
 
 .border-b-dashed-1 {
-  border-bottom: 0.01rem dashed #17a2b8;
+  border-bottom: 0.01rem dashed var(--cyan);
 }
 
 .ani-slide-up {
