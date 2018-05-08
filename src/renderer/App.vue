@@ -63,7 +63,7 @@ export default {
 }
 
 ::selection {
-  background-color: #17a2b8;
+  background-color: var(--cyan);
   color: #fff;
 }
 

@@ -1,5 +1,7 @@
-<<template>
-  <div class="bs-alert text-center text-white" :class="className" v-show="show">{{content}}</div>
+<template>
+  <transition name="bounce-slide-down" enter-active-class="animated bounceInDown" leave-active-class="animated bounceOutUp">
+    <div class="bs-alert text-center text-white" :class="className" v-show="show">{{content}}</div>
+  </transition>
 </template>
 
 <style scoped>
