@@ -77,9 +77,9 @@ html,body {
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Microsoft YaHei";
-  user-select: none;
   -webkit-app-region: drag;
   overflow: hidden;
+  height: 100%;
 }
 
 input,
@@ -113,6 +113,10 @@ button {
 
 label {
   margin-bottom: 0 !important;
+}
+
+#app {
+  height: 100%;
 }
 
 .font-size-14{
