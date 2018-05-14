@@ -24,7 +24,7 @@ export default {
 
       ipcRender.send('checkUpdate')
       ipcRender.on('autoUpdateStatus', (event, res) => {
-        this.$alert(res)
+        this.$alert(res, {timeout: 0})
 
         if (res.indexOf('Error') > -1) {
           this.$electron.shell.openExternal('https://github.com/woo-long/12306-electron/releases')
@@ -80,6 +80,7 @@ body {
   -webkit-app-region: drag;
   overflow: hidden;
   height: 100%;
+  position: relative;
 }
 
 input,

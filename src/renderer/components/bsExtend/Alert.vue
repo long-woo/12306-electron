@@ -26,6 +26,11 @@ export default {
       timeout: 2000,
       onHide: false
     }
+  },
+  watch: {
+    show (value) {
+      if (!value) Object.assign(this.$data, this.$options.data())
+    }
   }
 }
 </script>
