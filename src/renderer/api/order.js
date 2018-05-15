@@ -69,6 +69,72 @@ class Order {
   }
 
   /**
+   * 获取订单出票时间
+   */
+  static async getOrderAwaitTime () {
+    const {data} = await axios.get(config.urls.getOrderAwaitTime, {
+      params: {
+        random: new Date().getTime(),
+        tourFlag: 'dc',
+        _json_att: ''
+      }
+    })
+    let code = 400
+    let message = '请求失败'
+
+    if (!data.queryOrderWaitTimeStatus) {
+      message = '请先登录'
+
+      return new BaseContent(null, {message, code})
+    }
+
+    if (data.waitTime === -100) {
+      message = '出票超时'
+
+      return new BaseContent(null, {message, code})
+    }
+
+    return new BaseContent(data.orderId)
+  }
+
+  /**
+   * 获取待支付的订单
+   */
+  static async getMyOrder () {
+    let code = 400
+    let message = '请求失败'
+    const {data, messages} = await axios.post(config.urls.getMyOrder)
+
+    if (!data) {
+      message = '没有找到待支付的订单'
+
+      return new BaseContent(null, {message, code})
+    }
+
+    const order = data.orderDBList || []
+
+    if (messages.length) {
+      message = messages.toString()
+
+      return new BaseContent(null, {message, code})
+    }
+
+    if (data.to_page === 'cache') {
+      message = '您的订单还在排队中'
+
+      return new BaseContent(null, {message, code})
+    }
+
+    if (!order.length) {
+      message = '没有找到待支付的订单'
+
+      return new BaseContent(null, {message, code})
+    }
+
+    return new BaseContent(order)
+  }
+
+  /**
    * 获取提交订单队列信息
    * @param {*} formData 参数（train_date、train_no、stationTrainCode、seatType、fromStationTelecode、toStationTelecode、leftTicket、purpose_codes、train_location、_json_att、REPEAT_SUBMIT_TOKEN）
    * @param {*} seatText 座位名称
