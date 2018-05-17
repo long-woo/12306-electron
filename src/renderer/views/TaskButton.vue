@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import utils from '../scripts/utils'
+import utils from '../utils/utils'
 
 export default {
   name: 'TaskButton',
@@ -111,11 +111,11 @@ export default {
     async getPassengers () {
       if (!this.$store.getters.loginModel) return
 
-      const res = await this.$api.getPassengers('', 1, 999)
+      const {data} = await this.$api.account.getPassengers('', 1, 999)
 
-      if (!res.length) return
+      if (!data.length) return
 
-      this.passengers = res
+      this.passengers = data
     },
     addTask () {
       if (this.showPanel && !this.chkPassengers.length && !this.chkSeatTypes.length) {

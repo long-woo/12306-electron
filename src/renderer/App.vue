@@ -33,9 +33,9 @@ export default {
     },
     // 检查url是否可用
     async checkTickUrl () {
-      const res = await this.$api.getQueryUrl()
+      const {data} = await this.$api.base.getQueryUrl()
 
-      if (!res) {
+      if (!data) {
         this.$swal('查询车票地址不可用^~^', '请重试', 'warning', {
           buttons: {
             cancel: '取消',
@@ -50,7 +50,7 @@ export default {
         return
       }
 
-      this.$store.dispatch('setQueryUrl', res)
+      this.$store.dispatch('setQueryUrl', data)
     }
   }
 }

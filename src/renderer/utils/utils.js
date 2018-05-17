@@ -84,7 +84,7 @@ const task = {
         const {fromCityCode, toCityCode, trainDate} = taskItem.queryInfo
 
         this.setStatus(index, '正在查询...')
-        const res = await Vue.api.getTicket(fromCityCode, toCityCode, trainDate)
+        const res = await Vue.api.base.getTicket(fromCityCode, toCityCode, trainDate)
         let trainSeats = [] // 有票数的座位
         // 检查匹配车次是否符合预订条件
         let trainData = []

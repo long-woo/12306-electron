@@ -5,7 +5,7 @@
         <span aria-hidden="true">&times;</span>
       </button>
       <div class="swal-icon swal-icon--custom">
-        <img :src="appIcon">
+        <img src="../assets/logo.png">
       </div>
       <div class="swal-title pt-0">{{appName}}</div>
       <div class="swal-text mb-0 text-center">
@@ -21,11 +21,10 @@ export default {
   name: 'About',
   data () {
     return {
-      appIcon: require('../assets/logo.png'),
       appName: '',
       appVersion: '',
       appAuthorName: '',
-      currentYear: ''
+      currentYear: new Date().getFullYear()
     }
   },
   props: {
@@ -43,7 +42,6 @@ export default {
     this.appName = appInfo.getName()
     this.appVersion = appInfo.getVersion()
     this.appAuthorName = authorName
-    this.currentYear = new Date().getFullYear()
   },
   methods: {
     // 检查更新

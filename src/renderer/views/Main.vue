@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import utils from '../scripts/utils'
+import utils from '../utils/utils'
 
 export default {
   name: 'Main',
@@ -105,13 +105,13 @@ export default {
     },
     // 检查是否已经登录
     async chkeckIsLogin () {
-      const {code, loginName} = await this.$api.chkeckIsLogin()
+      const {code, data} = await this.$api.account.chkeckIsLogin()
 
-      if (code !== 1) return
+      if (code !== 200) return
 
-      this.loginName = loginName
+      this.loginName = data.loginName
 
-      const loginInfo = utils.getLoginModel(loginName)
+      const loginInfo = utils.getLoginModel(data.loginName)
 
       if (!loginInfo.length) return
 
@@ -127,23 +127,23 @@ export default {
             username: login.userName,
             password: login.password
           }
-          const res = await this.$api.login(loginData)
+          const {code, data, message} = await this.$api.account.login(loginData)
 
-          if (res.code !== 1) {
-            this.$alert(res.message)
+          if (code !== 200) {
+            this.$alert(message)
             this.$root.$emit('bv::show::modal', 'loginModal')
             return
           }
 
           const loginInfo = {
-            loginName: res.loginName,
+            loginName: data.loginName,
             userName: login.userName,
             password: login.password,
             rememberme: login.rememberme,
             autoLogin: login.autoLogin
           }
 
-          this.loginName = res.loginName
+          this.loginName = data.loginName
           this.$store.dispatch('setLoginModel', loginInfo)
           this.getPassengers()
         } else {
@@ -161,7 +161,7 @@ export default {
     },
     // 退出登录
     async logOff () {
-      await this.$api.loginOff()
+      await this.$api.account.loginOff()
       // 清除登录信息
       this.loginName = ''
       this.$eventBus.$emit('loginOff')

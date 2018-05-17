@@ -87,10 +87,10 @@ export default {
     }
 
     // 站名
-    const stations = await this.$api.getStationName()
+    const {data} = await this.$api.base.getStationName()
 
-    this.$store.dispatch('setStationName', stations)
-    this.stationData = stations
+    this.$store.dispatch('setStationName', data)
+    this.stationData = data
 
     if (this.$refs.taskButton) {
       this.$refs.taskButton.getPassengers()
@@ -144,7 +144,7 @@ export default {
       seatCodes.map((code, index) => {
         if (!code) return
 
-        const text = this.$api.getSeatTypeInfo(code)
+        const text = this.$api.base.getSeatTypeInfo(code)
 
         seatItems.filter((s, i) => {
           if (s.code === code) {
@@ -168,7 +168,7 @@ export default {
       if (!this.fromCity || !this.toCity || this.fromCity === this.toCity) return
 
       const trainDate = this.$refs.rideDate.date.time
-      const data = await this.$api.getTicket(this.fromCity.value, this.toCity.value, trainDate)
+      const {data} = await this.$api.base.getTicket(this.fromCity.value, this.toCity.value, trainDate)
 
       this.chkTrains = []
       this.ticketData = data

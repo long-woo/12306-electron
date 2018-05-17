@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import utils from '../scripts/utils'
+import utils from '../utils/utils'
 
 export default {
   name: 'Login',
