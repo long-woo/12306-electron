@@ -6,7 +6,7 @@
     </div>
     <b-button slot="modal-footer" variant="success" class="waves-effect" @click="getCaptchaCode">换一张？</b-button>
     <b-button slot="modal-footer" variant="secondary" class="waves-effect" @click="cancel" v-show="type === 'login'">返回</b-button>
-    <b-button slot="modal-footer" variant="primary" class="waves-effect" @click="validCaptcha">验证</b-button>
+    <b-button slot="modal-footer" variant="info" class="waves-effect" @click="validCaptcha">验证</b-button>
   </b-modal>
 </template>
 
@@ -52,6 +52,8 @@ export default {
     // 获取验证码
     async getCaptchaCode () {
       const res = await this.$api.getCaptchaCode(this.type)
+
+      if (!res) return
 
       this.captchaCode = []
       this.imgCaptchaCode = []
@@ -105,7 +107,10 @@ export default {
     async validCaptcha () {
       let verifyCode = this.captchaCode.toString()
 
-      if (!verifyCode) return
+      if (!verifyCode) {
+        this.$alert('请选择验证码')
+        return
+      }
 
       verifyCode = verifyCode.replace(/(-)/gi, ',')
 

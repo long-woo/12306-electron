@@ -4,7 +4,7 @@ import qs from 'querystring'
 
 // 配置axios
 axios.defaults.baseURL = 'https://kyfw.12306.cn'
-axios.defaults.timeout = 5000
+axios.defaults.timeout = 16000
 axios.defaults.withCredentials = true
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8'
 

@@ -1,5 +1,4 @@
 import Vue from 'vue'
-import axios from './scripts/http'
 
 import App from './App'
 import router from './router'
@@ -24,11 +23,11 @@ import 'animate.css/animate.css'
 
 import bsComponents from './components'
 
-import api from './scripts/api'
+import api from './api'
 import eventBus from './scripts/eventBus'
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
-Vue.http = Vue.prototype.$http = axios
+
 Vue.config.productionTip = false
 
 Vue.use(BootstrapVue)

@@ -7,10 +7,51 @@
 <script>
 export default {
   name: 'App',
-  async created () {
-    // 查票url
-    const res = await this.$api.getQueryUrl()
-    this.$store.dispatch('setQueryUrl', res)
+  created () {
+    window.addEventListener('offline', () => {
+      this.$alert('网络没有连接^~^')
+    })
+
+    if (!navigator.onLine) return
+
+    this.checkUpdate()
+    this.checkTickUrl()
+  },
+  methods: {
+    // 检查是否有新版本
+    checkUpdate () {
+      const ipcRender = this.$electron.ipcRenderer
+
+      ipcRender.send('checkUpdate')
+      ipcRender.on('autoUpdateStatus', (event, res) => {
+        this.$alert(res, {timeout: 0})
+
+        if (res.indexOf('Error') > -1) {
+          this.$electron.shell.openExternal('https://github.com/woo-long/12306-electron/releases')
+        }
+      })
+    },
+    // 检查url是否可用
+    async checkTickUrl () {
+      const res = await this.$api.getQueryUrl()
+
+      if (!res) {
+        this.$swal('查询车票地址不可用^~^', '请重试', 'warning', {
+          buttons: {
+            cancel: '取消',
+            default: '确定'
+          }
+        }).then(conf => {
+          if (!conf) return
+
+          this.checkTickUrl()
+        })
+
+        return
+      }
+
+      this.$store.dispatch('setQueryUrl', res)
+    }
   }
 }
 </script>
@@ -22,8 +63,12 @@ export default {
 }
 
 ::selection {
-  background-color: #17a2b8;
+  background-color: var(--cyan);
   color: #fff;
+}
+
+::-webkit-scrollbar {
+  width: 0;
 }
 
 html,body {
@@ -31,14 +76,23 @@ html,body {
 }
 
 body {
-  -webkit-user-select: none;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Microsoft YaHei";
   -webkit-app-region: drag;
   overflow: hidden;
+  height: 100%;
+  position: relative;
 }
 
 input,
 a,
-.btn {
+button,
+tr,
+thead,
+.checkbox,
+.img-captcha,
+.btn,
+.datepicker-overlay,
+.btn-task-del {
   -webkit-app-region: no-drag;
 }
 
@@ -54,8 +108,16 @@ button {
   cursor: pointer;
 }
 
+[disabled], .disabled {
+  cursor:not-allowed;
+}
+
 label {
   margin-bottom: 0 !important;
+}
+
+#app {
+  height: 100%;
 }
 
 .font-size-14{
@@ -63,7 +125,7 @@ label {
 }
 
 #nprogress .bar {
-  background-color: #17a2b8 !important;
+  background-color: var(--cyan) !important;
 }
 
 #nprogress .spinner,
@@ -108,7 +170,7 @@ label {
 }
 
 .border-b-dashed-1 {
-  border-bottom: 0.01rem dashed #17a2b8;
+  border-bottom: 0.01rem dashed var(--cyan);
 }
 
 .ani-slide-up {
@@ -120,9 +182,25 @@ label {
 }
 
 .form-control:focus,
-.sorting {
+.sorting,
+.close:focus,
+.no-outline {
   box-shadow: 0 0 0 transparent !important;
   outline: none;
+}
+
+.swal-about .swal-icon--custom {
+  width: 6rem;
+}
+
+.bl-rounded-0{
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+}
+
+.br-rounded-0 {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
 }
 
 @keyframes slideUp {

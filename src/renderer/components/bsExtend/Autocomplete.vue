@@ -96,7 +96,10 @@ export default {
 
       this.filterData = arrData
 
-      if (!this.filterData.length) return
+      if (!this.filterData.length) {
+        this.show = false
+        return
+      }
       this.selectIndex = 0
       this.show = true
     },

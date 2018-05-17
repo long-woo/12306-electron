@@ -1,16 +1,21 @@
 <template>
-  <div>
+  <div class="mt-3">
     <div class="row" v-for="(item, index) in taskData" :key="index">
       <div class="col-10 border border-info border-left-0 border-right-0 border-bottom-0 pr-0">
-        <div class="task-header p-2 bg-info text-white row mr-0">
-          <span>{{item.statusText}}</span>
+        <div class="task-header p-2 bg-info text-white row mr-0 d-flex flex-row justify-content-between">
+          <div>
+            <span>{{item.statusText}}</span>
+          </div>
+          <div>
+            <span>{{item.queryInfo.trainDate}}</span>
+          </div>
         </div>
         <div class="task-body border-b-dashed-1 p-2">
           <span>
             {{item.passengers.passengerName}}
           </span>
         </div>
-        <div class="task-footer p-2 bg-light row mr-0">
+        <div class="task-footer p-2 bg-light row mr-0 pl-3">
           <span>
             {{item.trains.toString()}}
           </span>
@@ -38,6 +43,7 @@ export default {
     // 移除任务
     removeTask (index) {
       utils.task.stop(index)
+      utils.task.stopOrderAwaitFunc()
       this.$store.dispatch('deleteTaskData', index)
     }
   }

@@ -1,11 +1,23 @@
 {
   "name": "12306-electron",
+<<<<<<< HEAD
   "version": "1.0.0",
+=======
+  "version": "1.0.1",
+>>>>>>> dev
   "author": "long.woo <longwunet@gmail.com>",
   "description": "使用electron-vue构建12306跨平台客户端",
   "bugs": {
     "url": "https://github.com/woo-long/12306-electron/issues"
   },
+<<<<<<< HEAD
+=======
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/woo-long/12306-electron.git"
+  },
+  "releases": "https://github.com/woo-long/12306-electron/releases",
+>>>>>>> dev
   "license": "MIT",
   "keywords": [
     "12306",
@@ -35,9 +47,13 @@
       "output": "build"
     },
     "files": [
+<<<<<<< HEAD
       "dist/electron",
       "node_modules/",
       "package.json"
+=======
+      "dist/electron/**/*"
+>>>>>>> dev
     ],
     "dmg": {
       "contents": [
@@ -67,12 +83,23 @@
   "dependencies": {
     "animate.css": "^3.5.2",
     "axios": "^0.16.1",
+<<<<<<< HEAD
     "bootstrap-vue": "^1.2.0",
     "icheck-bootstrap": "^1.0.7",
     "node-waves": "^0.7.5",
     "nprogress": "^0.2.0",
     "sweetalert": "^2.0.8",
     "vue": "^2.5.8",
+=======
+    "bootstrap-vue": "^2.0.0-rc.6",
+    "electron-log": "^2.2.14",
+    "electron-updater": "^2.19.0",
+    "icheck-bootstrap": "^1.0.7",
+    "node-waves": "^0.7.6",
+    "nprogress": "^0.2.0",
+    "sweetalert": "^2.1.0",
+    "vue": "^2.5.13",
+>>>>>>> dev
     "vue-datepicker": "^1.3.0",
     "vue-electron": "^1.0.6",
     "vue-router": "^2.8.1",
@@ -87,6 +114,7 @@
     "babel-preset-stage-0": "^6.24.1",
     "babel-register": "^6.24.1",
     "babili-webpack-plugin": "^0.1.2",
+<<<<<<< HEAD
     "bootstrap": "^4.0.0-beta.2",
     "cfonts": "^1.1.3",
     "chalk": "^2.3.0",
@@ -100,6 +128,20 @@
     "electron-debug": "^1.4.0",
     "electron-devtools-installer": "^2.2.1",
     "eslint": "^4.11.0",
+=======
+    "cfonts": "^1.1.3",
+    "chalk": "^2.3.0",
+    "copy-webpack-plugin": "^4.3.1",
+    "cross-env": "^5.1.3",
+    "css-loader": "^0.28.8",
+    "del": "^3.0.0",
+    "devtron": "^1.4.0",
+    "electron": "^1.8.1",
+    "electron-builder": "^19.53.4",
+    "electron-debug": "^1.5.0",
+    "electron-devtools-installer": "^2.2.3",
+    "eslint": "^4.15.0",
+>>>>>>> dev
     "eslint-config-standard": "^10.2.1",
     "eslint-friendly-formatter": "^3.0.0",
     "eslint-loader": "^1.9.0",
@@ -111,7 +153,12 @@
     "extract-text-webpack-plugin": "^3.0.2",
     "file-loader": "^0.11.2",
     "html-webpack-plugin": "^2.30.1",
+<<<<<<< HEAD
     "moment": "^2.19.2",
+=======
+    "jquery": "^3.3.1",
+    "moment": "^2.20.1",
+>>>>>>> dev
     "multispinner": "^0.2.1",
     "node-loader": "^0.6.0",
     "style-loader": "^0.18.2",
@@ -119,9 +166,16 @@
     "vue-html-loader": "^1.2.4",
     "vue-loader": "^12.2.2",
     "vue-style-loader": "^3.0.3",
+<<<<<<< HEAD
     "vue-template-compiler": "^2.5.8",
     "webpack": "^3.8.1",
     "webpack-dev-server": "^2.9.4",
     "webpack-hot-middleware": "^2.20.0"
+=======
+    "vue-template-compiler": "^2.5.13",
+    "webpack": "^3.10.0",
+    "webpack-dev-server": "^2.10.1",
+    "webpack-hot-middleware": "^2.21.0"
+>>>>>>> dev
   }
 }

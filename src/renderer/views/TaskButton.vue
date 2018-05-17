@@ -42,6 +42,7 @@ export default {
       seatTypes: [],
       chkSeatTypes: [],
       passengerName: [],
+      // 提交订单所需参数
       oldPassengers: [],
       passengerTickets: []
     }
@@ -61,6 +62,9 @@ export default {
     chkSeatTypes (value) {
       this.setButton(value, '5种类型的座位')
     },
+    chkTrainCodes (value) {
+      if (!value.length) this.chkSeatTypes = []
+    },
     chkPassengers (value) {
       this.passengerName = []
       this.oldPassengers = []
@@ -78,9 +82,15 @@ export default {
     }
   },
   mounted () {
+    // 监听选择车次事件
     this.$eventBus.$on('changeSelecte', (data) => {
       this.chkTrainCodes = data.trains || []
       this.seatTypes = data.seats || []
+    })
+
+    // 监听退出登录事件
+    this.$eventBus.$on('loginOff', () => {
+      this.passengers = []
     })
   },
   methods: {
@@ -155,18 +165,29 @@ export default {
 
 <style scoped>
 .task-button-box {
-  z-index: 2048;
+  z-index: 1031;
 }
 
 .btn-add-task {
-  box-shadow: 0 0 0.5rem #17a2b8;
-  margin: -4.6rem auto 0;
+  box-shadow: 0 0 0.5rem var(--cyan);
+  margin: 0 auto;
   width: 4.5rem;
   height: 4.5rem;
+  bottom: 0;
   right: 0;
   left: 0;
   background-color: rgba(23, 162, 184, 1);
   position: absolute;
+}
+
+.btn-add-task a {
+  display: block;
+  height: 100%;
+}
+
+.btn-add-task:active {
+  width: 4.3rem;
+  height: 4.3rem;
 }
 
 .btn-add-task:hover {
@@ -185,6 +206,7 @@ export default {
 
 .task-add-panel {
   background-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 3rem var(--cyan);
   height: 15rem;
   margin-top: -15rem;
   padding-bottom: 2.9rem;

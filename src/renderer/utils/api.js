@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import order from './order'
 
 const urls = {
   initPage: '/otn/leftTicket/init', // GET
@@ -8,9 +9,11 @@ const urls = {
   loginAuthuam: '/passport/web/auth/uamtk', // POST
   loginAuthClient: '/otn/uamauthclient', // POST
   chkeckIsLogin: '/otn/login/checkUser', // POST
+  logOff: '/otn/login/loginOut', // GET
   getStationName: '/otn/resources/js/framework/station_name.js', // GET
   getTicket: '/otn/', // GET
   getPassengers: '/otn/confirmPassenger/getPassengerDTOs', // POST
+  // getPassengers: '/otn/passengers/query', // POST
 
   autoSubmitOrder: '/otn/confirmPassenger/autoSubmitOrderRequest', // POST
   getOrderQueueInfoAsync: '/otn/confirmPassenger/getQueueCountAsync', // POST
@@ -73,9 +76,12 @@ const getTicket = async (fromCity, toCity, trainDate) => {
       'purpose_codes': 'ADULT'
     }
   })
+  let ticketData = []
+
+  if (!data) return ticketData
+
   const result = data.result || []
   const stationNames = data.map || []
-  let ticketData = []
 
   result.map((val, inx) => {
     const arrTrain = val.split('|')
@@ -116,6 +122,8 @@ const getCaptchaCode = async (type) => {
     responseType: 'arraybuffer'
   })
 
+  if (res.toString().indexOf('Error') > -1) return ''
+
   return `data:image/jpeg;base64,${Buffer.from(res).toString('base64')}`
 }
 
@@ -154,7 +162,7 @@ const validCaptchaCode = async (code, type) => {
 
     if (data.result !== '1') {
       result.code = 0
-      result.message = data.msg
+      result.message = data.msg === 'FALSE' ? '验证码不正确' : data.msg
 
       return result
     }
@@ -188,12 +196,28 @@ const login = async (formData) => {
 }
 
 /**
+ * 退出登录
+ */
+const loginOff = () => {
+  return Vue.http.get(urls.logOff)
+}
+
+/**
  * 获取乘客
  * @param {*} name 乘客名
  * @param {*} pageIndex 当前页
  * @param {*} pageCount 每页数
  */
 const getPassengers = async (name, pageIndex, pageCount) => {
+  let formData = {
+    pageIndex: pageIndex || 1,
+    pageSize: pageCount || 10
+  }
+
+  if (name) {
+    formData['passengerDTO.passenger_name'] = name
+  }
+
   const res = await Vue.http.post(urls.getPassengers)
 
   if (!res.data) {
@@ -201,23 +225,14 @@ const getPassengers = async (name, pageIndex, pageCount) => {
   }
 
   return res.data.normal_passengers || []
+  // return res.data.datas || []
 }
 
 /**
  * 检查是否登录
  */
 const chkeckIsLogin = async () => {
-  let loginResult = {}
-  const {data} = await Vue.http.post(urls.chkeckIsLogin)
-  let res = data.flag || false
-
-  if (!res) {
-    loginResult.code = 0
-    loginResult.message = '用户未登录'
-    return loginResult
-  }
-
-  loginResult = await common.loginAuth()
+  const loginResult = await common.loginAuth()
 
   return loginResult
 }
@@ -262,10 +277,10 @@ const autoSubmitOrder = async (formData) => {
 }
 
 /**
- * 获取队列信息
+ * 获取队列信息（自动提交）
  * @param {*} formData (train_date,train_no,stationTrainCode,seatType,fromStationTelecode,toStationTelecode,leftTicket)
  */
-const getOrderQueueInfo = async (formData) => {
+const getOrderQueueInfoAsync = async (formData) => {
   formData.purpose_codes = 'ADULT'
   formData._json_att = ''
 
@@ -285,7 +300,7 @@ const getOrderQueueInfo = async (formData) => {
   }
 
   const ticketData = data.ticket.split(',') // 可能有无座数
-  let message = `${formData.stationTrainCode}车次剩余【${common.getSeatTypeInfo(formData.seatType)}（${ticketData[0]}）张】`
+  let message = `${formData.stationTrainCode}车次【${common.getSeatTypeInfo(formData.seatType)}】剩余【${ticketData[0]}】张`
 
   if (ticketData.length > 1) {
     message += `和【无座（${ticketData[1]}）张】`
@@ -303,10 +318,10 @@ const getOrderQueueInfo = async (formData) => {
 }
 
 /**
- * 确认订单队列
+ * 确认订单队列（自动提交）
  * @param {*} formData (passengerTicketStr,oldPassengerStr,randCode,key_check_isChange,leftTicketStr,train_location,choose_seats,seatDetailType)
  */
-const confirmOrderQueue = async (formData) => {
+const confirmOrderQueueAsync = async (formData) => {
   formData.purpose_codes = 'ADULT'
   formData._json_att = ''
 
@@ -322,6 +337,45 @@ const confirmOrderQueue = async (formData) => {
   result.code = 1
   result.message = '订单已确认，等待出票'
   return result
+}
+
+/**
+ * 提交订单
+ * @param {*} formData 参数
+ */
+const submitOrder = async (formData) => {
+  let res = await order.submitOrder(urls.submitOrder, formData)
+
+  if (res.code !== 1) return res
+
+  res = await order.getSubmitOrderInfo(urls.getSubmitOrderInfo)
+
+  return res
+}
+
+/**
+ * 检查提交订单信息
+ * @param {*} formData 参数
+ */
+const checkOrderInfo = (formData) => {
+  return order.checkOrderInfo(urls.checkOrderInfo, formData)
+}
+
+/**
+ * 获取订单队列信息
+ * @param {*} formData 参数
+ * @param {*} seatText 座位名称
+ */
+const getOrderQueueInfo = (formData, seatText) => {
+  return order.getOrderQueueInfo(urls.getOrderQueueInfo, formData, seatText)
+}
+
+/**
+ * 确认提交订单
+ * @param {*} formData 参数
+ */
+const confirmOrderQueue = (formData) => {
+  return order.confirmOrderQueue(urls.confirmOrderQueue, formData)
 }
 
 /**
@@ -484,9 +538,14 @@ export default {
   getCaptchaCode,
   validCaptchaCode,
   login,
+  loginOff,
   getPassengers,
   chkeckIsLogin,
   autoSubmitOrder,
+  getOrderQueueInfoAsync,
+  confirmOrderQueueAsync,
+  submitOrder,
+  checkOrderInfo,
   getOrderQueueInfo,
   confirmOrderQueue,
   getOrderAwaitTime,

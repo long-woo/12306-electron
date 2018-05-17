@@ -19,10 +19,12 @@
       </div>
     </header>
     <main class="container-fluid">
-      <router-view ref="views"></router-view>
+      <transition appear enter-active-class="animated zoomInDown">
+        <router-view ref="views"></router-view>
+      </transition>
     </main>
     <footer class="fixed-bottom border border-info border-left-0 border-right-0 border-bottom-0 bg-white">
-      <div class="d-flex flex-row font-size-14">
+      <div class="d-flex flex-row justify-content-between font-size-14">
         <div class="p-2">
           <div class="text-info" v-if="loginName">
             <i class="iconfont icon-user"></i>
@@ -34,10 +36,18 @@
             <span>未登录</span>
           </a>
         </div>
+        <div class="p-2">
+          <a class="text-info waves-effect" href="javascript:;" @click="openAbout">
+            <i class="iconfont icon-help"></i>
+            <span>关于</span>
+          </a>
+        </div>
       </div>
     </footer>
     <login ref="loginModal"></login>
     <captcha-code :type="captchaCodeType" @validComplete="validComplete"></captcha-code>
+    <about :show.sync="showAbout" />
+    <!-- <audio id="audioEgg" :src="audioEggUrl" preload="auto" loop style="display: none;" hidden="true"></audio> -->
   </div>
 </template>
 
@@ -48,7 +58,8 @@ export default {
   name: 'Main',
   components: {
     Login: () => import('./Login'),
-    CaptchaCode: () => import('./CaptchaCode')
+    CaptchaCode: () => import('./CaptchaCode'),
+    About: () => import('./About')
   },
   data () {
     return {
@@ -58,10 +69,14 @@ export default {
         { text: '我的订单', active: false, activeClass: '', icon: 'order-manager', to: '/myorder' }
       ],
       captchaCodeType: 'login',
-      loginName: ''
+      loginName: '',
+      showAbout: false,
+      audioEggUrl: ''
     }
   },
   mounted () {
+    // utils.speech.textToSpeech('Hello！欢迎使用1|2|3|0|6-Electron，祝您购票成功')
+
     this.chkeckIsLogin()
     this.$eventBus.$on('openDialog', (dialog) => {
       this.captchaCodeType = dialog === 'captchCodeModal' ? 'order' : 'login'
@@ -99,7 +114,6 @@ export default {
       const loginInfo = utils.getLoginModel(loginName)
 
       if (!loginInfo.length) return
-      // utils.notification.show('', {body: '登录成功'})
       this.$store.dispatch('setLoginModel', loginInfo[0])
       this.getPassengers()
     },
@@ -135,13 +149,21 @@ export default {
           // 提交订单
           const orderData = this.$store.getters.confirmOrderData
 
-          utils.task.confirmSubmitOrder(orderData.train, orderData.seatCode, orderData.passengers, orderData.key, value.verifyCode, orderData.index)
+          // utils.task.confirmOrderQueueAsync(orderData.train, orderData.seatCode, orderData.passengers, orderData.key, value.verifyCode, orderData.index, orderData.awaitTime)
+          utils.task.confirmOrderQueue(orderData.train, orderData.passengers, orderData.key, orderData.token, orderData.seatCode, value.verifyCode, orderData.index, orderData.awaitTime)
         }
       }
     },
-    // 注销
-    logOff () {
-
+    // 关于
+    openAbout () {
+      this.showAbout = true
+    },
+    // 退出登录
+    async logOff () {
+      await this.$api.loginOff()
+      // 清除登录信息
+      this.loginName = ''
+      this.$eventBus.$emit('loginOff')
     }
   }
 }
@@ -159,7 +181,8 @@ main {
   position: absolute;
   overflow: auto;
   top: 5.5rem;
-  bottom: 2.5rem;
+  bottom: 2.8rem;
+  -webkit-overflow-scrolling: touch;
 }
 
 .navbar-nav .nav-link {
@@ -173,10 +196,6 @@ main {
 
 .navbar-nav .nav-link p{
   margin-bottom: 0;
-}
-
-.container-fluid {
-  padding-top: 1rem;
 }
 
 .badge-count {

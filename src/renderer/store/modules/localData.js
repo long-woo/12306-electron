@@ -76,7 +76,10 @@ const mutations = {
     state.taskData.push(taskData)
   },
   [types.UPDATE_LOCAL_TASKDATASTATUS] (state, {index, text}) {
-    state.taskData[index].statusText = text
+    const taskItem = state.taskData[index]
+
+    if (!taskItem) return
+    taskItem.statusText = text
   },
   [types.REMOVE_LOCAL_TASKDATA] (state, index) {
     state.taskData.splice(index, 1)

@@ -2,6 +2,7 @@
 
 > 使用electron-vue构建12306跨平台（Mac、Windows、Linux）客户端
 
+<<<<<<< HEAD
 ![程序效果（Mac）](https://raw.githubusercontent.com/woo-long/12306-electron/master/app_snapshot.png)
 
 #### Build Setup
@@ -9,6 +10,22 @@
 ``` bash
 # install dependencies
 npm install
+=======
+[![Build Status-(trvis)](https://travis-ci.org/long-woo/12306-electron.svg?branch=dev)](https://travis-ci.org/woo-long/12306-electron)
+[![Build status-(appveyor)](https://ci.appveyor.com/api/projects/status/iosiwiwmruul7wr8/branch/dev?svg=true)](https://ci.appveyor.com/project/Woo-Long/12306-electron)
+
+![程序效果（Mac）](https://raw.githubusercontent.com/woo-long/12306-electron/dev/app_snapshot.png)
+
+## 下载
+
+[12306-electron](https://github.com/woo-long/12306-electron/releases)
+
+## Build Setup
+
+``` bash
+# install dependencies
+npm install   # or use `yarn`
+>>>>>>> dev
 
 # serve with hot reload at localhost:9080
 npm run dev
@@ -28,8 +45,14 @@ This project was generated with [electron-vue](https://github.com/SimulatedGREG/
 
 ---
 
+<<<<<<< HEAD
 #### 感谢
 
+=======
+## 感谢
+
+- [vue](https://github.com/vuejs/vue)
+>>>>>>> dev
 - [electron-vue](https://github.com/SimulatedGREG/electron-vue)
 - [bootstrap-vue](https://github.com/bootstrap-vue/bootstrap-vue)
 - [icheck-bootstrap](https://github.com/bantikyan/icheck-bootstrap)
