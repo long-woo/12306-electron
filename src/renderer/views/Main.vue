@@ -114,7 +114,6 @@ export default {
       const loginInfo = utils.getLoginModel(loginName)
 
       if (!loginInfo.length) return
-
       this.$store.dispatch('setLoginModel', loginInfo[0])
       this.getPassengers()
     },
