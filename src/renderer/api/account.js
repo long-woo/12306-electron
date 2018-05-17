@@ -2,14 +2,14 @@ import axios from '../utils/http'
 import config from '../utils/config'
 import BaseContent from './base'
 
+const _loginAuth = Symbol('_loginAuth')
+
 class Account {
   /**
    * 检查是否登录
    */
-  static async chkeckIsLogin () {
-    const loginResult = await this._loginAuth()
-
-    return loginResult
+  static chkeckIsLogin () {
+    return this[_loginAuth]()
   }
 
   /**
@@ -28,7 +28,7 @@ class Account {
       return new BaseContent(null, {message})
     }
 
-    return this._loginAuth()
+    return this[_loginAuth]()
   }
 
   /**
@@ -55,9 +55,16 @@ class Account {
   }
 
   /**
+   * 退出登录
+   */
+  static loginOff () {
+    return axios.get(config.urls.logOff)
+  }
+
+  /**
    * 登录授权
    */
-  static async _loginAuth () {
+  async [_loginAuth] () {
     let code = 400
     let message = '请求成功'
     let res = await axios.post(config.urls.loginAuthuam, {appid: 'otn'})

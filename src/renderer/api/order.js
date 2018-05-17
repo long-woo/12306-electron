@@ -195,6 +195,106 @@ class Order {
 
     return new BaseContent(null, {message, code})
   }
+
+  /**
+   * 自动提交订单
+   * @param {*} formData （secretStr,train_date,query_from_station_name,query_to_station_name,passengerTicketStr,oldPassengerStr）
+   */
+  static async autoSubmitOrder (formData) {
+    formData.tour_flag = 'dc'
+    formData.purpose_codes = 'ADULT'
+    formData.cancel_flag = 2
+    formData.bed_level_order_num = '000000000000000000000000000000'
+
+    let code = 400
+    let message
+    const {data, messages} = await axios.post(config.urls.autoSubmitOrder, formData)
+
+    if (!data) {
+      message = messages.toString()
+
+      return new BaseContent(null, {message, code})
+    }
+
+    if (!data.submitStatus) {
+      message = data.isRelogin ? '请先登录' : data.errMsg
+
+      return new BaseContent(null, {message, code})
+    }
+
+    const ticketData = data.result.split('#')
+
+    return new BaseContent({
+      ticketData: ticketData,
+      isCaptchaCode: data.ifShowPassCode === 'Y',
+      captchaCodeTime: data.ifShowPassCodeTime,
+      isChooseBed: data.canChooseBeds === 'Y',
+      isChooseSeat: data.canChooseSeats === 'Y',
+      chooseSeats: data.choose_Seats,
+      isChooseMid: data.isCanChooseMid === 'Y',
+      smoke: data.smokeStr
+    })
+  }
+
+  /**
+   * 获取队列信息（自动提交）
+   * @param {*} formData (train_date,train_no,stationTrainCode,seatType,fromStationTelecode,toStationTelecode,leftTicket)
+   */
+  static async getOrderQueueInfoAsync (formData) {
+    formData.purpose_codes = 'ADULT'
+    formData._json_att = ''
+
+    let code = 400
+    let message
+    const {data, messages} = await axios.post(config.urls.getOrderQueueInfoAsync, formData)
+
+    if (!data) {
+      message = messages.toString()
+
+      return new BaseContent(null, {message, code})
+    }
+
+    if (data.isRelogin === 'Y') {
+      message = '请先登录'
+
+      return new BaseContent(null, {message, code})
+    }
+
+    const ticketData = data.ticket.split(',') // 可能有无座数
+
+    message = `${formData.stationTrainCode}车次【${BaseContent.getSeatTypeInfo(formData.seatType)}】剩余【${ticketData[0]}】张`
+
+    if (ticketData.length > 1) {
+      message += `和【无座（${ticketData[1]}）张】`
+    }
+
+    if (data.op_2 === 'true') {
+      message = `${message}，当前排队人数【${data.countT}】超过剩余票数，请更换车次或座位`
+      return new BaseContent(null, {message, code})
+    }
+
+    return new BaseContent(null, {message})
+  }
+
+  /**
+ * 确认订单队列（自动提交）
+ * @param {*} formData (passengerTicketStr,oldPassengerStr,randCode,key_check_isChange,leftTicketStr,train_location,choose_seats,seatDetailType)
+ */
+  static async confirmOrderQueueAsync (formData) {
+    formData.purpose_codes = 'ADULT'
+    formData._json_att = ''
+
+    let code = 200
+    let message = '订单已确认，等待出票'
+    const {data} = await axios.post(config.urls.confirmOrderQueueAsync, formData)
+
+    if (!data.submitStatus) {
+      code = 400
+      message = data.errMsg
+    }
+
+    return new BaseContent(null, {message, code})
+  }
 }
 
 export default Order

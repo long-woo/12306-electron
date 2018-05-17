@@ -1,6 +1,10 @@
 import axios from '../utils/http'
 import config from '../utils/config'
 
+const _getSeatTypeCode = Symbol('_getSeatTypeCode')
+const _getSeatTypes = Symbol('_getSeatTypes')
+const _baseContent = Symbol('_baseContent')
+
 class BaseContent {
   /**
    * 返回结果
@@ -29,7 +33,7 @@ class BaseContent {
       }
     })
 
-    return this._baseContent(cityNames)
+    return this[_baseContent](cityNames)
   }
 
   /**
@@ -40,7 +44,7 @@ class BaseContent {
     const regexTicketUrl = res.match(/CLeftTicketUrl\s+=\s+'(.+)'/) || []
     const queryUrl = regexTicketUrl.length ? regexTicketUrl[1] : ''
 
-    return this._baseContent(queryUrl)
+    return this[_baseContent](queryUrl)
   }
 
   /**
@@ -58,7 +62,7 @@ class BaseContent {
     })
     let ticketData = []
 
-    if (!data) return this._baseContent(ticketData)
+    if (!data) return this[_baseContent](ticketData)
 
     const result = data.result || []
     const stationNames = data.map || []
@@ -82,14 +86,14 @@ class BaseContent {
         isBuy: arrTrain[11] === 'Y',
         ypInfo: arrTrain[12],
         locationCode: arrTrain[15],
-        seatTypeCodes: this._getSeatTypeCode(arrTrain[35]),
-        seatTypes: this._getSeatTypes(arrTrain),
+        seatTypeCodes: this[_getSeatTypeCode](arrTrain[35]),
+        seatTypes: this[_getSeatTypes](arrTrain),
         secret: arrTrain[0],
         remark: arrTrain[1]
       })
     })
 
-    return this._baseContent(ticketData)
+    return this[_baseContent](ticketData)
   }
 
   /**
@@ -103,7 +107,7 @@ class BaseContent {
     })
     const data = res.toString().indexOf('Error') > -1 ? '' : `data:image/jpeg;base64,${Buffer.from(res).toString('base64')}`
 
-    return this._baseContent(data)
+    return this[_baseContent](data)
   }
 
   /**
@@ -131,7 +135,7 @@ class BaseContent {
     if (type === 'login') {
       if (res.result_code !== '4') {
         message = res.result_message
-        return this._baseContent(null, {message, code})
+        return this[_baseContent](false, {message, code})
       }
     }
 
@@ -141,12 +145,12 @@ class BaseContent {
       if (data.result !== '1') {
         message = data.msg === 'FALSE' ? '验证码不正确' : data.msg
 
-        return this._baseContent(null, {message, code})
+        return this[_baseContent](false, {message, code})
       }
     }
 
     message = '验证通过'
-    return this._baseContent(null, {message})
+    return this[_baseContent](true, {message})
   }
 
   /**
@@ -189,7 +193,7 @@ class BaseContent {
    * 存在两个“1”时，第一个“1”改成“W”
    * @param {*} seatTypeCodes
    */
-  static _getSeatTypeCode (seatTypeCodes) {
+  [_getSeatTypeCode] (seatTypeCodes) {
     const seatCodes = seatTypeCodes.replace(/(1)/, 'W').split('')
 
     return seatCodes
@@ -199,8 +203,8 @@ class BaseContent {
    * 获取座位类型
    * @param {*} trains
    */
-  static _getSeatTypes (trains) {
-    const seatCodes = this._getSeatTypeCode(trains[35])
+  [_getSeatTypes] (trains) {
+    const seatCodes = this[_getSeatTypeCode](trains[35])
     let arrSeatInfo = []
 
     seatCodes.map(val => {
@@ -212,7 +216,7 @@ class BaseContent {
     return arrSeatInfo
   }
 
-  static _baseContent (data, {message = '请求成功', code = 200} = {}) {
+  [_baseContent] (data, {message = '请求成功', code = 200} = {}) {
     return new BaseContent(data, {message, code})
   }
 }
