@@ -2,7 +2,7 @@ version: 0.1.{build}
 
 branches:
   only:
-    - dev
+    - master
 
 image: Visual Studio 2017
 platform:
@@ -19,10 +19,10 @@ init:
 
 install:
   - ps: Install-Product node 8 x64
- # - choco install yarn --version 1.0.2 --ignore-dependencies
-  - ps: Write-Host "Installing Yarn 1.3.2..."
-  - ps: (New-Object Net.WebClient).DownloadFile('https://github.com/yarnpkg/yarn/releases/download/v1.3.2/yarn-1.3.2.msi', "$env:temp\yarn-1.3.2.msi")
-  - cmd /c start /wait msiexec.exe /i $env:temp\yarn-1.3.2.msi /quiet
+  - choco install yarn --version 1.0.2 --ignore-dependencies
+  # - ps: Write-Host "Installing Yarn 1.3.2..."
+  # - ps: (New-Object Net.WebClient).DownloadFile('https://github.com/yarnpkg/yarn/releases/download/v1.3.2/yarn-1.3.2.msi', "$env:temp\yarn-1.3.2.msi")
+  # - cmd /c start /wait msiexec.exe /i $env:temp\yarn-1.3.2.msi /quiet
   - yarn --version
   - git reset --hard HEAD
   - yarn
