@@ -60,6 +60,14 @@ function getLocalStorage (name) {
 }
 
 /**
+ * 休眠
+ * @param {*} time 时间（毫秒）
+ */
+const sleep = (time) => {
+  return new Promise(resolve => setTimeout(resolve, time))
+}
+
+/**
  * 任务
  */
 const task = {
@@ -708,6 +716,8 @@ const task = {
   }
 }
 
+console.log(task)
+
 /**
  * 通知
  */
@@ -773,12 +783,12 @@ const speech = {
   }
 }
 
-export default {
+export {
   getLoginModel,
   setLoginModel,
   getQueryInfo,
   setQueryInfo,
-  task,
+  sleep,
   notification,
   speech
 }

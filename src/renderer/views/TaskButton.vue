@@ -154,9 +154,7 @@ export default {
         this.$eventBus.$emit('clearChooseTrain')
 
         // 执行任务
-        const lastIndex = this.$store.getters.taskData.length - 1
-
-        utils.task.start(lastIndex)
+        utils.task.start()
       }
     }
   }

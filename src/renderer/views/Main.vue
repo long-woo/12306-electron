@@ -53,6 +53,7 @@
 
 <script>
 import utils from '../utils/utils'
+import OrderTask from '../utils/task'
 
 export default {
   name: 'Main',
@@ -151,7 +152,7 @@ export default {
           const orderData = this.$store.getters.confirmOrderData
 
           // utils.task.confirmOrderQueueAsync(orderData.train, orderData.seatCode, orderData.passengers, orderData.key, value.verifyCode, orderData.index, orderData.awaitTime)
-          utils.task.confirmOrderQueue(orderData.train, orderData.passengers, orderData.key, orderData.token, orderData.seatCode, value.verifyCode, orderData.index, orderData.awaitTime)
+          OrderTask.confirmOrderQueue(orderData.train, orderData.passengers, orderData.key, orderData.token, orderData.seatCode, value.verifyCode, orderData.index, orderData.awaitTime)
         }
       }
     },

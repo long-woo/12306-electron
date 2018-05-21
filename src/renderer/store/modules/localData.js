@@ -5,7 +5,7 @@ const state = {
   queryUrl: 'query',
   stationNames: [],
   loginModel: null,
-  taskData: [],
+  taskData: {},
   confirmOrderData: {},
   orderCount: 0
 }
@@ -73,16 +73,16 @@ const mutations = {
     }
   },
   [types.UPDATE_LOCAL_TASKDATA] (state, taskData) {
-    state.taskData.push(taskData)
+    state.taskData = taskData
   },
-  [types.UPDATE_LOCAL_TASKDATASTATUS] (state, {index, text}) {
-    const taskItem = state.taskData[index]
+  [types.UPDATE_LOCAL_TASKDATASTATUS] (state, text) {
+    const taskItem = state.taskData
 
     if (!taskItem) return
     taskItem.statusText = text
   },
-  [types.REMOVE_LOCAL_TASKDATA] (state, index) {
-    state.taskData.splice(index, 1)
+  [types.REMOVE_LOCAL_TASKDATA] (state) {
+    state.taskData = {}
   },
   [types.UPDATE_LOCAL_CONFIRMORDERDATA] (state, confirmOrderData) {
     state.confirmOrderData = confirmOrderData
