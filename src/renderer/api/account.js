@@ -64,7 +64,7 @@ class Account {
   /**
    * 登录授权
    */
-  async [_loginAuth] () {
+  static async [_loginAuth] () {
     let code = 400
     let message = '请求成功'
     let res = await axios.post(config.urls.loginAuthuam, {appid: 'otn'})

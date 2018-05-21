@@ -49,7 +49,7 @@
 
 <script>
 import TaskButton from './TaskButton'
-import utils from '../scripts/utils'
+import utils from '../utils/utils'
 
 export default {
   name: 'NewTask',
@@ -168,7 +168,13 @@ export default {
       if (!this.fromCity || !this.toCity || this.fromCity === this.toCity) return
 
       const trainDate = this.$refs.rideDate.date.time
-      const {data} = await this.$api.base.getTicket(this.fromCity.value, this.toCity.value, trainDate)
+      const formData = {
+        queryUrl: this.$store.getters.queryUrl,
+        trainDate,
+        fromCity: this.fromCity.value,
+        toCity: this.toCity.value
+      }
+      const {data} = await this.$api.base.getTicket(formData)
 
       this.chkTrains = []
       this.ticketData = data

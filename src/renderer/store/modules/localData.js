@@ -1,11 +1,11 @@
 import * as types from '../mutations_type'
-import utils from '../../scripts/utils'
+import utils from '../../utils/utils'
 
 const state = {
   queryUrl: 'query',
   stationNames: [],
   loginModel: null,
-  taskData: {},
+  taskData: null,
   confirmOrderData: {},
   orderCount: 0
 }
@@ -82,7 +82,7 @@ const mutations = {
     taskItem.statusText = text
   },
   [types.REMOVE_LOCAL_TASKDATA] (state) {
-    state.taskData = {}
+    state.taskData = null
   },
   [types.UPDATE_LOCAL_CONFIRMORDERDATA] (state, confirmOrderData) {
     state.confirmOrderData = confirmOrderData

@@ -24,7 +24,7 @@ import 'animate.css/animate.css'
 import bsComponents from './components'
 
 import api from './api'
-import eventBus from './scripts/eventBus'
+import eventBus from './utils/eventBus'
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 

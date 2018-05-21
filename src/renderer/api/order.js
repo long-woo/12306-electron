@@ -108,7 +108,7 @@ class Order {
     if (!data) {
       message = '没有找到待支付的订单'
 
-      return new BaseContent(null, {message, code})
+      return new BaseContent([], {message, code})
     }
 
     const order = data.orderDBList || []
@@ -116,19 +116,19 @@ class Order {
     if (messages.length) {
       message = messages.toString()
 
-      return new BaseContent(null, {message, code})
+      return new BaseContent([], {message, code})
     }
 
     if (data.to_page === 'cache') {
       message = '您的订单还在排队中'
 
-      return new BaseContent(null, {message, code})
+      return new BaseContent([], {message, code})
     }
 
     if (!order.length) {
       message = '没有找到待支付的订单'
 
-      return new BaseContent(null, {message, code})
+      return new BaseContent([], {message, code})
     }
 
     return new BaseContent(order)

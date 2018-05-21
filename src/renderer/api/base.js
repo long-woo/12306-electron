@@ -193,7 +193,7 @@ class BaseContent {
    * 存在两个“1”时，第一个“1”改成“W”
    * @param {*} seatTypeCodes
    */
-  [_getSeatTypeCode] (seatTypeCodes) {
+  static [_getSeatTypeCode] (seatTypeCodes) {
     const seatCodes = seatTypeCodes.replace(/(1)/, 'W').split('')
 
     return seatCodes
@@ -203,7 +203,7 @@ class BaseContent {
    * 获取座位类型
    * @param {*} trains
    */
-  [_getSeatTypes] (trains) {
+  static [_getSeatTypes] (trains) {
     const seatCodes = this[_getSeatTypeCode](trains[35])
     let arrSeatInfo = []
 
@@ -216,7 +216,7 @@ class BaseContent {
     return arrSeatInfo
   }
 
-  [_baseContent] (data, {message = '请求成功', code = 200} = {}) {
+  static [_baseContent] (data, {message = '请求成功', code = 200} = {}) {
     return new BaseContent(data, {message, code})
   }
 }

@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import {sleep, notification, speech} from './utils'
+import utils from './utils'
 
 const _setStatus = Symbol('_setStatus')
 const _isHasTicket = Symbol('_isHasTicket')
@@ -66,7 +66,7 @@ class OrderTask {
 
         // 开始准备提交订单
         this[_setStatus]('正在开始准备提交订单...')
-        notification.show('提示', {
+        utils.notification.show('提示', {
           body: `【任务】正在执行提交订单`,
           tag: 'order'
         })
@@ -153,7 +153,7 @@ class OrderTask {
         this[_setStatus](`正在预订【${train.trainCode}】车次的【${seatText}】...`)
         const orderResult = await this[_submitOrder](train.secret, queryInfo)
 
-        if (orderResult.code < 1) {
+        if (orderResult.code !== 200) {
           this[_setStatus](`【${train.trainCode}】车次的【${seatText}】预订失败`)
           Vue.alert(orderResult.message)
 
@@ -166,14 +166,14 @@ class OrderTask {
         this[_setStatus](`【${train.trainCode}】车次的【${seatText}】正在检查订单信息...`)
         const checkResult = await this[_checkOrderInfo](passengers, orderResultData.orderToken, '', seatCode)
 
-        if (checkResult.code < 1) {
+        if (checkResult.code !== 200) {
           this[_setStatus](`【${train.trainCode}】车次的【${seatText}无法提交订单`)
           Vue.alert(checkResult.message)
 
           if (checkResult.message.indexOf('登录') > -1) {
             this[_setStatus]('您的登录状态已失效，请重新登录')
             Vue.eventBus.$emit('openDialog', 'loginModal')
-            notification.show(title, {
+            utils.notification.show(title, {
               body: content,
               tag: 'order'
             })
@@ -202,7 +202,7 @@ class OrderTask {
           content = `正在预订【${train.trainCode}】车次【${seatText}】，请选择验证码`
           this[_setStatus](`正在预订【${train.trainCode}】车次【${seatText}】，等待选择验证码...`)
           Vue.eventBus.$emit('openDialog', 'captchCodeModal')
-          notification.show(title, {
+          utils.notification.show(title, {
             body: content,
             tag: 'order'
           })
@@ -215,14 +215,14 @@ class OrderTask {
         this[_setStatus](`【${train.trainCode}】车次的【${seatText}】正在排队...`)
         const queueResult = await this[_getOrderQueueInfo](train, queryInfo.trainDate, seatCode, orderResultData.orderToken)
 
-        if (queueResult.code < 1) {
+        if (queueResult.code !== 200) {
           this[_setStatus](`队伍太长，【${train.trainCode}】车次的【${seatText}】没能挤进去`)
           Vue.alert(queueResult.message)
 
           if (queueResult.message.indexOf('登录') > -1) {
             this[_setStatus]('您的登录状态已失效，请重新登录')
             Vue.eventBus.$emit('openDialog', 'loginModal')
-            notification.show(title, {
+            utils.notification.show(title, {
               body: content,
               tag: 'order'
             })
@@ -337,19 +337,19 @@ class OrderTask {
 
     this[_setStatus](`正在确认提交【${train.trainCode}】车次【${seatText}】...`)
     // 由于12306提交订单的安全周期问题，需要等待一定时间
-    await sleep(awaitTime)
+    await utils.sleep(awaitTime)
 
     let res = await Vue.api.order.confirmOrderQueue(formData)
     let data = {}
 
-    if (res.code < 1) {
+    if (res.code !== 200) {
       this[_setStatus](`【${train.trainCode}】车次【${seatText}】预订失败...`)
       Vue.alert(res.message)
 
       if (res.message.indexOf('登录') > -1) {
         this[_setStatus]('您的登录状态已失效，请重新登录')
         Vue.eventBus.$emit('openDialog', 'loginModal')
-        notification.show('提示', {
+        utils.notification.show('提示', {
           body: '哎呀！！！被挤下线了，请重新登录',
           tag: 'order'
         })
@@ -383,7 +383,7 @@ class OrderTask {
       startOrderAwaitFunc = setInterval(async () => {
         const res = await Vue.api.order.getOrderAwaitTime()
 
-        if (res.code < 1) {
+        if (res.code !== 200) {
           Vue.alert(res.message)
 
           if (res.message.indexOf('登录') > -1) {
@@ -391,7 +391,7 @@ class OrderTask {
 
             this[_setStatus]('您的登录状态已失效，请重新登录')
             Vue.eventBus.$emit('openDialog', 'loginModal')
-            notification.show(title, {
+            utils.notification.show(title, {
               body: content,
               tag: 'order'
             })
@@ -404,7 +404,7 @@ class OrderTask {
             this.stopOrderAwaitFunc()
 
             this[_setStatus](`【${train.trainCode}】车次【${seatText}出票失败...`)
-            notification.show(title, {
+            utils.notification.show(title, {
               body: `【${train.trainCode}】出票失败！原因：${res.message}`,
               tag: 'order'
             })
@@ -425,7 +425,7 @@ class OrderTask {
           content = `您的订单号：【${orderNo}】，请在30分钟内完成支付`
 
           this.stopOrderAwaitFunc()
-          speech.textToSpeech(`${title}您的订单号：【${orderNo.replace(/\s*/g, '|')}】，请在30分钟内完成支付`)
+          utils.speech.textToSpeech(`${title}您的订单号：【${orderNo.replace(/\s*/g, '|')}】，请在30分钟内完成支付`)
           this[_setStatus](`【${train.trainCode}】车次【${seatText}】出票成功...`)
           Vue.swal({
             title: title,
@@ -433,7 +433,7 @@ class OrderTask {
             icon: 'success',
             button: '关闭'
           })
-          notification.show(title, {
+          utils.notification.show(title, {
             body: content
           })
 
@@ -468,14 +468,14 @@ class OrderTask {
         this[_setStatus](`正在预订【${train.trainCode}】车次的【${seatText}】...`)
         const orderResult = await this[_autoSubmitOrder](train.secret, queryInfo, passengers, seatCode)
 
-        if (orderResult.code < 1) {
+        if (orderResult.code !== 200) {
           this[_setStatus](`【${train.trainCode}】车次的【${seatText}】预订失败`)
           Vue.alert(orderResult.message)
 
           if (orderResult.message.indexOf('登录') > -1) {
             this[_setStatus]('您的登录状态已失效，请重新登录')
             Vue.eventBus.$emit('openDialog', 'loginModal')
-            notification.show(title, {
+            utils.notification.show(title, {
               body: content,
               tag: 'order'
             })
@@ -490,14 +490,14 @@ class OrderTask {
         this[_setStatus](`【${train.trainCode}】车次的【${seatText}】正在排队...`)
         const queueResult = await this[_getOrderQueueInfoAsync](train, queryInfo.trainDate, seatCode)
 
-        if (queueResult.code < 1) {
+        if (queueResult.code !== 200) {
           this[_setStatus](`队伍太长，【${train.trainCode}】车次的【${seatText}】没能挤进去`)
           Vue.alert(queueResult.message)
 
           if (queueResult.message.indexOf('登录') > -1) {
             this[_setStatus]('您的登录状态已失效，请重新登录')
             Vue.eventBus.$emit('openDialog', 'loginModal')
-            notification.show(title, {
+            utils.notification.show(title, {
               body: content,
               tag: 'order'
             })
@@ -526,7 +526,7 @@ class OrderTask {
           content = `正在预订【${train.trainCode}】车次【${seatText}】，请选择验证码`
           this[_setStatus](`正在预订【${train.trainCode}】车次【${seatText}】，等待选择验证码...`)
           Vue.eventBus.$emit('openDialog', 'captchCodeModal')
-          notification.show(title, {
+          utils.notification.show(title, {
             body: content,
             tag: 'order'
           })
@@ -603,7 +603,7 @@ class OrderTask {
    * @param {*} captchCode 验证码
    * @param {*} awaitTime 提交订单的等待时间
    */
-  async confirmOrderQueueAsync (train, seatCode, passengers, key, captchCode, awaitTime) {
+  static async confirmOrderQueueAsync (train, seatCode, passengers, key, captchCode, awaitTime) {
     const seatText = Vue.api.base.getSeatTypeInfo(seatCode)
     const passengerTicket = passengers.passengerTickets.replace(/(seatcode)/gi, seatCode)
     const formData = {
@@ -625,14 +625,14 @@ class OrderTask {
     let res = await Vue.api.order.confirmOrderQueueAsync(formData)
     let data = {}
 
-    if (res.code < 1) {
+    if (res.code !== 200) {
       this[_setStatus](`【${train.trainCode}】车次【${seatText}】预订失败...`)
       Vue.alert(res.message)
 
       if (res.message.indexOf('登录') > -1) {
         this[_setStatus]('您的登录状态已失效，请重新登录')
         Vue.eventBus.$emit('openDialog', 'loginModal')
-        notification.show('提示', {
+        utils.notification.show('提示', {
           body: '哎呀！！！被挤下线了，请重新登录',
           tag: 'order'
         })

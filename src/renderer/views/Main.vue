@@ -7,10 +7,7 @@
             <i class="iconfont" :class="`icon-${nav.icon}`"></i>
             <p>
               {{nav.text}}
-              <b-badge class="badge-count" pill variant="danger" v-if="index === 1 && $store.getters.taskData.length">
-                {{$store.getters.taskData.length}}
-              </b-badge>
-              <b-badge class="badge-count" pill variant="danger" v-else-if="index === 2 && $store.getters.orderCount">
+              <b-badge class="badge-count" pill variant="danger" v-if="index === 2 && $store.getters.orderCount">
                 {{$store.getters.orderCount}}
               </b-badge>
             </p>
