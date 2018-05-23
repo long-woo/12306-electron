@@ -1,6 +1,6 @@
 <template>
   <transition name="bounce-slide-down" enter-active-class="animated bounceInDown" leave-active-class="animated bounceOutUp">
-    <div class="bs-alert text-center text-white" ref="bsAlert" :class="className" v-show="show">{{content}}</div>
+    <div class="bs-alert text-center text-white" :class="className" v-show="show">{{content}}</div>
   </transition>
 </template>
 
@@ -28,17 +28,11 @@ export default {
     }
   },
   watch: {
-    show (value) {
-      this.$refs.bsAlert.removeEventListener('animationend', (event) => {
-        event.preventDefault()
-      }, false)
-
-      if (!value) {
-        this.$refs.bsAlert.addEventListener('animationend', (event) => {
-          event.preventDefault()
-        }, false)
-      }
-    }
+    // show (value) {
+    //   if (!value) {
+    //     Object.assign(this.$data, this.$options.data())
+    //   }
+    // }
   }
 }
 </script>
