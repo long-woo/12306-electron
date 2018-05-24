@@ -204,7 +204,7 @@ export default {
 
 .task-add-panel {
   background-color: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 0 3rem var(--cyan);
+  /* box-shadow: 0 0 3rem var(--cyan); */
   height: 15rem;
   margin-top: -15rem;
   padding-bottom: 2.9rem;

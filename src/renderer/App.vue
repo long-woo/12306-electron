@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" class="h-100">
     <router-view></router-view>
   </div>
 </template>
@@ -114,10 +114,6 @@ button {
 
 label {
   margin-bottom: 0 !important;
-}
-
-#app {
-  height: 100%;
 }
 
 .font-size-14{

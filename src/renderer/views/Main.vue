@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="h-100">
     <header class="navbar-dark fixed-top">
       <div class="navbar-nav-scroll">
         <b-nav class="navbar-nav flex-row justify-content-center text-center bg-nav-hue">

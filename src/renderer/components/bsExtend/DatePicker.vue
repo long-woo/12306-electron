@@ -3,8 +3,7 @@
     <b-input-group-prepend>
       <b-button variant="info" class="no-outline waves-effect" :disabled="prevState" @click="changeDate('-')">&lt;</b-button>
     </b-input-group-prepend>
-    <date-picker class="col pl-0 pr-0" :date="date" :option="option" :limit="limit" @change="changeDate">
-    </date-picker>
+    <input ref="dateEl" class="form-control col pl-0 pr-0 " :placeholder="placeholder" />
     <b-input-group-append>
       <b-button variant="info" class="no-outline waves-effect" :disabled="nextState" @click="changeDate('+')">&gt;</b-button>
     </b-input-group-append>
@@ -12,8 +11,24 @@
 </template>
 
 <script>
-import moment from 'moment'
-import datePicker from 'vue-datepicker/vue-datepicker-es6'
+function getNowDate () {
+  const nowDate = new Date()
+  const year = nowDate.getFullYear()
+  const month = nowDate.getMonth() + 1
+  const date = nowDate.getDate()
+
+  return `${year}-${month}-${date}`
+}
+
+function getMaxDate (day) {
+  const nowDate = new Date().getTime()
+  const maxDate = new Date(nowDate + day * 24 * 60 * 60 * 1000)
+  const year = maxDate.getFullYear()
+  const month = maxDate.getMonth() + 1
+  const date = maxDate.getDate()
+
+  return `${year}-${month}-${date}`
+}
 
 export default {
   name: 'bDatePicker',
@@ -23,32 +38,6 @@ export default {
       nextState: true,
       date: {
         time: this.max
-      },
-      option: {
-        type: 'day',
-        SundayFirst: true,
-        week: ['日', '一', '二', '三', '四', '五', '六'],
-        month: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
-        format: this.format,
-        placeholder: this.placeholder,
-        buttons: {
-          ok: '确定',
-          cancel: '取消'
-        },
-        inputStyle: {
-          display: 'block',
-          width: '100%',
-          padding: '0.5rem 0.75rem',
-          fontSize: '1rem',
-          lineHeight: 1.25,
-          color: '#495057',
-          backgroundColor: '#fff',
-          backgroundImage: 'none',
-          backgroundClip: 'padding-box',
-          border: '1px solid rgba(0, 0, 0, 0.15)',
-          transition: 'border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s'
-        },
-        inputClass: this.inputClass
       }
     }
   },
@@ -61,70 +50,56 @@ export default {
       type: String,
       default: '乘车日期'
     },
-    inputClass: {
-      type: String,
-      default: 'form-control'
-    },
     min: {
       type: String,
-      default: moment().format('YYYY-MM-DD')
+      default: getNowDate()
     },
     max: {
       type: String,
-      default: moment().add(29, 'd').format('YYYY-MM-DD')
-    },
-    limit: {
-      type: Array,
-      default () {
-        return [
-          {
-            type: 'fromto',
-            from: moment().subtract(1, 'd').format('YYYY-MM-DD'),
-            to: moment().add(30, 'd').format('YYYY-MM-DD')
-          }
-        ]
-      }
+      default: getMaxDate(29)
     }
   },
-  components: {
-    datePicker
+  mounted () {
+    this.initLayDate()
   },
   methods: {
+    // 初始化日期组件
+    initLayDate () {
+      window.laydate.render({
+        elem: this.$refs.dateEl,
+        min: this.min,
+        max: this.max,
+        calendar: true,
+        theme: '#17a2b8'
+      })
+    },
     // 更改乘车日期
     changeDate (date) {
-      const value = moment(this.date.time)
+      // const value = moment(this.date.time)
 
-      if (date === '-') {
-        date = value.subtract(1, 'd').format('YYYY-MM-DD')
-      } else if (date === '+') {
-        date = value.add(1, 'd').format('YYYY-MM-DD')
-      }
+      // if (date === '-') {
+      //   date = value.subtract(1, 'd').format('YYYY-MM-DD')
+      // } else if (date === '+') {
+      //   date = value.add(1, 'd').format('YYYY-MM-DD')
+      // }
 
-      if (moment(date) <= moment(this.min)) {
-        this.prevState = true
-      } else {
-        this.prevState = false
-      }
+      // if (moment(date) <= moment(this.min)) {
+      //   this.prevState = true
+      // } else {
+      //   this.prevState = false
+      // }
 
-      if (moment(date) >= moment(this.max)) {
-        this.nextState = true
-      } else {
-        this.nextState = false
-      }
+      // if (moment(date) >= moment(this.max)) {
+      //   this.nextState = true
+      // } else {
+      //   this.nextState = false
+      // }
 
-      if (moment(date) < moment(this.min) || moment(date) > moment(this.max)) return
+      // if (moment(date) < moment(this.min) || moment(date) > moment(this.max)) return
 
-      this.date.time = date
-      this.$emit('change', date)
+      // this.date.time = date
+      // this.$emit('change', date)
     }
   }
 }
 </script>
-
-<style scoped>
-  /deep/ .cov-vue-date .cov-date-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  font-size: 1rem;
-  font-weight: normal;
-}
-</style>
