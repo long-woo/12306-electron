@@ -27,7 +27,7 @@ export default {
         this.$alert(res, {timeout: 0})
 
         if (res.indexOf('Error') > -1) {
-          this.$electron.shell.openExternal('https://github.com/woo-long/12306-electron/releases')
+          this.$electron.shell.openExternal('https://github.com/long-woo/12306-electron/releases')
         }
       })
     },

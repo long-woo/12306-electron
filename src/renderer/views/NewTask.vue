@@ -22,12 +22,6 @@
     </div>
     <div class="table-responsive">
       <b-table empty-text="没有找到车次^~^" :fields="fields" :items="ticketData" head-variant="default bg-info text-white" inverse striped hover show-empty  ref="tbTrain" @row-clicked="rowClick">
-        <template slot="checkNo" slot-scope="row">
-          <div class="checkbox icheck-info waves-effect">
-            <input type="checkbox" :id="`chk_${row.index}`" v-model="chkTrains" :value="row.item.trainCode" />
-            <label :for="`chk_${row.index}`"></label>
-          </div>
-        </template>
         <template slot="trainCode" slot-scope="row">{{row.value}}</template>
         <template slot="from" slot-scope="row">
           <p class="mb-0">{{row.item.fromCityName}}</p>
@@ -60,7 +54,6 @@ export default {
       toCity: null,
       // table option
       fields: {
-        checkNo: {label: ' ', class: 'text-center align-middle', thStyle: 'width: 20px;'},
         trainCode: {label: '车次', sortable: true, class: 'align-middle'},
         from: {label: '出发地', class: 'align-middle'},
         to: {label: '目的地', class: 'align-middle'},
