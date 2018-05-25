@@ -3,7 +3,7 @@
     <b-input-group-prepend>
       <b-button variant="info" class="no-outline waves-effect" :disabled="prevState" @click="changeDate('-')">&lt;</b-button>
     </b-input-group-prepend>
-    <input ref="dateEl" class="form-control col pl-0 pr-0 " :placeholder="placeholder" />
+    <input ref="dateEl" class="form-control" :value="date" :placeholder="placeholder" />
     <b-input-group-append>
       <b-button variant="info" class="no-outline waves-effect" :disabled="nextState" @click="changeDate('+')">&gt;</b-button>
     </b-input-group-append>
@@ -11,23 +11,77 @@
 </template>
 
 <script>
-function getNowDate () {
-  const nowDate = new Date()
-  const year = nowDate.getFullYear()
-  const month = nowDate.getMonth() + 1
-  const date = nowDate.getDate()
+/**
+ * 转date
+ * {*} params date
+ */
+const getDate = (date) => {
+  if (date) {
+    date = typeof date === 'string' ? date.replace(/-|[.]/ig, '/') : date
 
-  return `${year}-${month}-${date}`
+    return new Date(date)
+  }
+
+  return new Date()
 }
 
-function getMaxDate (day) {
-  const nowDate = new Date().getTime()
-  const maxDate = new Date(nowDate + day * 24 * 60 * 60 * 1000)
-  const year = maxDate.getFullYear()
-  const month = maxDate.getMonth() + 1
-  const date = maxDate.getDate()
+/**
+ * 格式化日期
+ * {*} params date
+ */
+const formatDate = (date) => {
+  date = getDate(date)
 
-  return `${year}-${month}-${date}`
+  const year = date.getFullYear()
+  let month = date.getMonth() + 1
+  let d = date.getDate().toString()
+
+  month = month.toString().padStart(2, '0')
+  d = d.padStart(2, '0')
+
+  return `${year}-${month}-${d}`
+}
+
+/**
+ * 添加天数
+ * {day} params 天数
+ * {date} params 日期
+ */
+const addDay = (day, date) => {
+  const nowDate = date ? getDate(date).getTime() : getDate().getTime()
+  const newDate = getDate(nowDate + day * 24 * 60 * 60 * 1000)
+
+  return newDate
+}
+
+/**
+ * 减去天数
+ * {day} params 天数
+ * {date} params 日期
+ */
+const subtractDay = (day, date) => {
+  const nowDate = date ? getDate(date).getTime() : getDate().getTime()
+  const newDate = getDate(nowDate - day * 24 * 60 * 60 * 1000)
+
+  return newDate
+}
+
+/**
+ * 当前日期
+ */
+const getNowDate = () => {
+  const nowDate = getDate()
+
+  return formatDate(nowDate)
+}
+
+/**
+ * 最大日期
+ */
+const getMaxDate = (day) => {
+  const maxDate = addDay(day)
+
+  return formatDate(maxDate)
 }
 
 export default {
@@ -36,9 +90,7 @@ export default {
     return {
       prevState: false,
       nextState: true,
-      date: {
-        time: this.max
-      }
+      date: this.max
     }
   },
   props: {
@@ -70,35 +122,30 @@ export default {
         min: this.min,
         max: this.max,
         calendar: true,
-        theme: '#17a2b8'
+        theme: '#17a2b8',
+        done: (value) => {
+          this.changeDate(getDate(value))
+        }
       })
     },
     // 更改乘车日期
     changeDate (date) {
-      // const value = moment(this.date.time)
+      const value = this.date
 
-      // if (date === '-') {
-      //   date = value.subtract(1, 'd').format('YYYY-MM-DD')
-      // } else if (date === '+') {
-      //   date = value.add(1, 'd').format('YYYY-MM-DD')
-      // }
+      if (date === '-') {
+        date = subtractDay(1, value)
+      } else if (date === '+') {
+        date = addDay(1, value)
+      }
 
-      // if (moment(date) <= moment(this.min)) {
-      //   this.prevState = true
-      // } else {
-      //   this.prevState = false
-      // }
+      this.prevState = date <= getDate(this.min)
+      this.nextState = date >= getDate(this.max)
 
-      // if (moment(date) >= moment(this.max)) {
-      //   this.nextState = true
-      // } else {
-      //   this.nextState = false
-      // }
+      if (date < getDate(this.min) || date > getDate(this.max)) return
 
-      // if (moment(date) < moment(this.min) || moment(date) > moment(this.max)) return
-
-      // this.date.time = date
-      // this.$emit('change', date)
+      date = formatDate(date)
+      this.date = date
+      this.$emit('change', date)
     }
   }
 }

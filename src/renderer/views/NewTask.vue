@@ -167,7 +167,7 @@ export default {
     async queryTrain () {
       if (!this.fromCity || !this.toCity || this.fromCity === this.toCity) return
 
-      const trainDate = this.$refs.rideDate.date.time
+      const trainDate = this.$refs.rideDate.date
       const formData = {
         queryUrl: this.$store.getters.queryUrl,
         trainDate,

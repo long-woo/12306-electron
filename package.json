@@ -74,7 +74,6 @@
     "electron-log": "^2.2.14",
     "electron-updater": "^2.19.0",
     "icheck-bootstrap": "^1.0.7",
-    "layui-laydate": "^5.0.9",
     "node-waves": "^0.7.6",
     "nprogress": "^0.2.0",
     "sweetalert": "^2.1.0",
