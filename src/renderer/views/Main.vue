@@ -33,6 +33,12 @@
             <span>未登录</span>
           </a>
         </div>
+        <div class="text-center">
+          <a class="btn-add-task waves-effect" href="javascript:;">
+            <i class="iconfont icon-add-task"></i>
+            <p>添加任务</p>
+          </a>
+        </div>
         <div class="p-2">
           <a class="text-info waves-effect" href="javascript:;" @click="openAbout">
             <i class="iconfont icon-help"></i>
@@ -41,6 +47,7 @@
         </div>
       </div>
     </footer>
+    <task-button/>
     <login ref="loginModal"></login>
     <captcha-code :type="captchaCodeType" @validComplete="validComplete"></captcha-code>
     <about :show.sync="showAbout" />
@@ -55,6 +62,7 @@ import OrderTask from '../utils/task'
 export default {
   name: 'Main',
   components: {
+    TaskButton: () => import('./TaskButton'),
     Login: () => import('./Login'),
     CaptchaCode: () => import('./CaptchaCode'),
     About: () => import('./About')
@@ -201,5 +209,37 @@ main {
   position: absolute;
   top: 1rem;
   right: 0;
+}
+
+.btn-add-task {
+  background-color: var(--cyan);
+  box-shadow: 0 0 0.5rem var(--cyan);
+  color: var(--white);
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 4.5rem;
+  height: 4.5rem;
+  margin: 0 auto;
+  border-radius: 50%;
+  text-decoration: none;
+}
+
+.btn-add-task:active {
+  width: 4rem;
+  height: 4rem;
+}
+
+.btn-add-task:hover {
+  background-color: rgba(23, 162, 184, 0.8);
+}
+
+.btn-add-task i {
+  font-size: 1.8rem;
+}
+
+.btn-add-task p {
+  margin-top: -.5rem;
 }
 </style>

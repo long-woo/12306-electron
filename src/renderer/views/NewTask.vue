@@ -37,12 +37,10 @@
         </template>
       </b-table>
     </div>
-    <task-button ref="taskButton"></task-button>
   </div>
 </template>
 
 <script>
-import TaskButton from './TaskButton'
 import utils from '../utils/utils'
 
 export default {
@@ -192,9 +190,6 @@ export default {
 
       return seatCount
     }
-  },
-  components: {
-    TaskButton
   }
 }
 </script>
