@@ -169,12 +169,12 @@ label {
   border-bottom: 0.01rem dashed var(--cyan);
 }
 
-.ani-slide-up {
-  animation: slideUp 0.3s ease forwards;
+.ani-slide-left {
+  animation: slideLeft 0.3s ease forwards;
 }
 
-.ani-slide-down {
-  animation: slideDown 0.3s ease forwards;
+.ani-slide-right {
+  animation: slideRight 0.3s ease forwards;
 }
 
 .form-control:focus,
@@ -199,23 +199,28 @@ label {
   border-bottom-right-radius: 0 !important;
 }
 
-@keyframes slideUp {
+.tip-info {
+  font-size: .7rem;
+  padding: 0;
+}
+
+@keyframes slideLeft {
   from {
-    transform: translateY(100%);
+    transform: translateX(100%);
   }
   
   to {
-    transform: translateY(0);
+    transform: translateX(0);
   }
 }
 
-@keyframes slideDown {
+@keyframes slideRight {
   from {
-    transform: translateY(0);
+    transform: translateX(0);
   }
   
   to {
-    transform: translateY(100%);
+    transform: translateX(100%);
   }
 }
 

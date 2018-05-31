@@ -34,7 +34,7 @@
           </a>
         </div>
         <div class="text-center">
-          <a class="btn-add-task waves-effect" href="javascript:;">
+          <a class="btn-add-task waves-effect" href="javascript:;" @click="addTask">
             <i class="iconfont icon-add-task"></i>
             <p>添加任务</p>
           </a>
@@ -47,7 +47,7 @@
         </div>
       </div>
     </footer>
-    <task-button/>
+    <task-button :showPanel="showTaskPanel" />
     <login ref="loginModal"></login>
     <captcha-code :type="captchaCodeType" @validComplete="validComplete"></captcha-code>
     <about :show.sync="showAbout" />
@@ -74,6 +74,7 @@ export default {
         { text: '任务管理', active: false, activeClass: '', icon: 'task-manager', to: '/taskmanager' },
         { text: '我的订单', active: false, activeClass: '', icon: 'order-manager', to: '/myorder' }
       ],
+      showTaskPanel: false,
       captchaCodeType: 'login',
       loginName: '',
       showAbout: false,
@@ -171,6 +172,10 @@ export default {
       // 清除登录信息
       this.loginName = ''
       this.$eventBus.$emit('loginOff')
+    },
+    // 添加任务
+    addTask () {
+      this.showTaskPanel = !this.showTaskPanel
     }
   }
 }
