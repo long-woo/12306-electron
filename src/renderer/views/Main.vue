@@ -35,8 +35,8 @@
         </div>
         <div class="text-center">
           <a class="btn-add-task waves-effect" href="javascript:;" @click="addTask">
-            <i class="iconfont icon-add-task"></i>
-            <p>添加任务</p>
+            <i class="iconfont" :class="buttonIcon"></i>
+            <p>{{buttonText}}</p>
           </a>
         </div>
         <div class="p-2">
@@ -78,7 +78,21 @@ export default {
       captchaCodeType: 'login',
       loginName: '',
       showAbout: false,
-      audioEggUrl: ''
+      audioEggUrl: '',
+      buttonIcon: 'icon-add-task',
+      buttonText: '添加任务'
+    }
+  },
+  watch: {
+    showTaskPanel (value) {
+      if (value) {
+        this.buttonIcon = 'icon-close'
+        this.buttonText = '关闭'
+        return
+      }
+
+      this.buttonIcon = 'icon-add-task'
+      this.buttonText = '添加任务'
     }
   },
   mounted () {
