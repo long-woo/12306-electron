@@ -26,7 +26,7 @@
         </div>
         <div class="d-flex">
           <div class="checkbox icheck-info flex-fill p-2">
-            <input type="checkbox" id="chk_ticket_type" v-model="chkTicketType" value="0X00" />
+            <input type="checkbox" id="chk_ticket_type" v-model="chkTicketType" />
             <label for="chk_ticket_type">学生票</label>
           </div>
           <div class="flex-fill">
@@ -39,6 +39,8 @@
 </template>
 
 <script>
+import OrderTask from '../utils/task'
+
 export default {
   name: 'TaskButton',
   data () {
@@ -50,12 +52,13 @@ export default {
       chkSeatTypes: [],
       passengerName: [],
       seatItem: [
-        {name: 'a', checked: false},
-        {name: 'b', checked: false},
-        {name: 'c', checked: false},
-        {name: 'd', checked: false},
-        {name: 'f', checked: false}
+        {name: 'a', checked: false, value: 'A'},
+        {name: 'b', checked: false, value: 'B'},
+        {name: 'c', checked: false, value: 'C'},
+        {name: 'd', checked: false, value: 'D'},
+        {name: 'f', checked: false, value: 'F'}
       ],
+      chooseSeats: [],
       chkTicketType: false,
       // 提交订单所需参数
       oldPassengers: [],
@@ -132,47 +135,53 @@ export default {
     // 选座
     chooseSeat (seat) {
       seat.checked = !seat.checked
+
+      // 已选的座
+      const chooseItem = this.seatItem.reduce((prev, current) => {
+        if (current.checked) prev.push(current.value)
+
+        return prev
+      }, [])
+
+      this.chooseSeats = chooseItem
     },
     addTask () {
-      if (
-        this.showPanel &&
-        !this.chkPassengers.length &&
-        !this.chkSeatTypes.length
-      ) {
-        this.showPanel = false
+      if (!this.chkPassengers.length && !this.chkSeatTypes.length) {
+        this.$alert('还木有选择席别或乘客')
         return
       }
 
-      this.showPanel = true
-
-      if (this.chkPassengers.length && this.chkSeatTypes.length) {
-        const $parentData = this.$parent
-        const taskData = {
-          trains: this.chkTrainCodes,
-          seats: this.chkSeatTypes,
-          passengers: {
-            passengerName: this.passengerName.toString(),
-            oldPassengers: this.oldPassengers.join('_'),
-            passengerTickets: this.passengerTickets.join('_')
-          },
-          statusText: '等待启动任务...',
-          queryInfo: {
-            fromCityCode: $parentData.fromCity.value,
-            fromCityName: $parentData.fromCity.text,
-            toCityCode: $parentData.toCity.value,
-            toCityName: $parentData.toCity.text,
-            trainDate: $parentData.trainDate
-          }
-        }
-
-        this.showPanel = false
-        this.chkPassengers = []
-        this.chkSeatTypes = []
-        this.chkTrainCodes = []
-        this.$store.dispatch('setTaskData', taskData)
-        // 添加成功后，清除选择车次
-        this.$eventBus.$emit('clearChooseTrain')
+      const $parentData = this.$parent
+      const taskData = {
+        trains: this.chkTrainCodes,
+        seats: this.chkSeatTypes,
+        passengers: {
+          passengerName: this.passengerName.toString(),
+          oldPassengers: this.oldPassengers.join('_'),
+          passengerTickets: this.passengerTickets.join('_')
+        },
+        statusText: '等待启动任务...',
+        queryInfo: {
+          fromCityCode: $parentData.fromCity.value,
+          fromCityName: $parentData.fromCity.text,
+          toCityCode: $parentData.toCity.value,
+          toCityName: $parentData.toCity.text,
+          trainDate: $parentData.trainDate
+        },
+        chooseSeats: this.chooseSeats, // 选中的座
+        ticketType: this.chkTicketType ? '0X00' : 'ADULT'
       }
+
+      this.chkPassengers = []
+      this.chkSeatTypes = []
+      this.chkTrainCodes = []
+      this.$store.dispatch('setTaskData', taskData)
+
+      this.$eventBus.$emit('clearChooseTrain')
+      this.$emit('addTaskSuccess')
+
+      // 执行任务
+      OrderTask.start()
     }
   }
 }

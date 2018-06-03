@@ -65,7 +65,7 @@ export default {
   },
   computed: {
     trainDate () {
-      return this.$refs.rideDate.date.time
+      return this.$refs.rideDate.date
     }
   },
   async mounted () {

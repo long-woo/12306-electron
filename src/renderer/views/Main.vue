@@ -47,7 +47,7 @@
         </div>
       </div>
     </footer>
-    <task-button :showPanel="showTaskPanel" />
+    <task-panel :showPanel="showTaskPanel" @addTaskSuccess="addTask" />
     <login ref="loginModal"></login>
     <captcha-code :type="captchaCodeType" @validComplete="validComplete"></captcha-code>
     <about :show.sync="showAbout" />
@@ -62,7 +62,7 @@ import OrderTask from '../utils/task'
 export default {
   name: 'Main',
   components: {
-    TaskButton: () => import('./TaskButton'),
+    TaskPanel: () => import('./TaskPanel'),
     Login: () => import('./Login'),
     CaptchaCode: () => import('./CaptchaCode'),
     About: () => import('./About')
