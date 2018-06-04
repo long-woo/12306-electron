@@ -8,7 +8,7 @@ class Order {
    * @param {*} formData 参数 (secretStr、train_date、back_train_date、tour_flag、purpose_codes、query_from_station_name、query_to_station_name)
    */
   static async submitOrder (formData) {
-    formData.purpose_codes = 'ADULT'
+    formData.purpose_codes = formData.ticketType || 'ADULT'
     formData.tour_flag = 'dc'
 
     const {data, messages} = await axios.post(config.urls.submitOrder, formData)
@@ -202,7 +202,7 @@ class Order {
    */
   static async autoSubmitOrder (formData) {
     formData.tour_flag = 'dc'
-    formData.purpose_codes = 'ADULT'
+    formData.purpose_codes = formData.ticketType || 'ADULT'
     formData.cancel_flag = 2
     formData.bed_level_order_num = '000000000000000000000000000000'
 
@@ -241,7 +241,7 @@ class Order {
    * @param {*} formData (train_date,train_no,stationTrainCode,seatType,fromStationTelecode,toStationTelecode,leftTicket)
    */
   static async getOrderQueueInfoAsync (formData) {
-    formData.purpose_codes = 'ADULT'
+    formData.purpose_codes = formData.ticketType || 'ADULT'
     formData._json_att = ''
 
     let code = 400
@@ -281,7 +281,7 @@ class Order {
  * @param {*} formData (passengerTicketStr,oldPassengerStr,randCode,key_check_isChange,leftTicketStr,train_location,choose_seats,seatDetailType)
  */
   static async confirmOrderQueueAsync (formData) {
-    formData.purpose_codes = 'ADULT'
+    formData.purpose_codes = formData.ticketType || 'ADULT'
     formData._json_att = ''
 
     let code = 200

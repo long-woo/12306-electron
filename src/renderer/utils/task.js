@@ -36,27 +36,32 @@ class OrderTask {
         this.stop() // 暂停计时器
         timeout = 1
         // 开始查询
-        const {fromCityCode, toCityCode, trainDate} = taskItem.queryInfo
+        const {fromCityCode, toCityCode, trainDate, ticketType} = taskItem.queryInfo
+        const formData = {
+          queryUrl: Vue.store.getters.queryUrl,
+          fromCity: fromCityCode,
+          toCity: toCityCode,
+          trainDate,
+          ticketType
+        }
 
         this[_setStatus]('正在查询...')
-        const res = await Vue.api.base.getTicket(fromCityCode, toCityCode, trainDate)
+        const res = await Vue.api.base.getTicket(formData)
         let trainSeats = [] // 有票数的座位
         // 检查匹配车次是否符合预订条件
-        let trainData = []
-
-        res.forEach(train => {
-          if (taskItem.trains.indexOf(train.trainCode) > -1) {
+        let trainData = res.reduce((prev, current) => {
+          if (taskItem.trains.indexOf(current.trainCode) > -1) {
             const arrPassenger = taskItem.passengers.passengerName.split(',')
-            const seatItems = this[_isHasTicket](taskItem.seats, train.seatTypes, arrPassenger)
+            const seatItems = this[_isHasTicket](taskItem.seats, current.seatTypes, arrPassenger)
             const arrSeat = trainSeats.concat(seatItems)
 
             trainSeats = [...new Set(arrSeat)]
 
-            if (!seatItems.length) return
-
-            trainData.push(train)
+            prev.push(current)
           }
-        })
+
+          return prev
+        }, [])
 
         // 如果没有符合预订条件的车次，则继续启动任务
         if (!trainData.length) {

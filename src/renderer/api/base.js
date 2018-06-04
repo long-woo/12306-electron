@@ -49,7 +49,7 @@ class BaseContent {
 
   /**
    * 查询车次
-   * @param {*} formData (queryUrl、trainDate、fromCity、toCity)
+   * @param {*} formData (queryUrl、trainDate、fromCity、toCity、ticketType？'ADULT')
    */
   static async getTicket (formData) {
     const {data} = await axios.get(`${config.urls.getTicket}${formData.queryUrl}`, {
@@ -57,7 +57,7 @@ class BaseContent {
         'leftTicketDTO.train_date': formData.trainDate,
         'leftTicketDTO.from_station': formData.fromCity,
         'leftTicketDTO.to_station': formData.toCity,
-        'purpose_codes': 'ADULT'
+        'purpose_codes': formData.ticketType || 'ADULT'
       }
     })
     let ticketData = []
@@ -70,12 +70,12 @@ class BaseContent {
     result.map((val, inx) => {
       const arrTrain = val.split('|')
       const trainCode = arrTrain[3]
+      const isBuy = arrTrain[11] === 'Y'
 
       ticketData.push({
-        _rowVariant: arrTrain[11] !== 'Y' ? 'danger' : '',
+        _rowVariant: !isBuy ? 'danger' : '',
         tranType: trainCode.substr(0, 1),
         trainNo: arrTrain[2],
-        trainCode: trainCode,
         fromCityCode: arrTrain[6],
         fromCityName: stationNames[arrTrain[6]],
         toCityCode: arrTrain[7],
@@ -83,13 +83,14 @@ class BaseContent {
         departureTime: arrTrain[8],
         arrivalTime: arrTrain[9],
         useTime: arrTrain[10],
-        isBuy: arrTrain[11] === 'Y',
         ypInfo: arrTrain[12],
         locationCode: arrTrain[15],
         seatTypeCodes: this[_getSeatTypeCode](arrTrain[35]),
         seatTypes: this[_getSeatTypes](arrTrain),
         secret: arrTrain[0],
-        remark: arrTrain[1]
+        remark: arrTrain[1],
+        isBuy,
+        trainCode
       })
     })
 

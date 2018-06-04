@@ -73,7 +73,7 @@ export default {
   },
   watch: {
     chkSeatTypes (value) {
-      this.setButton(value, '5种类型的座位')
+      this.maxLengthChoose(value, 5, '种席别')
     },
     chkTrainCodes (value) {
       if (!value.length) this.chkSeatTypes = []
@@ -99,7 +99,7 @@ export default {
         ) // 提交订单时，需要在前面添加座位code
       })
 
-      this.setButton(value, '5位乘客')
+      this.setButton(value, 5, '位乘客')
     }
   },
   mounted () {
@@ -115,11 +115,11 @@ export default {
     })
   },
   methods: {
-    // 动态操作按钮
-    setButton (value, text) {
-      if (value.length > 5) {
+    // 最多选择
+    maxLengthChoose (value, maxLength, text) {
+      if (value.length > maxLength) {
         value.pop()
-        this.$alert(`一次只能选择${text}`)
+        this.$alert(`哎呀～，你选多啦！不能超过${maxLength}${text}`)
       }
     },
     // 获取乘客
@@ -143,11 +143,15 @@ export default {
         return prev
       }, [])
 
+      if (chooseItem.length > this.chkPassengers.length) {
+        this.maxLengthChoose(chooseItem, this.chkPassengers.length, '个')
+      }
+
       this.chooseSeats = chooseItem
     },
     addTask () {
       if (!this.chkPassengers.length && !this.chkSeatTypes.length) {
-        this.$alert('还木有选择席别或乘客')
+        this.$alert('还木有选择席别和乘客')
         return
       }
 
@@ -166,10 +170,10 @@ export default {
           fromCityName: $parentData.fromCity.text,
           toCityCode: $parentData.toCity.value,
           toCityName: $parentData.toCity.text,
-          trainDate: $parentData.trainDate
+          trainDate: $parentData.trainDate,
+          ticketType: this.chkTicketType ? '0X00' : 'ADULT'
         },
-        chooseSeats: this.chooseSeats, // 选中的座
-        ticketType: this.chkTicketType ? '0X00' : 'ADULT'
+        chooseSeats: this.chooseSeats // 选中的座
       }
 
       this.chkPassengers = []
