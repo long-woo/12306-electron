@@ -83,7 +83,7 @@ export default {
       this.oldPassengers = []
       this.passengerTickets = []
 
-      value.filter(item => {
+      value.map(item => {
         this.passengerName.push(item.passenger_name)
 
         this.oldPassengers.push(
@@ -99,7 +99,10 @@ export default {
         ) // 提交订单时，需要在前面添加座位code
       })
 
-      this.setButton(value, 5, '位乘客')
+      this.maxLengthChoose(value, 5, '位乘客')
+
+      // 根据选择乘客人数，自动选座
+      this.chooseSeat(this.seatItem, false)
     }
   },
   mounted () {
@@ -133,21 +136,47 @@ export default {
       this.passengers = data
     },
     // 选座
-    chooseSeat (seat) {
-      seat.checked = !seat.checked
+    chooseSeat (seats, isAutoUpdate = true) {
+      const passengersCount = this.chkPassengers.length
+
+      if (isAutoUpdate) {
+        seats.checked = !seats.checked
+      } else {
+        seats.map((item, index) => {
+          item.checked = false
+
+          if (passengersCount === 1 && index === seats.length - 1) {
+            item.checked = true
+          } else if (passengersCount === 2 && index > passengersCount) {
+            item.checked = true
+          } else if (passengersCount >= 3 && index < passengersCount) {
+            item.checked = true
+          }
+        })
+      }
 
       // 已选的座
-      const chooseItem = this.seatItem.reduce((prev, current) => {
-        if (current.checked) prev.push(current.value)
+      const chooseSeatValue = this.seatItem.reduce((prev, current) => {
+        if (current.checked) {
+          prev.push(current.value)
+        }
 
         return prev
       }, [])
 
-      if (chooseItem.length > this.chkPassengers.length) {
-        this.maxLengthChoose(chooseItem, this.chkPassengers.length, '个')
+      if (chooseSeatValue.length > passengersCount) {
+        const value = chooseSeatValue.pop()
+
+        this.seatItem.map((item) => {
+          if (item.value === value) {
+            item.checked = false
+          }
+        })
       }
 
-      this.chooseSeats = chooseItem
+      console.log(chooseSeatValue)
+
+      this.chooseSeats = chooseSeatValue
     },
     addTask () {
       if (!this.chkPassengers.length && !this.chkSeatTypes.length) {
