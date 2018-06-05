@@ -207,7 +207,7 @@ main {
   position: absolute;
   overflow: auto;
   top: 5.5rem;
-  bottom: 2.8rem;
+  bottom: 2.5rem;
   -webkit-overflow-scrolling: touch;
 }
 

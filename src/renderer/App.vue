@@ -96,6 +96,10 @@ thead,
   -webkit-app-region: no-drag;
 }
 
+.waves-effect {
+  display: block;
+}
+
 a:focus {
   outline: none !important;
 }

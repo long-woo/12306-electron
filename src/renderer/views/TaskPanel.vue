@@ -174,8 +174,6 @@ export default {
         })
       }
 
-      console.log(chooseSeatValue)
-
       this.chooseSeats = chooseSeatValue
     },
     addTask () {
