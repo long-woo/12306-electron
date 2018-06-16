@@ -209,21 +209,29 @@ label {
 }
 
 @keyframes slideLeft {
-  from {
+  0% {
     transform: translateX(100%);
   }
+
+  50% {
+    width: 25rem;
+  }
   
-  to {
+  100% {
     transform: translateX(0);
   }
 }
 
 @keyframes slideRight {
-  from {
+  0% {
+    width: 20rem;
+  }
+
+  50% {
     transform: translateX(0);
   }
   
-  to {
+  100% {
     transform: translateX(100%);
   }
 }
