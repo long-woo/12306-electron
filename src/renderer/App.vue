@@ -59,7 +59,7 @@ export default {
 <style>
 /* CSS */
 * {
-  transition: all 0.3s ease;
+  transition: all 0.3s ease-in;
 }
 
 ::selection {
@@ -153,13 +153,13 @@ label {
 
 .iconfont {
   display: inline-block !important;
-  transition: all 0.3s ease;
+  transition: all 0.3s ease-in;
 }
 
 .rotate-enter-active,
 .rotate-leave-active {
   transition: all 0.3s ease;
-  -webkit-transition: all 0.3s ease;
+  -webkit-transition: all 0.3s ease-in;
 }
 
 .rotate-enter,
@@ -174,11 +174,11 @@ label {
 }
 
 .ani-slide-left {
-  animation: slideLeft 0.3s ease forwards;
+  animation: slideLeft 0.3s ease-in;
 }
 
 .ani-slide-right {
-  animation: slideRight 0.3s ease forwards;
+  animation: slideRight 0.3s ease-out;
 }
 
 .form-control:focus,
@@ -214,7 +214,7 @@ label {
   }
 
   50% {
-    width: 25rem;
+    transform: translateX(-6%);
   }
   
   100% {
@@ -224,11 +224,11 @@ label {
 
 @keyframes slideRight {
   0% {
-    width: 20rem;
+    transform: translateX(0);
   }
 
   50% {
-    transform: translateX(0);
+    transform: translateX(-6%);
   }
   
   100% {

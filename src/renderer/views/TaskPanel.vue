@@ -247,8 +247,9 @@ export default {
   margin: 0;
 }
 
+.task-panel-bottom .seat-item:hover,
 .task-panel-bottom .seat-item.active {
-  color: var(--cyan);
+  color: var(--green);
 }
 
 .btn-start-task {
