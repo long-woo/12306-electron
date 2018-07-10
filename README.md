@@ -4,6 +4,7 @@
 
 [![Build Status-(trvis)](https://travis-ci.org/long-woo/12306-electron.svg?branch=dev)](https://travis-ci.org/long-woo/12306-electron)
 [![Build status-(appveyor)](https://ci.appveyor.com/api/projects/status/iosiwiwmruul7wr8/branch/dev?svg=true)](https://ci.appveyor.com/project/long-woo/12306-electron)
+![Github All Releases](https://img.shields.io/github/downloads/long-woo/12306-electron/total.svg)
 
 ![程序效果（Mac）](https://raw.githubusercontent.com/woo-long/12306-electron/dev/app_snapshot.png)
 
