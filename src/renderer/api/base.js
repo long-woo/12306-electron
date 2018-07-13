@@ -161,8 +161,10 @@ class BaseContent {
    */
   static getSeatTypeInfo (seatTypeCode, seatTypes) {
     switch (seatTypeCode) {
-      case 'Q':
-        return seatTypes ? `观光座（${seatTypes[20]}）` : '观光座'
+      case 'A':
+        return seatTypes ? `高级动卧（${seatTypes[20]}）` : '高级动卧'
+      case 'F':
+        return seatTypes ? `动卧（${seatTypes[33]}）` : '动卧'
       case '9':
         return seatTypes ? `商务座（${seatTypes[32]}）` : '商务座'
       case 'P':
@@ -195,9 +197,10 @@ class BaseContent {
    * @param {*} seatTypeCodes
    */
   static [_getSeatTypeCode] (seatTypeCodes) {
-    const seatCodes = seatTypeCodes.replace(/(1)/, 'W').split('')
+    const arr = seatTypeCodes.match(/(1|O)/gi) || []
+    const seatCodes = arr.length === 2 ? seatTypeCodes.replace(/(1|O)/i, 'W') : seatTypeCodes
 
-    return seatCodes
+    return seatCodes.split('')
   }
 
   /**
