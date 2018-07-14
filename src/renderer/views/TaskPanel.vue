@@ -42,7 +42,7 @@
 import OrderTask from '../utils/task'
 
 export default {
-  name: 'TaskButton',
+  name: 'TaskPanel',
   data () {
     return {
       passengers: [],

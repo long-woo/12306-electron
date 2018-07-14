@@ -33,7 +33,7 @@
             <span>未登录</span>
           </a>
         </div>
-        <div class="text-center">
+        <div class="text-center" v-if="showAddTask">
           <a class="btn-add-task waves-effect" href="javascript:;" @click="addTask">
             <i class="iconfont" :class="buttonIcon"></i>
             <p>{{buttonText}}</p>
@@ -47,7 +47,7 @@
         </div>
       </div>
     </footer>
-    <task-panel :showPanel="showTaskPanel" @addTaskSuccess="addTask" />
+    <task-panel :showPanel="showTaskPanel" @addTaskSuccess="addTask" v-if="showAddTask" />
     <login ref="loginModal"></login>
     <captcha-code :type="captchaCodeType" @validComplete="validComplete"></captcha-code>
     <about :show.sync="showAbout" />
@@ -80,10 +80,19 @@ export default {
       showAbout: false,
       audioEggUrl: '',
       buttonIcon: 'icon-add-task',
-      buttonText: '添加任务'
+      buttonText: '添加任务',
+      showAddTask: true
     }
   },
   watch: {
+    '$route' (to, from) {
+      const isShow = to.name === 'NewTask'
+
+      if (!isShow) this.showTaskPanel = false
+
+      this.showAddTask = isShow
+    },
+
     showTaskPanel (value) {
       if (value) {
         this.buttonIcon = 'icon-close'
