@@ -2,16 +2,16 @@
   <transition enter-active-class="ani-slide-left" leave-active-class="ani-slide-right">
     <div class="position-fixed container task-panel" v-show="showPanel">
       <div class="row p-2 border-b-dashed-1">
-        <div class="checkbox icheck-info col-sm-6" v-for="(item, index) in seatTypes" :key="index">
+        <div class="checkbox icheck-info col-sm-4 pr-0" v-for="(item, index) in seatTypes" :key="index">
           <input type="checkbox" :id="`chk_seat_${index}`" v-model="chkSeatTypes" :value="item.code" />
           <label :for="`chk_seat_${index}`">{{item.text}}</label>
         </div>
         <div v-if="!seatTypes.length" class="text-center text-secondary col-md-12">请先选择车次</div>
       </div>
       <div class="row p-2">
-        <div class="checkbox icheck-info col-sm-4" v-for="(item, index) in passengers" :key="index">
-          <input type="checkbox" :id="`chk_user_${item.first_letter}`" v-model="chkPassengers" :value="item" />
-          <label :for="`chk_user_${item.first_letter}`">{{item.passenger_name}}</label>
+        <div class="checkbox icheck-info col-sm-4 pr-0" v-for="(item, index) in passengers" :key="index">
+          <input type="checkbox" :id="`chk_user_${item.first_letter}`" v-model="chkPassengers" :value="item" :disabled="passengerName.length > 4 && passengerName.indexOf(item.passenger_name) < 0" />
+          <label :for="`chk_user_${item.first_letter}`" :title="item.passenger_name" v-b-tooltip.hover>{{item.passenger_name}}</label>
         </div>
         <div class="text-center text-secondary col-md-12" v-if="!passengers.length">请先登录</div>
       </div>
@@ -45,7 +45,6 @@ export default {
   name: 'TaskPanel',
   data () {
     return {
-      passengers: [],
       chkPassengers: [],
       chkTrainCodes: [],
       seatTypes: [],
@@ -69,12 +68,10 @@ export default {
     showPanel: {
       type: Boolean,
       default: false
-    }
+    },
+    passengers: Array
   },
   watch: {
-    chkSeatTypes (value) {
-      this.maxLengthChoose(value, 5, '种席别')
-    },
     chkTrainCodes (value) {
       if (!value.length) this.chkSeatTypes = []
     },
@@ -99,8 +96,6 @@ export default {
         ) // 提交订单时，需要在前面添加座位code
       })
 
-      this.maxLengthChoose(value, 5, '位乘客')
-
       // 根据选择乘客人数，自动选座
       this.chooseSeat(this.seatItem, false)
     }
@@ -118,23 +113,6 @@ export default {
     })
   },
   methods: {
-    // 最多选择
-    maxLengthChoose (value, maxLength, text) {
-      if (value.length > maxLength) {
-        value.pop()
-        this.$alert(`哎呀～，你选多啦！不能超过${maxLength}${text}`)
-      }
-    },
-    // 获取乘客
-    async getPassengers () {
-      if (!this.$store.getters.loginModel) return
-
-      const { data } = await this.$api.account.getPassengers('', 1, 999)
-
-      if (!data.length) return
-
-      this.passengers = data
-    },
     // 选座
     chooseSeat (seats, isAutoUpdate = true) {
       const passengersCount = this.chkPassengers.length
@@ -167,6 +145,7 @@ export default {
       if (chooseSeatValue.length > passengersCount) {
         const value = chooseSeatValue.pop()
 
+        this.$alert('请先选择乘客')
         this.seatItem.map((item) => {
           if (item.value === value) {
             item.checked = false
@@ -178,7 +157,7 @@ export default {
     },
     addTask () {
       if (!this.chkPassengers.length && !this.chkSeatTypes.length) {
-        this.$alert('还木有选择席别和乘客')
+        this.$alert('还没有选择席别和乘客')
         return
       }
 
@@ -263,5 +242,13 @@ export default {
 .btn-start-task:focus {
   box-shadow: 0 0 0 transparent !important;
   outline: none;
+}
+
+.checkbox label {
+  display: inherit;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  width: 100%;
+  white-space: nowrap;
 }
 </style>

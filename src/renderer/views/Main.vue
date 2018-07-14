@@ -17,7 +17,7 @@
     </header>
     <main class="container-fluid">
       <transition appear enter-active-class="animated zoomInDown">
-        <router-view ref="views"></router-view>
+        <router-view />
       </transition>
     </main>
     <footer class="fixed-bottom border border-info border-left-0 border-right-0 border-bottom-0 bg-white">
@@ -47,7 +47,7 @@
         </div>
       </div>
     </footer>
-    <task-panel :showPanel="showTaskPanel" @addTaskSuccess="addTask" v-if="showAddTask" />
+    <task-panel :showPanel="showTaskPanel" :passengers="passengers" @addTaskSuccess="addTask" />
     <login ref="loginModal"></login>
     <captcha-code :type="captchaCodeType" @validComplete="validComplete"></captcha-code>
     <about :show.sync="showAbout" />
@@ -81,7 +81,8 @@ export default {
       audioEggUrl: '',
       buttonIcon: 'icon-add-task',
       buttonText: '添加任务',
-      showAddTask: true
+      showAddTask: true,
+      passengers: []
     }
   },
   watch: {
@@ -126,12 +127,14 @@ export default {
       })
     },
     // 获取乘客
-    getPassengers () {
-      const $newTask = this.$refs.views.$refs
+    async getPassengers () {
+      if (!this.$store.getters.loginModel) return
 
-      if ($newTask.taskButton) {
-        $newTask.taskButton.getPassengers()
-      }
+      const { data } = await this.$api.account.getPassengers('', 1, 999)
+
+      if (!data.length) return
+
+      this.passengers = data
     },
     // 检查是否已经登录
     async chkeckIsLogin () {

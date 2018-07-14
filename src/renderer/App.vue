@@ -97,7 +97,7 @@ thead,
 }
 
 .waves-effect {
-  display: block;
+  display: inherit;
 }
 
 a:focus {
