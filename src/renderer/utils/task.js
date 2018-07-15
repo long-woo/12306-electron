@@ -144,6 +144,7 @@ class OrderTask {
   static async [_startSubmitOrder] (trainData, trainSeats, taskItem) {
     const queryInfo = taskItem.queryInfo
     const passengers = taskItem.passengers
+    const chooseSeats = taskItem.chooseSeats
     let isStop = false // 是否终止提交（当未登录）
     let title = '提示'
     let content = '哎呀！！！被挤下线了，请重新登录'
@@ -200,7 +201,8 @@ class OrderTask {
             passengers,
             key: orderResultData.orderKey,
             token: orderResultData.orderToken,
-            awaitTime
+            awaitTime,
+            chooseSeats
           }
 
           Vue.store.dispatch('setConfirmOrderData', orderData)
@@ -239,7 +241,7 @@ class OrderTask {
         }
 
         // 确认提交订单（不需要验证码）
-        const confirmResult = await this.confirmOrderQueue(train, passengers, orderResultData.orderKey, orderResultData.orderToken, seatCode, '', awaitTime)
+        const confirmResult = await this.confirmOrderQueue(train, passengers, orderResultData.orderKey, orderResultData.orderToken, seatCode, '', awaitTime, chooseSeats)
 
         if (confirmResult.code < 1) {
           if (confirmResult.code === 0) {
@@ -325,8 +327,9 @@ class OrderTask {
    * @param {*} seatCode 座位code
    * @param {*} captchCode 验证码
    * @param {*} awaitTime 提交订单的等待时间
+   * @param {*} chooseSeats 选择的座位
    */
-  static async confirmOrderQueue (train, passengers, key, token, seatCode, captchCode, awaitTime) {
+  static async confirmOrderQueue (train, passengers, key, token, seatCode, captchCode, awaitTime, chooseSeats) {
     const seatText = Vue.api.base.getSeatTypeInfo(seatCode)
     const formData = {
       passengerTicketStr: passengers.passengerTickets.replace(/(seatcode)/gi, seatCode),
@@ -335,8 +338,8 @@ class OrderTask {
       key_check_isChange: key,
       leftTicketStr: train.ypInfo,
       train_location: train.locationCode,
-      choose_seats: '',
-      seatDetailType: '',
+      choose_seats: chooseSeats, // 选座
+      seatDetailType: '', // 选铺
       REPEAT_SUBMIT_TOKEN: token
     }
 

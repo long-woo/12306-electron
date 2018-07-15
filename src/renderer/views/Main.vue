@@ -184,7 +184,7 @@ export default {
           const orderData = this.$store.getters.confirmOrderData
 
           // utils.task.confirmOrderQueueAsync(orderData.train, orderData.seatCode, orderData.passengers, orderData.key, value.verifyCode, orderData.awaitTime)
-          OrderTask.confirmOrderQueue(orderData.train, orderData.passengers, orderData.key, orderData.token, orderData.seatCode, value.verifyCode, orderData.awaitTime)
+          OrderTask.confirmOrderQueue(orderData.train, orderData.passengers, orderData.key, orderData.token, orderData.seatCode, value.verifyCode, orderData.awaitTime, orderData.chooseSeats)
         }
       }
     },
@@ -209,8 +209,8 @@ export default {
 
 <style scoped>
 .bg-nav-hue {
-  background: linear-gradient(to top right, #563D7C, #17A2B8, #41B883);
-  background: -webkit-linear-gradient(left bottom, #563D7C, #17A2B8, #41B883);
+  background: linear-gradient(to top right, #563D7C, #41B883);
+  background: -webkit-linear-gradient(left bottom, #563D7C, #41B883);
   animation: ani-hue 60s infinite linear;
   -webkit-animation: ani-hue 60s infinite linear;
 }

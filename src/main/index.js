@@ -132,7 +132,6 @@ const isSecondInstance = app.makeSingleInstance((command, workingDirectory) => {
 
 if (isSecondInstance) {
   app.quit()
-  // return
 }
 
 app.on('before-quit', () => {

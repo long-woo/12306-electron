@@ -30,7 +30,7 @@
             <label for="chk_ticket_type">学生票</label>
           </div>
           <div class="flex-fill">
-            <a href="javascript:;" class="btn btn-success rounded-0 btn-start-task waves-effect">确认&开始任务</a>
+            <a href="javascript:;" class="btn btn-success rounded-0 btn-start-task waves-effect" @click="confirmTask">确认&开始任务</a>
           </div>
         </div>
       </div>
@@ -51,11 +51,11 @@ export default {
       chkSeatTypes: [],
       passengerName: [],
       seatItem: [
-        {name: 'a', checked: false, value: 'A'},
-        {name: 'b', checked: false, value: 'B'},
-        {name: 'c', checked: false, value: 'C'},
-        {name: 'd', checked: false, value: 'D'},
-        {name: 'f', checked: false, value: 'F'}
+        {name: 'a', checked: false, value: '1A'},
+        {name: 'b', checked: false, value: '1B'},
+        {name: 'c', checked: false, value: '1C'},
+        {name: 'd', checked: false, value: '1D'},
+        {name: 'f', checked: false, value: '1F'}
       ],
       chooseSeats: [],
       chkTicketType: false,
@@ -155,7 +155,7 @@ export default {
 
       this.chooseSeats = chooseSeatValue
     },
-    addTask () {
+    confirmTask () {
       if (!this.chkPassengers.length && !this.chkSeatTypes.length) {
         this.$alert('还没有选择席别和乘客')
         return
@@ -179,7 +179,7 @@ export default {
           trainDate: $parentData.trainDate,
           ticketType: this.chkTicketType ? '0X00' : 'ADULT'
         },
-        chooseSeats: this.chooseSeats // 选中的座
+        chooseSeats: this.chooseSeats.toString().replace(/(,)/g, '') // 选中的座
       }
 
       this.chkPassengers = []
