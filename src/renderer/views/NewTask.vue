@@ -100,10 +100,18 @@ export default {
     selectFromCity (city) {
       this.fromCity = city
       this.$refs.toCity.focus()
+
+      if (this.toCity.value) {
+        this.queryTrain()
+      }
     },
     // 选择目的地
     selectToCity (city) {
       this.toCity = city
+
+      if (this.fromCity.value) {
+        this.queryTrain()
+      }
     },
     // 切换地址
     changeCity () {
