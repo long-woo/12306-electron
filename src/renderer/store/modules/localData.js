@@ -36,8 +36,8 @@ const actions = {
   setTaskDataStatus ({commit, state}, taskStatusInfo) {
     commit(types.UPDATE_LOCAL_TASKDATASTATUS, taskStatusInfo)
   },
-  deleteTaskData ({commit, state}, index) {
-    commit(types.REMOVE_LOCAL_TASKDATA, index)
+  deleteTaskData ({commit, state}) {
+    commit(types.REMOVE_LOCAL_TASKDATA)
   },
   setConfirmOrderData ({commit, state}, confirmOrderData) {
     commit(types.UPDATE_LOCAL_CONFIRMORDERDATA, confirmOrderData)

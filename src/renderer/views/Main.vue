@@ -51,7 +51,6 @@
     <login ref="loginModal"></login>
     <captcha-code :type="captchaCodeType" @validComplete="validComplete"></captcha-code>
     <about :show.sync="showAbout" />
-    <!-- <audio id="audioEgg" :src="audioEggUrl" preload="auto" loop style="display: none;" hidden="true"></audio> -->
   </div>
 </template>
 
@@ -78,7 +77,6 @@ export default {
       captchaCodeType: 'login',
       loginName: '',
       showAbout: false,
-      audioEggUrl: '',
       buttonIcon: 'icon-add-task',
       buttonText: '添加任务',
       showAddTask: true,

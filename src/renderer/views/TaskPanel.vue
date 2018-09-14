@@ -161,6 +161,7 @@ export default {
         return
       }
 
+      const oldTaskData = this.$store.getters.taskData
       const $parentData = this.$parent
       const taskData = {
         trains: this.chkTrainCodes,
@@ -182,16 +183,29 @@ export default {
         chooseSeats: this.chooseSeats.toString().replace(/(,)/g, '') // 选中的座
       }
 
-      this.chkPassengers = []
-      this.chkSeatTypes = []
-      this.chkTrainCodes = []
-      this.$store.dispatch('setTaskData', taskData)
+      if (oldTaskData) {
+        this.$swal('已经存在一个任务', {
+          icon: 'warning',
+          title: '确定要替换？',
+          buttons: ['取消', '确定']
+        }).then(res => {
+          if (res) {
+            // 停止任务
+            OrderTask.stop()
 
-      this.$eventBus.$emit('clearChooseTrain')
-      this.$emit('addTaskSuccess')
+            this.chkPassengers = []
+            this.chkSeatTypes = []
+            this.chkTrainCodes = []
+            this.$store.dispatch('setTaskData', taskData)
 
-      // 执行任务
-      OrderTask.start()
+            this.$eventBus.$emit('clearChooseTrain')
+            this.$emit('addTaskSuccess')
+
+            // 执行任务
+            OrderTask.start()
+          }
+        })
+      }
     }
   }
 }

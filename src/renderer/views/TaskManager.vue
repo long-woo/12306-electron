@@ -24,7 +24,9 @@
       <div class="col-2 bg-danger text-white d-flex align-items-center justify-content-center btn-task-del" @click="removeTask">
         <span>移除</span>
       </div> -->
-      
+      <div class="col-md-12">
+        <div></div>
+      </div>
     </div>
     <div class="alert alert-warning text-center" v-else>您还没有<strong>添加任务</strong>^~^</div>
   </div>
