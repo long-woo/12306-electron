@@ -206,13 +206,6 @@ export default {
 </script>
 
 <style scoped>
-.bg-nav-hue {
-  background: linear-gradient(to top right, #563D7C, #41B883);
-  background: -webkit-linear-gradient(left bottom, #563D7C, #41B883);
-  animation: ani-hue 60s infinite linear;
-  -webkit-animation: ani-hue 60s infinite linear;
-}
-
 main {
   position: absolute;
   overflow: auto;
