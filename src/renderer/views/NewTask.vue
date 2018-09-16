@@ -183,10 +183,12 @@ export default {
       // 保存查询车次信息
       const queryInfo = {
         fromCity: this.fromCity,
-        toCity: this.toCity
+        toCity: this.toCity,
+        trainDate
       }
 
       utils.setQueryInfo(queryInfo)
+      this.$store.dispatch('setQueryInfo', queryInfo)
     },
     // 格式化座位信息
     formatSeatType (data) {

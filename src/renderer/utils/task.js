@@ -2,6 +2,7 @@ import Vue from 'vue'
 import utils from './utils'
 
 const _setStatus = Symbol('_setStatus')
+const _setCurrentTrain = Symbol('_setCurrentTrain')
 const _isHasTicket = Symbol('_isHasTicket')
 const _startSubmitOrder = Symbol('_startSubmitOrder')
 const _submitOrder = Symbol('_submitOrder')
@@ -33,8 +34,6 @@ class OrderTask {
       this[_setStatus](`${timeout}秒后，开始查询...`)
 
       if (timeout <= 0) {
-        this.stop() // 暂停计时器
-        timeout = 1
         // 开始查询
         const {fromCityCode, toCityCode, trainDate, ticketType} = taskItem.queryInfo
         const formData = {
@@ -69,6 +68,8 @@ class OrderTask {
           return
         }
 
+        this.stop() // 暂停计时器
+
         // 开始准备提交订单
         this[_setStatus]('正在开始准备提交订单...')
         utils.notification.show('提示', {
@@ -88,6 +89,7 @@ class OrderTask {
    * 停止任务
    */
   static stop () {
+    timeout = 1
     clearInterval(startFunc)
   }
 
@@ -100,11 +102,28 @@ class OrderTask {
 
   /**
    * 设置任务状态
-   * @param {*} index 任务索引号
    * @param {*} text 状态内容
    */
   static [_setStatus] (text) {
     Vue.store.dispatch('setTaskDataStatus', text)
+  }
+
+  /**
+   * 更新任务数据，当前预订车次信息
+   * @param {*} trainCode
+   * @param {*} fromCity
+   * @param {*} fromCity
+   * @param {*} seatText
+   */
+  static [_setCurrentTrain] (trainCode, fromCity, toCity, seatText) {
+    const currentTrain = {
+      trainCode,
+      fromCity,
+      toCity,
+      seatText
+    }
+
+    Vue.store.dispatch('setTaskCurrentTrain', currentTrain)
   }
 
   /**
@@ -157,6 +176,7 @@ class OrderTask {
 
         // 提交订单
         this[_setStatus](`正在预订【${train.trainCode}】车次的【${seatText}】...`)
+        // this[_setCurrentTrain](train.trainCode, train)
         const orderResult = await this[_submitOrder](train.secret, queryInfo)
 
         if (orderResult.code !== 200) {

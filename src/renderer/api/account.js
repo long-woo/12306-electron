@@ -25,7 +25,7 @@ class Account {
     if (res.result_code !== 0) {
       message = res.result_message
 
-      return new BaseContent(null, {message})
+      return new BaseContent(null, {message, code: 400})
     }
 
     return this[_loginAuth]()

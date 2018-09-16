@@ -51,11 +51,11 @@ export default {
       chkSeatTypes: [],
       passengerName: [],
       seatItem: [
-        {name: 'a', checked: false, value: '1A'},
-        {name: 'b', checked: false, value: '1B'},
-        {name: 'c', checked: false, value: '1C'},
-        {name: 'd', checked: false, value: '1D'},
-        {name: 'f', checked: false, value: '1F'}
+        { name: 'a', checked: false, value: '1A' },
+        { name: 'b', checked: false, value: '1B' },
+        { name: 'c', checked: false, value: '1C' },
+        { name: 'd', checked: false, value: '1D' },
+        { name: 'f', checked: false, value: '1F' }
       ],
       chooseSeats: [],
       chkTicketType: false,
@@ -146,7 +146,7 @@ export default {
         const value = chooseSeatValue.pop()
 
         this.$alert('请先选择乘客')
-        this.seatItem.map((item) => {
+        this.seatItem.map(item => {
           if (item.value === value) {
             item.checked = false
           }
@@ -155,6 +155,7 @@ export default {
 
       this.chooseSeats = chooseSeatValue
     },
+
     confirmTask () {
       if (!this.chkPassengers.length && !this.chkSeatTypes.length) {
         this.$alert('还没有选择席别和乘客')
@@ -162,7 +163,7 @@ export default {
       }
 
       const oldTaskData = this.$store.getters.taskData
-      const $parentData = this.$parent
+      const queryInfo = this.$store.getters.queryInfo
       const taskData = {
         trains: this.chkTrainCodes,
         seats: this.chkSeatTypes,
@@ -172,40 +173,54 @@ export default {
           passengerTickets: this.passengerTickets.join('_')
         },
         statusText: '等待启动任务...',
+        currentTrain: {
+          trainCode: '',
+          fromCity: queryInfo.fromCity.text,
+          toCity: queryInfo.toCity.text,
+          seatText: ''
+        },
         queryInfo: {
-          fromCityCode: $parentData.fromCity.value,
-          fromCityName: $parentData.fromCity.text,
-          toCityCode: $parentData.toCity.value,
-          toCityName: $parentData.toCity.text,
-          trainDate: $parentData.trainDate,
+          fromCityCode: queryInfo.fromCity.value,
+          fromCityName: queryInfo.fromCity.text,
+          toCityCode: queryInfo.toCity.value,
+          toCityName: queryInfo.toCity.text,
+          trainDate: queryInfo.trainDate,
           ticketType: this.chkTicketType ? '0X00' : 'ADULT'
         },
         chooseSeats: this.chooseSeats.toString().replace(/(,)/g, '') // 选中的座
       }
 
-      if (oldTaskData) {
-        this.$swal('已经存在一个任务', {
-          icon: 'warning',
-          title: '确定要替换？',
-          buttons: ['取消', '确定']
-        }).then(res => {
-          if (res) {
-            // 停止任务
-            OrderTask.stop()
-
-            this.chkPassengers = []
-            this.chkSeatTypes = []
-            this.chkTrainCodes = []
-            this.$store.dispatch('setTaskData', taskData)
-
-            this.$eventBus.$emit('clearChooseTrain')
-            this.$emit('addTaskSuccess')
-
-            // 执行任务
-            OrderTask.start()
-          }
-        })
+      if (!oldTaskData) {
+        this.startTask(taskData)
+        return
       }
+
+      this.$swal('已经存在一个任务', {
+        icon: 'warning',
+        title: '确定要替换？',
+        buttons: ['取消', '确定']
+      }).then(res => {
+        if (res) {
+          this.startTask(taskData)
+        }
+      })
+    },
+
+    // 启动任务
+    startTask (taskData) {
+      // 停止任务
+      OrderTask.stop()
+
+      this.chkPassengers = []
+      this.chkSeatTypes = []
+      this.chkTrainCodes = []
+      this.$store.dispatch('setTaskData', taskData)
+
+      this.$eventBus.$emit('clearChooseTrain')
+      this.$emit('addTaskSuccess')
+
+      // 执行任务
+      // OrderTask.start()
     }
   }
 }

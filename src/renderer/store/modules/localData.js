@@ -3,6 +3,7 @@ import utils from '../../utils/utils'
 
 const state = {
   queryUrl: 'query',
+  queryInfo: {},
   stationNames: [],
   loginModel: null,
   taskData: null,
@@ -12,6 +13,7 @@ const state = {
 
 const getters = {
   queryUrl: state => state.queryUrl,
+  queryInfo: state => state.queryInfo,
   stationNames: state => state.stationNames,
   loginModel: state => state.loginModel,
   seatItems: state => state.seatItems,
@@ -24,6 +26,9 @@ const actions = {
   setQueryUrl ({commit, state}, queryUrl) {
     commit(types.UPDATE_LOCAL_QUERYURL, queryUrl)
   },
+  setQueryInfo ({commit, state}, queryInfo) {
+    commit(types.UPDATE_LOCAL_QUERYINFO, queryInfo)
+  },
   setStationName ({commit, state}, stationNames) {
     commit(types.UPDATE_LOCAL_STATIONNAME, stationNames)
   },
@@ -35,6 +40,9 @@ const actions = {
   },
   setTaskDataStatus ({commit, state}, taskStatusInfo) {
     commit(types.UPDATE_LOCAL_TASKDATASTATUS, taskStatusInfo)
+  },
+  setTaskCurrentTrain ({commit, state}, currentTrain) {
+    commit(types.UPDATE_LOCAL_TASKCURRENTTRAIN, currentTrain)
   },
   deleteTaskData ({commit, state}) {
     commit(types.REMOVE_LOCAL_TASKDATA)
@@ -50,6 +58,9 @@ const actions = {
 const mutations = {
   [types.UPDATE_LOCAL_QUERYURL] (state, queryUrl) {
     state.queryUrl = queryUrl
+  },
+  [types.UPDATE_LOCAL_QUERYINFO] (state, queryInfo) {
+    state.queryInfo = queryInfo
   },
   [types.UPDATE_LOCAL_STATIONNAME] (state, stationNames) {
     state.stationNames = stationNames
@@ -79,7 +90,15 @@ const mutations = {
     const taskItem = state.taskData
 
     if (!taskItem) return
+
     taskItem.statusText = text
+  },
+  [types.UPDATE_LOCAL_TASKCURRENTTRAIN] (state, currentTrain) {
+    const taskData = state.taskData
+
+    if (!taskData) return
+
+    taskData.currentTrain = currentTrain
   },
   [types.REMOVE_LOCAL_TASKDATA] (state) {
     state.taskData = null
