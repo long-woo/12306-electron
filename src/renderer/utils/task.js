@@ -110,16 +110,18 @@ class OrderTask {
 
   /**
    * 更新任务数据，当前预订车次信息
-   * @param {*} trainCode
-   * @param {*} fromCity
-   * @param {*} fromCity
+   * @param {*} train
    * @param {*} seatText
    */
-  static [_setCurrentTrain] (trainCode, fromCity, toCity, seatText) {
+  static [_setCurrentTrain] (train, seatText) {
+    const {trainCode, fromCityName, toCityName, departureTime, arrivalTime, useTime} = train.trainCode
     const currentTrain = {
       trainCode,
-      fromCity,
-      toCity,
+      fromCityName,
+      toCityName,
+      departureTime,
+      arrivalTime,
+      useTime,
       seatText
     }
 
@@ -176,7 +178,11 @@ class OrderTask {
 
         // 提交订单
         this[_setStatus](`正在预订【${train.trainCode}】车次的【${seatText}】...`)
-        // this[_setCurrentTrain](train.trainCode, train)
+        this[_setCurrentTrain](train, seatText)
+
+        isStop = true
+        if (isStop) return
+
         const orderResult = await this[_submitOrder](train.secret, queryInfo)
 
         if (orderResult.code !== 200) {

@@ -175,8 +175,11 @@ export default {
         statusText: '等待启动任务...',
         currentTrain: {
           trainCode: '',
-          fromCity: queryInfo.fromCity.text,
-          toCity: queryInfo.toCity.text,
+          fromCityName: queryInfo.fromCity.text,
+          toCityName: queryInfo.toCity.text,
+          departureTime: '00:00',
+          arrivalTime: '00:00',
+          useTime: '00:00',
           seatText: ''
         },
         queryInfo: {

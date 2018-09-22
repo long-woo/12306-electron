@@ -1,58 +1,35 @@
 <template>
   <div class="task-manager h-100">
-    <div class="d-flex flex-column h-100">
-      <!-- <div class="col-10 border border-info border-left-0 border-right-0 border-bottom-0 pr-0">
-        <div class="task-header p-2 bg-info text-white row mr-0 d-flex flex-row justify-content-between">
-          <div>
-            <span>{{taskData.statusText}}</span>
-          </div>
-          <div>
-            <span>{{taskData.queryInfo.trainDate}}</span>
-          </div>
-        </div>
-        <div class="task-body border-b-dashed-1 p-2">
-          <span>
-            {{taskData.passengers.passengerName}}
-          </span>
-        </div>
-        <div class="task-footer p-2 bg-light row mr-0 pl-3">
-          <span>
-            {{taskData.trains.toString()}}
-          </span>
-        </div>
-      </div>
-      <div class="col-2 bg-danger text-white d-flex align-items-center justify-content-center btn-task-del" @click="removeTask">
-        <span>移除</span>
-      </div> -->
+    <div class="d-flex flex-column h-100" v-if="taskData">
       <div class="task-manager-header">
         <div class="row text-center bg-info text-white pt-3 pb-2">
           <div class="col-sm-5">
-            <h4>昆山南</h4>
-            <p>08:15</p>
+            <h4>{{taskData.fromCityName}}</h4>
+            <p>{{taskData.departureTime}}</p>
           </div>
           <div class="col-sm-2">
-            <p>G657</p>
+            <p>{{taskData.trainCode}}</p>
             <p>
               <i class="iconfont icon-long-right-arrow"></i>
             </p>
-            <p class="task-manager-time">2018-09-09</p>
+            <p class="task-manager-time">{{taskData.queryInfo.trainDate}}</p>
           </div>
           <div class="col-sm-5">
-            <h4>上海虹桥</h4>
-            <p>08:30</p>
+            <h4>{{taskData.toCityName}}</h4>
+            <p>{{taskData.arrivalTime}}</p>
           </div>
         </div>
         <div class="row text-right bg-info text-white pb-2">
-          <div class="col-sm-12">long.woo</div>
+          <div class="col-sm-12">{{taskData.passengers.passengerName}}</div>
         </div>
       </div>
       <div class="task-manager-status m-auto">
-        <p class="task-manager-seat">二等座</p>
-        <p class="task-status-desc">正在查询...</p>
+        <p class="task-manager-seat">{{taskData.seatText}}</p>
+        <p class="task-status-desc">{{taskData.statusText}}</p>
       </div>
     </div>
-    <!-- <div class="alert alert-warning text-center" v-else>您还没有
-      <strong>添加任务</strong>^~^</div> -->
+    <div class="alert alert-warning text-center" v-else>您还没有
+      <strong>添加任务</strong>^~^</div>
   </div>
 </template>
 
