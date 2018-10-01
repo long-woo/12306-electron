@@ -157,24 +157,25 @@ export default {
     },
 
     confirmTask () {
-      if (!this.chkPassengers.length && !this.chkSeatTypes.length) {
+      const {chkPassengers, chkSeatTypes, chkTrainCodes, passengerName, oldPassengers, passengerTickets, chkTicketType, chooseSeats} = this.$data
+
+      if (!chkPassengers.length && !chkSeatTypes.length) {
         this.$alert('还没有选择席别和乘客')
         return
       }
 
-      const oldTaskData = this.$store.getters.taskData
-      const queryInfo = this.$store.getters.queryInfo
-      const taskData = {
-        trains: this.chkTrainCodes,
-        seats: this.chkSeatTypes,
+      const {taskData, queryInfo} = this.$store.getters
+      const newTaskData = {
+        trains: chkTrainCodes,
+        seats: chkSeatTypes,
         passengers: {
-          passengerName: this.passengerName.toString(),
-          oldPassengers: this.oldPassengers.join('_'),
-          passengerTickets: this.passengerTickets.join('_')
+          passengerName: passengerName.toString(),
+          oldPassengers: oldPassengers.join('_'),
+          passengerTickets: passengerTickets.join('_')
         },
         statusText: '等待启动任务...',
         currentTrain: {
-          trainCode: '',
+          trainCode: chkTrainCodes[0],
           fromCityName: queryInfo.fromCity.text,
           toCityName: queryInfo.toCity.text,
           departureTime: '00:00',
@@ -188,13 +189,13 @@ export default {
           toCityCode: queryInfo.toCity.value,
           toCityName: queryInfo.toCity.text,
           trainDate: queryInfo.trainDate,
-          ticketType: this.chkTicketType ? '0X00' : 'ADULT'
+          ticketType: chkTicketType ? '0X00' : 'ADULT'
         },
-        chooseSeats: this.chooseSeats.toString().replace(/(,)/g, '') // 选中的座
+        chooseSeats: chooseSeats.toString().replace(/(,)/g, '') // 选中的座
       }
 
-      if (!oldTaskData) {
-        this.startTask(taskData)
+      if (!taskData) {
+        this.startTask(newTaskData)
         return
       }
 
@@ -204,7 +205,7 @@ export default {
         buttons: ['取消', '确定']
       }).then(res => {
         if (res) {
-          this.startTask(taskData)
+          this.startTask(newTaskData)
         }
       })
     },
@@ -223,7 +224,7 @@ export default {
       this.$emit('addTaskSuccess')
 
       // 执行任务
-      // OrderTask.start()
+      OrderTask.start()
     }
   }
 }

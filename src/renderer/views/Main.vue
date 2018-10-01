@@ -86,7 +86,7 @@ export default {
   watch: {
     '$route' (to, from) {
       const isShow = to.name === 'NewTask'
-      console.log(to)
+
       if (!isShow) this.showTaskPanel = false
 
       this.showAddTask = isShow

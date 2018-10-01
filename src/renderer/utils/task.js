@@ -15,8 +15,6 @@ const _autoSubmitOrder = Symbol('_autoSubmitOrder')
 const _getOrderQueueInfoAsync = Symbol('_getOrderQueueInfoAsync')
 
 let timeout = 1
-let startFunc
-let startOrderAwaitFunc
 
 /**
  * 订单任务
@@ -26,47 +24,47 @@ class OrderTask {
    * 开始任务
    */
   static start () {
-    const taskItem = Vue.store.getters.taskData
+    // const taskItem = Vue.store.getters.taskData
 
     this.stop()
 
-    startFunc = setInterval(async () => {
+    this.startFunc = setInterval(async () => {
       this[_setStatus](`${timeout}秒后，开始查询...`)
 
       if (timeout <= 0) {
         // 开始查询
-        const {fromCityCode, toCityCode, trainDate, ticketType} = taskItem.queryInfo
-        const formData = {
-          queryUrl: Vue.store.getters.queryUrl,
-          fromCity: fromCityCode,
-          toCity: toCityCode,
-          trainDate,
-          ticketType
-        }
+        // const {fromCityCode, toCityCode, trainDate, ticketType} = taskItem.queryInfo
+        // const formData = {
+        //   queryUrl: Vue.store.getters.queryUrl,
+        //   fromCity: fromCityCode,
+        //   toCity: toCityCode,
+        //   trainDate,
+        //   ticketType
+        // }
 
         this[_setStatus]('正在查询...')
-        const res = await Vue.api.base.getTicket(formData)
-        let trainSeats = [] // 有票数的座位
+        // const res = await Vue.api.base.getTicket(formData)
+        // let trainSeats = [] // 有票数的座位
         // 检查匹配车次是否符合预订条件
-        let trainData = res.reduce((prev, current) => {
-          if (taskItem.trains.indexOf(current.trainCode) > -1) {
-            const arrPassenger = taskItem.passengers.passengerName.split(',')
-            const seatItems = this[_isHasTicket](taskItem.seats, current.seatTypes, arrPassenger)
-            const arrSeat = trainSeats.concat(seatItems)
+        // let trainData = res.reduce((prev, current) => {
+        //   if (taskItem.trains.indexOf(current.trainCode) > -1) {
+        //     const arrPassenger = taskItem.passengers.passengerName.split(',')
+        //     const seatItems = this[_isHasTicket](taskItem.seats, current.seatTypes, arrPassenger)
+        //     const arrSeat = trainSeats.concat(seatItems)
 
-            trainSeats = [...new Set(arrSeat)]
+        //     trainSeats = [...new Set(arrSeat)]
 
-            prev.push(current)
-          }
+        //     prev.push(current)
+        //   }
 
-          return prev
-        }, [])
+        //   return prev
+        // }, [])
 
         // 如果没有符合预订条件的车次，则继续启动任务
-        if (!trainData.length) {
-          this.start()
-          return
-        }
+        // if (!trainData.length) {
+        //   // this.start()
+        //   return
+        // }
 
         this.stop() // 暂停计时器
 
@@ -77,7 +75,7 @@ class OrderTask {
           tag: 'order'
         })
         // this.startAutoSubmitOder(trainData, trainSeats, taskItem)
-        this[_startSubmitOrder](trainData, trainSeats, taskItem)
+        // this[_startSubmitOrder](trainData, trainSeats, taskItem)
         return
       }
 
@@ -90,14 +88,14 @@ class OrderTask {
    */
   static stop () {
     timeout = 1
-    clearInterval(startFunc)
+    clearInterval(this.startFunc)
   }
 
   /**
    * 停止订单出票时间任务
    */
   static stopOrderAwaitFunc () {
-    clearInterval(startOrderAwaitFunc)
+    clearInterval(this.startOrderAwaitFunc)
   }
 
   /**
@@ -179,7 +177,7 @@ class OrderTask {
         // 提交订单
         this[_setStatus](`正在预订【${train.trainCode}】车次的【${seatText}】...`)
         this[_setCurrentTrain](train, seatText)
-
+        console.log('123')
         isStop = true
         if (isStop) return
 
@@ -414,7 +412,7 @@ class OrderTask {
 
       this.stopOrderAwaitFunc()
 
-      startOrderAwaitFunc = setInterval(async () => {
+      this.startOrderAwaitFunc = setInterval(async () => {
         const res = await Vue.api.order.getOrderAwaitTime()
 
         if (res.code !== 200) {

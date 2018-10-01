@@ -68,6 +68,11 @@ export default {
       return this.$refs.rideDate.date
     }
   },
+  watch: {
+    chkTrains (value) {
+
+    }
+  },
   async mounted () {
     // 获取保存过的车次查询信息
     const queryInfo = utils.getQueryInfo()

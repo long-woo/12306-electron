@@ -4,19 +4,19 @@
       <div class="task-manager-header">
         <div class="row text-center bg-info text-white pt-3 pb-2">
           <div class="col-sm-5">
-            <h4>{{taskData.fromCityName}}</h4>
-            <p>{{taskData.departureTime}}</p>
+            <h4>{{taskData.currentTrain.fromCityName}}</h4>
+            <p>{{taskData.currentTrain.departureTime}}</p>
           </div>
           <div class="col-sm-2">
-            <p>{{taskData.trainCode}}</p>
+            <p>{{taskData.currentTrain.trainCode}}</p>
             <p>
               <i class="iconfont icon-long-right-arrow"></i>
             </p>
             <p class="task-manager-time">{{taskData.queryInfo.trainDate}}</p>
           </div>
           <div class="col-sm-5">
-            <h4>{{taskData.toCityName}}</h4>
-            <p>{{taskData.arrivalTime}}</p>
+            <h4>{{taskData.currentTrain.toCityName}}</h4>
+            <p>{{taskData.currentTrain.arrivalTime}}</p>
           </div>
         </div>
         <div class="row text-right bg-info text-white pb-2">
@@ -24,11 +24,11 @@
         </div>
       </div>
       <div class="task-manager-status m-auto">
-        <p class="task-manager-seat">{{taskData.seatText}}</p>
+        <p class="task-manager-seat">{{taskData.currentTrain.seatText}}</p>
         <p class="task-status-desc">{{taskData.statusText}}</p>
       </div>
     </div>
-    <div class="alert alert-warning text-center" v-else>您还没有
+    <div class="alert alert-warning text-center mt-3" v-else>您还没有
       <strong>添加任务</strong>^~^</div>
   </div>
 </template>
