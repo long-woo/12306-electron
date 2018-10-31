@@ -68,11 +68,6 @@ export default {
       return this.$refs.rideDate.date
     }
   },
-  watch: {
-    chkTrains (value) {
-
-    }
-  },
   async mounted () {
     // 获取保存过的车次查询信息
     const queryInfo = utils.getQueryInfo()
@@ -92,8 +87,15 @@ export default {
       this.$refs.taskButton.getPassengers()
     }
 
+    // 清除选择车次信息
     this.$eventBus.$on('clearChooseTrain', () => {
       this.chkTrains = []
+      this.seatCodes = []
+    })
+
+    // 更新车次数据
+    this.$eventBus.$on('updateTicketData', (data) => {
+      this.ticketData = data
     })
 
     setTimeout(() => {

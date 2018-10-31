@@ -24,7 +24,7 @@ class OrderTask {
    * 开始任务
    */
   static start () {
-    // const taskItem = Vue.store.getters.taskData
+    const taskItem = Vue.store.getters.taskData
 
     this.stop()
 
@@ -32,41 +32,47 @@ class OrderTask {
       this[_setStatus](`${timeout}秒后，开始查询...`)
 
       if (timeout <= 0) {
+        this.stop() // 暂停计时器
+
         // 开始查询
-        // const {fromCityCode, toCityCode, trainDate, ticketType} = taskItem.queryInfo
-        // const formData = {
-        //   queryUrl: Vue.store.getters.queryUrl,
-        //   fromCity: fromCityCode,
-        //   toCity: toCityCode,
-        //   trainDate,
-        //   ticketType
-        // }
+        const {fromCityCode, toCityCode, trainDate, ticketType} = taskItem.queryInfo
+        const formData = {
+          queryUrl: Vue.store.getters.queryUrl,
+          fromCity: fromCityCode,
+          toCity: toCityCode,
+          trainDate,
+          ticketType
+        }
 
         this[_setStatus]('正在查询...')
-        // const res = await Vue.api.base.getTicket(formData)
-        // let trainSeats = [] // 有票数的座位
+
+        const {data} = await Vue.api.base.getTicket(formData)
+
+        // 更新列表车次数据
+        Vue.eventBus.$emit('updateTicketData', data)
+
+        let trainSeats = [] // 有票数的座位
         // 检查匹配车次是否符合预订条件
-        // let trainData = res.reduce((prev, current) => {
-        //   if (taskItem.trains.indexOf(current.trainCode) > -1) {
-        //     const arrPassenger = taskItem.passengers.passengerName.split(',')
-        //     const seatItems = this[_isHasTicket](taskItem.seats, current.seatTypes, arrPassenger)
-        //     const arrSeat = trainSeats.concat(seatItems)
+        let trainData = data.reduce((prev, current) => {
+          if (taskItem.trains.indexOf(current.trainCode) > -1) {
+            const arrPassenger = taskItem.passengers.passengerName.split(',')
+            const seatItems = this[_isHasTicket](taskItem.seats, current.seatTypes, arrPassenger)
+            const arrSeat = trainSeats.concat(seatItems)
 
-        //     trainSeats = [...new Set(arrSeat)]
+            trainSeats = [...new Set(arrSeat)]
 
-        //     prev.push(current)
-        //   }
+            prev.push(current)
+          }
 
-        //   return prev
-        // }, [])
+          return prev
+        }, [])
 
         // 如果没有符合预订条件的车次，则继续启动任务
-        // if (!trainData.length) {
-        //   // this.start()
-        //   return
-        // }
+        if (!trainData.length) {
+          this.start()
 
-        this.stop() // 暂停计时器
+          return
+        }
 
         // 开始准备提交订单
         this[_setStatus]('正在开始准备提交订单...')
@@ -74,8 +80,8 @@ class OrderTask {
           body: `【任务】正在执行提交订单`,
           tag: 'order'
         })
-        // this.startAutoSubmitOder(trainData, trainSeats, taskItem)
-        // this[_startSubmitOrder](trainData, trainSeats, taskItem)
+        this[_startSubmitOrder](trainData, trainSeats, taskItem)
+
         return
       }
 
