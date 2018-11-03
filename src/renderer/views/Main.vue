@@ -30,7 +30,7 @@
           </div>
           <a class="text-info waves-effect" href="javascript:;" v-b-modal.loginModal v-else>
             <i class="iconfont icon-user"></i>
-            <span>未登录</span>
+            <span>登录</span>
           </a>
         </div>
         <div class="text-center" v-if="showAddTask">
