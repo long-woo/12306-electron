@@ -106,11 +106,6 @@ export default {
       this.chkTrainCodes = data.trains || []
       this.seatTypes = data.seats || []
     })
-
-    // 监听退出登录事件
-    this.$eventBus.$on('loginOff', () => {
-      this.passengers = []
-    })
   },
   methods: {
     // 选座

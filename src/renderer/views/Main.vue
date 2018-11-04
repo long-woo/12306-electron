@@ -48,8 +48,8 @@
       </div>
     </footer>
     <task-panel :showPanel="showTaskPanel" :passengers="passengers" @addTaskSuccess="addTask" />
-    <login ref="loginModal"></login>
-    <captcha-code :type="captchaCodeType" @validComplete="validComplete"></captcha-code>
+    <login ref="loginModal" @loginSuccess="loginSuccess"/>
+    <captcha-code :type="captchaCodeType" @validComplete="validComplete" />
     <about :show.sync="showAbout" />
   </div>
 </template>
@@ -106,7 +106,7 @@ export default {
   mounted () {
     // utils.speech.textToSpeech('Hello！欢迎使用1|2|3|0|6-Electron，祝您购票成功')
 
-    this.chkeckIsLogin()
+    this.checkIsLogin()
     this.$eventBus.$on('openDialog', (dialog) => {
       this.captchaCodeType = dialog === 'captchCodeModal' ? 'order' : 'login'
       this.$root.$emit('bv::show::modal', dialog)
@@ -135,8 +135,8 @@ export default {
       this.passengers = data
     },
     // 检查是否已经登录
-    async chkeckIsLogin () {
-      const {code, data} = await this.$api.account.chkeckIsLogin()
+    async checkIsLogin () {
+      const {code, data} = await this.$api.account.checkIsLogin()
 
       if (code !== 200) return
 
@@ -153,12 +153,12 @@ export default {
     async validComplete (value) {
       if (value.result) {
         if (this.captchaCodeType === 'login') {
-          const login = this.$refs.loginModal
-          const loginData = {
-            username: login.userName,
-            password: login.password
+          const vmLoginModal = this.$refs.loginModal
+          const formData = {
+            username: vmLoginModal.userName,
+            password: vmLoginModal.password
           }
-          const {code, data, message} = await this.$api.account.login(loginData)
+          const {code, data, message} = await this.$api.account.login(formData)
 
           if (code !== 200) {
             this.$alert(message)
@@ -166,26 +166,35 @@ export default {
             return
           }
 
-          const loginInfo = {
-            loginName: data.loginName,
-            userName: login.userName,
-            password: login.password,
-            rememberme: login.rememberme,
-            autoLogin: login.autoLogin
-          }
-
-          this.loginName = data.loginName
-          this.$store.dispatch('setLoginModel', loginInfo)
-          this.getPassengers()
-        } else {
-          // 提交订单
-          const orderData = this.$store.getters.confirmOrderData
-
-          // utils.task.confirmOrderQueueAsync(orderData.train, orderData.seatCode, orderData.passengers, orderData.key, value.verifyCode, orderData.awaitTime)
-          OrderTask.confirmOrderQueue(orderData.train, orderData.passengers, orderData.key, orderData.token, orderData.seatCode, value.verifyCode, orderData.awaitTime, orderData.chooseSeats)
+          this.loginSuccess(data, vmLoginModal)
+          return
         }
+
+        // 提交订单
+        const orderData = this.$store.getters.confirmOrderData
+
+        // utils.task.confirmOrderQueueAsync(orderData.train, orderData.seatCode, orderData.passengers, orderData.key, value.verifyCode, orderData.awaitTime)
+        OrderTask.confirmOrderQueue(orderData.train, orderData.passengers, orderData.key, orderData.token, orderData.seatCode, value.verifyCode, orderData.awaitTime, orderData.chooseSeats)
       }
     },
+
+    // 登录成功
+    loginSuccess (data, vmLoginModal) {
+      vmLoginModal = vmLoginModal || this.$refs.loginModal
+
+      const loginInfo = {
+        loginName: data.loginName,
+        userName: vmLoginModal.userName,
+        password: vmLoginModal.password,
+        rememberme: vmLoginModal.rememberme,
+        autoLogin: vmLoginModal.autoLogin
+      }
+
+      this.loginName = data.loginName
+      this.$store.dispatch('setLoginModel', loginInfo)
+      this.getPassengers()
+    },
+
     // 关于
     openAbout () {
       this.showAbout = true
@@ -195,6 +204,7 @@ export default {
       await this.$api.account.loginOff()
       // 清除登录信息
       this.loginName = ''
+      this.passengers = []
       this.$eventBus.$emit('loginOff')
     },
     // 添加任务

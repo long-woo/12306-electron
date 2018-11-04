@@ -8,7 +8,7 @@ const urls = {
   login: '/passport/web/login', // POST
   loginAuthuam: '/passport/web/auth/uamtk', // POST
   loginAuthClient: '/otn/uamauthclient', // POST
-  chkeckIsLogin: '/otn/login/checkUser', // POST
+  checkIsLogin: '/otn/login/checkUser', // POST
   logOff: '/otn/login/loginOut', // GET
   getStationName: '/otn/resources/js/framework/station_name.js', // GET
   getTicket: '/otn/', // GET
@@ -231,7 +231,7 @@ const getPassengers = async (name, pageIndex, pageCount) => {
 /**
  * 检查是否登录
  */
-const chkeckIsLogin = async () => {
+const checkIsLogin = async () => {
   const loginResult = await common.loginAuth()
 
   return loginResult
@@ -540,7 +540,7 @@ export default {
   login,
   loginOff,
   getPassengers,
-  chkeckIsLogin,
+  checkIsLogin,
   autoSubmitOrder,
   getOrderQueueInfoAsync,
   confirmOrderQueueAsync,

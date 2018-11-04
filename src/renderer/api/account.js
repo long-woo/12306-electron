@@ -8,7 +8,7 @@ class Account {
   /**
    * 检查是否登录
    */
-  static chkeckIsLogin () {
+  static checkIsLogin () {
     return this[_loginAuth]()
   }
 
@@ -81,7 +81,7 @@ class Account {
         break
     }
 
-    return new BaseContent(code, {message, code: 400})
+    return new BaseContent({code}, {message, code: 400})
   }
 
   /**
@@ -120,12 +120,15 @@ class Account {
   static async [_loginAuth] () {
     let code = 400
     let message = '请求成功'
+    let data = {
+      code: -1 // 用于扫码登录时，做判断
+    }
     let res = await axios.post(config.urls.loginAuthuam, {appid: 'otn'})
 
     if (res.result_code !== 0) {
       message = res.result_message
 
-      return new BaseContent(null, {message, code})
+      return new BaseContent(data, {message, code})
     }
 
     let loginTicket = res.newapptk
@@ -135,16 +138,16 @@ class Account {
     if (res.result_code !== 0) {
       message = res.result_message
 
-      return new BaseContent(null, {message, code})
+      return new BaseContent(data, {message, code})
     }
 
     code = 200
     message = '登录成功'
+    data.code = 2
+    data.ticket = res.apptk
+    data.loginName = res.username
 
-    return new BaseContent({
-      ticket: res.apptk,
-      loginName: res.username
-    }, {message, code})
+    return new BaseContent(data, {message, code})
   }
 }
 

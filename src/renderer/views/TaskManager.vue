@@ -70,9 +70,6 @@ export default {
   margin-top: -3rem;
 }
 
-.task-manager-status {
-}
-
 .task-manager-status .task-manager-seat {
   color: rgba(23, 162, 184, 0.2);
   font-size: 5rem;

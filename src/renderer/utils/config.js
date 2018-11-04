@@ -7,7 +7,7 @@ const urls = {
   login: '/passport/web/login', // POST
   loginAuthuam: '/passport/web/auth/uamtk', // POST
   loginAuthClient: '/otn/uamauthclient', // POST
-  chkeckIsLogin: '/otn/login/checkUser', // POST
+  checkIsLogin: '/otn/login/checkUser', // POST
   logOff: '/otn/login/loginOut', // GET
   loginQRCode: '/passport/web/create-qr64', // POST
   checkLoginQRCode: '/passport/web/checkqr', // POST
