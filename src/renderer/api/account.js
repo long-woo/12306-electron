@@ -1,5 +1,5 @@
-import axios from '../utils/http'
-import config from '../utils/config'
+import axios from './http'
+import config from './config'
 import BaseContent from './base'
 
 const _loginAuth = Symbol('_loginAuth')

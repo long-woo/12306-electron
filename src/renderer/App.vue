@@ -73,13 +73,12 @@ export default {
 
 html,body {
   height: 100%;
+  -webkit-app-region: drag;
 }
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Microsoft YaHei";
-  -webkit-app-region: drag;
   overflow: hidden;
-  height: 100%;
   position: relative;
 }
 
@@ -88,11 +87,13 @@ a,
 button,
 tr,
 thead,
+p,
+span,
 .checkbox,
 .img-captcha,
 .btn,
-.datepicker-overlay,
-.btn-task-del {
+.swal-icon,
+.swal-title {
   -webkit-app-region: no-drag;
 }
 

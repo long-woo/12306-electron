@@ -1,5 +1,5 @@
-import axios from '../utils/http'
-import config from '../utils/config'
+import axios from './http'
+import config from './config'
 import BaseContent from './base'
 
 class Order {
@@ -30,11 +30,9 @@ class Order {
     const res = await axios.post(config.urls.getSubmitOrderInfo)
     // token
     const rgxToken = res.match(/globalRepeatSubmitToken\s+=\s+'(.+)';/) || []
-    console.log(rgxToken)
     const orderToken = rgxToken.length ? rgxToken[1] : ''
     // keyischange 'key_check_isChange':'A9B10220CE8ABC25EFB68C1CADA21FA79F07219C68157AB466B000C7'
     const rgxKey = res.match(/'key_check_isChange':'(.+)','leftDetails':/) || []
-    console.log(rgxKey)
     const orderKey = rgxKey.length ? rgxKey[1] : ''
 
     return new BaseContent({orderToken, orderKey})

@@ -296,7 +296,8 @@ class OrderTask {
       train_date: queryInfo.trainDate,
       back_train_date: `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1)}-${currentDate.getDate()}`,
       query_from_station_name: queryInfo.fromCityName,
-      query_to_station_name: queryInfo.toCityName
+      query_to_station_name: queryInfo.toCityName,
+      ticketType: queryInfo.ticketType
     }
 
     return Vue.api.order.submitOrder(formData)
@@ -601,7 +602,8 @@ class OrderTask {
       query_from_station_name: queryInfo.fromCityName,
       query_to_station_name: queryInfo.toCityName,
       passengerTicketStr: passengers.passengerTickets.replace(/(seatcode)/gi, seatCode),
-      oldPassengerStr: passengers.oldPassengers
+      oldPassengerStr: passengers.oldPassengers,
+      ticketType: queryInfo.ticketType
     }
 
     return Vue.api.order.autoSubmitOrder(orderData)
@@ -627,6 +629,7 @@ class OrderTask {
       fromStationTelecode: train.fromCityCode,
       toStationTelecode: train.toCityCode,
       leftTicket: train.ypInfo
+      // ticketType: queryInfo.ticketType
     }
 
     return Vue.api.order.getOrderQueueInfoAsync(queueData)

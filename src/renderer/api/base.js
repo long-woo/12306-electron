@@ -1,5 +1,5 @@
-import axios from '../utils/http'
-import config from '../utils/config'
+import axios from './http'
+import config from './config'
 
 const _getSeatTypeCode = Symbol('_getSeatTypeCode')
 const _getSeatTypes = Symbol('_getSeatTypes')
