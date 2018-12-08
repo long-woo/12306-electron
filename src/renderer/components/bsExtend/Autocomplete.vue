@@ -32,6 +32,14 @@ export default {
     },
     filterText: Array
   },
+  // computed: {
+  //   listeners () {
+  //     return {
+  //       ...this.$listeners,
+
+  //     }
+  //   }
+  // },
   watch: {
     value (newVal) {
       this.selectData = newVal

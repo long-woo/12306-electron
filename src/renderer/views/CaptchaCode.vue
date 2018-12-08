@@ -2,7 +2,7 @@
   <b-modal id="captchCodeModal" :title="title" :no-close-on-backdrop="true" @change="change">
     <div class="text-center img-captcha">
       <canvas id="cvCaptchaCode" width="293px" height="190px" @click="selectCode"></canvas>
-      <img :src="require('@/assets/icon_like.png')" v-for="(item, index) in imgCaptchaCode" :key="index" :style="{left: `${item.X}px`, top: `${item.Y}px`}" @click="cancelSelecte(index)" />
+      <img src="../assets/icon_like.png" v-for="(item, index) in imgCaptchaCode" :key="index" :style="{left: `${item.X}px`, top: `${item.Y}px`}" @click="cancelSelecte(index)" />
     </div>
     <b-button slot="modal-footer" variant="success" class="waves-effect" @click="getCaptchaCode">换一张？</b-button>
     <b-button slot="modal-footer" variant="secondary" class="waves-effect" @click="cancel" v-show="type === 'login'">返回</b-button>
@@ -51,13 +51,13 @@ export default {
   methods: {
     // 获取验证码
     async getCaptchaCode () {
-      const res = await this.$api.getCaptchaCode(this.type)
+      const {data} = await this.$api.base.getCaptchaCode(this.type)
 
-      if (!res) return
+      if (!data) return
 
       this.captchaCode = []
       this.imgCaptchaCode = []
-      this.drawImage(res, 0, 0)
+      this.drawImage(data, 0, 0)
     },
     change (state) {
       if (state) {
@@ -114,13 +114,13 @@ export default {
 
       verifyCode = verifyCode.replace(/(-)/gi, ',')
 
-      const {code, message} = await this.$api.validCaptchaCode(verifyCode, this.type)
+      const {data, message} = await this.$api.base.validCaptchaCode(verifyCode, this.type)
       const validResult = {
-        result: code === 1,
+        result: data,
         verifyCode
       }
 
-      if (!validResult.result) {
+      if (!data) {
         this.$alert(message)
         this.getCaptchaCode()
       } else {

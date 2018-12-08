@@ -56,8 +56,7 @@ export default {
   methods: {
     // 获取订单列表
     async getMyOrder () {
-      const res = await this.$api.getMyOrder()
-      const data = res.data || []
+      const {data} = await this.$api.order.getMyOrder()
 
       this.orderData = data
       this.$store.dispatch('setOrderCount', data.length)

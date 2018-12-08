@@ -2,14 +2,15 @@
 
 > 使用electron-vue构建12306跨平台（Mac、Windows、Linux）客户端
 
-[![Build Status-(trvis)](https://travis-ci.org/long-woo/12306-electron.svg?branch=dev)](https://travis-ci.org/woo-long/12306-electron)
-[![Build status-(appveyor)](https://ci.appveyor.com/api/projects/status/iosiwiwmruul7wr8/branch/dev?svg=true)](https://ci.appveyor.com/project/Woo-Long/12306-electron)
+[![Build Status-(trvis)](https://travis-ci.org/long-woo/12306-electron.svg?branch=dev)](https://travis-ci.org/long-woo/12306-electron)
+[![Build status-(appveyor)](https://ci.appveyor.com/api/projects/status/iosiwiwmruul7wr8/branch/dev?svg=true)](https://ci.appveyor.com/project/long-woo/12306-electron)
+[![Github All Releases](https://img.shields.io/github/downloads/long-woo/12306-electron/total.svg)](https://github.com/long-woo/12306-electron/releases)
 
 ![程序效果（Mac）](https://raw.githubusercontent.com/woo-long/12306-electron/dev/app_snapshot.png)
 
 ## 下载
 
-[12306-electron](https://github.com/woo-long/12306-electron/releases)
+[12306-electron](https://github.com/long-woo/12306-electron/releases)
 
 ## Build Setup
 
@@ -31,10 +32,6 @@ npm run lint
 
 ---
 
-This project was generated with [electron-vue](https://github.com/SimulatedGREG/electron-vue)@[a01d4d6](https://github.com/SimulatedGREG/electron-vue/tree/a01d4d68edff32c432273320f7df716234f56146) using [vue-cli](https://github.com/vuejs/vue-cli). Documentation about the original structure can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/index.html).
-
----
-
 ## 感谢
 
 - [vue](https://github.com/vuejs/vue)
@@ -44,4 +41,3 @@ This project was generated with [electron-vue](https://github.com/SimulatedGREG/
 - [node-waves](https://github.com/fians/Waves)
 - [nprogress](https://github.com/rstacruz/nprogress)
 - [sweetalert](https://github.com/t4t5/sweetalert)
-- [vue-datepicker](https://github.com/hilongjw/vue-datepicker)

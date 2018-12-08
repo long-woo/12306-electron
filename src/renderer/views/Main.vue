@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="h-100">
     <header class="navbar-dark fixed-top">
       <div class="navbar-nav-scroll">
         <b-nav class="navbar-nav flex-row justify-content-center text-center bg-nav-hue">
@@ -7,10 +7,7 @@
             <i class="iconfont" :class="`icon-${nav.icon}`"></i>
             <p>
               {{nav.text}}
-              <b-badge class="badge-count" pill variant="danger" v-if="index === 1 && $store.getters.taskData.length">
-                {{$store.getters.taskData.length}}
-              </b-badge>
-              <b-badge class="badge-count" pill variant="danger" v-else-if="index === 2 && $store.getters.orderCount">
+              <b-badge class="badge-count" pill variant="danger" v-if="index === 2 && $store.getters.orderCount">
                 {{$store.getters.orderCount}}
               </b-badge>
             </p>
@@ -20,7 +17,7 @@
     </header>
     <main class="container-fluid">
       <transition appear enter-active-class="animated zoomInDown">
-        <router-view ref="views"></router-view>
+        <router-view />
       </transition>
     </main>
     <footer class="fixed-bottom border border-info border-left-0 border-right-0 border-bottom-0 bg-white">
@@ -33,7 +30,13 @@
           </div>
           <a class="text-info waves-effect" href="javascript:;" v-b-modal.loginModal v-else>
             <i class="iconfont icon-user"></i>
-            <span>未登录</span>
+            <span>登录</span>
+          </a>
+        </div>
+        <div class="text-center" v-if="showAddTask">
+          <a class="btn-add-task waves-effect" href="javascript:;" @click="addTask">
+            <i class="iconfont" :class="buttonIcon"></i>
+            <p>{{buttonText}}</p>
           </a>
         </div>
         <div class="p-2">
@@ -44,19 +47,21 @@
         </div>
       </div>
     </footer>
-    <login ref="loginModal"></login>
-    <captcha-code :type="captchaCodeType" @validComplete="validComplete"></captcha-code>
+    <task-panel :showPanel="showTaskPanel" :passengers="passengers" @addTaskSuccess="addTask" />
+    <login ref="loginModal" @loginSuccess="loginSuccess"/>
+    <captcha-code :type="captchaCodeType" @validComplete="validComplete" />
     <about :show.sync="showAbout" />
-    <!-- <audio id="audioEgg" :src="audioEggUrl" preload="auto" loop style="display: none;" hidden="true"></audio> -->
   </div>
 </template>
 
 <script>
-import utils from '../scripts/utils'
+import utils from '../utils/utils'
+import OrderTask from '../utils/task'
 
 export default {
   name: 'Main',
   components: {
+    TaskPanel: () => import('./TaskPanel'),
     Login: () => import('./Login'),
     CaptchaCode: () => import('./CaptchaCode'),
     About: () => import('./About')
@@ -68,16 +73,40 @@ export default {
         { text: '任务管理', active: false, activeClass: '', icon: 'task-manager', to: '/taskmanager' },
         { text: '我的订单', active: false, activeClass: '', icon: 'order-manager', to: '/myorder' }
       ],
+      showTaskPanel: false,
       captchaCodeType: 'login',
       loginName: '',
       showAbout: false,
-      audioEggUrl: ''
+      buttonIcon: 'icon-add-task',
+      buttonText: '添加任务',
+      showAddTask: true,
+      passengers: []
+    }
+  },
+  watch: {
+    '$route' (to, from) {
+      const isShow = to.name === 'NewTask'
+
+      if (!isShow) this.showTaskPanel = false
+
+      this.showAddTask = isShow
+    },
+
+    showTaskPanel (value) {
+      if (value) {
+        this.buttonIcon = 'icon-close'
+        this.buttonText = '关闭'
+        return
+      }
+
+      this.buttonIcon = 'icon-add-task'
+      this.buttonText = '添加任务'
     }
   },
   mounted () {
     // utils.speech.textToSpeech('Hello！欢迎使用1|2|3|0|6-Electron，祝您购票成功')
 
-    this.chkeckIsLogin()
+    this.checkIsLogin()
     this.$eventBus.$on('openDialog', (dialog) => {
       this.captchaCodeType = dialog === 'captchCodeModal' ? 'order' : 'login'
       this.$root.$emit('bv::show::modal', dialog)
@@ -96,22 +125,24 @@ export default {
       })
     },
     // 获取乘客
-    getPassengers () {
-      const $newTask = this.$refs.views.$refs
+    async getPassengers () {
+      if (!this.$store.getters.loginModel) return
 
-      if ($newTask.taskButton) {
-        $newTask.taskButton.getPassengers()
-      }
+      const { data } = await this.$api.account.getPassengers('', 1, 999)
+
+      if (!data.length) return
+
+      this.passengers = data
     },
     // 检查是否已经登录
-    async chkeckIsLogin () {
-      const {code, loginName} = await this.$api.chkeckIsLogin()
+    async checkIsLogin () {
+      const {code, data} = await this.$api.account.checkIsLogin()
 
-      if (code !== 1) return
+      if (code !== 200) return
 
-      this.loginName = loginName
+      this.loginName = data.loginName
 
-      const loginInfo = utils.getLoginModel(loginName)
+      const loginInfo = utils.getLoginModel(data.loginName)
 
       if (!loginInfo.length) return
       this.$store.dispatch('setLoginModel', loginInfo[0])
@@ -121,67 +152,74 @@ export default {
     async validComplete (value) {
       if (value.result) {
         if (this.captchaCodeType === 'login') {
-          const login = this.$refs.loginModal
-          const loginData = {
-            username: login.userName,
-            password: login.password
+          const vmLoginModal = this.$refs.loginModal
+          const formData = {
+            username: vmLoginModal.userName,
+            password: vmLoginModal.password
           }
-          const res = await this.$api.login(loginData)
+          const {code, data, message} = await this.$api.account.login(formData)
 
-          if (res.code !== 1) {
-            this.$alert(res.message)
+          if (code !== 200) {
+            this.$alert(message)
             this.$root.$emit('bv::show::modal', 'loginModal')
             return
           }
 
-          const loginInfo = {
-            loginName: res.loginName,
-            userName: login.userName,
-            password: login.password,
-            rememberme: login.rememberme,
-            autoLogin: login.autoLogin
-          }
-
-          this.loginName = res.loginName
-          this.$store.dispatch('setLoginModel', loginInfo)
-          this.getPassengers()
-        } else {
-          // 提交订单
-          const orderData = this.$store.getters.confirmOrderData
-
-          // utils.task.confirmOrderQueueAsync(orderData.train, orderData.seatCode, orderData.passengers, orderData.key, value.verifyCode, orderData.index, orderData.awaitTime)
-          utils.task.confirmOrderQueue(orderData.train, orderData.passengers, orderData.key, orderData.token, orderData.seatCode, value.verifyCode, orderData.index, orderData.awaitTime)
+          this.loginSuccess(data, vmLoginModal)
+          return
         }
+
+        // 提交订单
+        const orderData = this.$store.getters.confirmOrderData
+
+        // utils.task.confirmOrderQueueAsync(orderData.train, orderData.seatCode, orderData.passengers, orderData.key, value.verifyCode, orderData.awaitTime)
+        OrderTask.confirmOrderQueue(orderData.train, orderData.passengers, orderData.key, orderData.token, orderData.seatCode, value.verifyCode, orderData.awaitTime, orderData.chooseSeats)
       }
     },
+
+    // 登录成功
+    loginSuccess (data, vmLoginModal) {
+      vmLoginModal = vmLoginModal || this.$refs.loginModal
+
+      const loginInfo = {
+        loginName: data.loginName,
+        userName: vmLoginModal.userName,
+        password: vmLoginModal.password,
+        rememberme: vmLoginModal.rememberme,
+        autoLogin: vmLoginModal.autoLogin
+      }
+
+      this.loginName = data.loginName
+      this.$store.dispatch('setLoginModel', loginInfo)
+      this.getPassengers()
+    },
+
     // 关于
     openAbout () {
       this.showAbout = true
     },
     // 退出登录
     async logOff () {
-      await this.$api.loginOff()
+      await this.$api.account.loginOff()
       // 清除登录信息
       this.loginName = ''
+      this.passengers = []
       this.$eventBus.$emit('loginOff')
+    },
+    // 添加任务
+    addTask () {
+      this.showTaskPanel = !this.showTaskPanel
     }
   }
 }
 </script>
 
 <style scoped>
-.bg-nav-hue {
-  background: linear-gradient(to top right, #563D7C, #17A2B8, #41B883);
-  background: -webkit-linear-gradient(left bottom, #563D7C, #17A2B8, #41B883);
-  animation: ani-hue 60s infinite linear;
-  -webkit-animation: ani-hue 60s infinite linear;
-}
-
 main {
   position: absolute;
   overflow: auto;
   top: 5.5rem;
-  bottom: 2.8rem;
+  bottom: 2.5rem;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -202,5 +240,37 @@ main {
   position: absolute;
   top: 1rem;
   right: 0;
+}
+
+.btn-add-task {
+  background-color: var(--cyan);
+  box-shadow: 0 0 0.5rem var(--cyan);
+  color: var(--white);
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 4.5rem;
+  height: 4.5rem;
+  margin: 0 auto;
+  border-radius: 50%;
+  text-decoration: none;
+}
+
+.btn-add-task:active {
+  width: 4rem;
+  height: 4rem;
+}
+
+.btn-add-task:hover {
+  background-color: rgba(23, 162, 184, 0.8);
+}
+
+.btn-add-task i {
+  font-size: 1.8rem;
+}
+
+.btn-add-task p {
+  margin-top: -.5rem;
 }
 </style>

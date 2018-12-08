@@ -1,5 +1,5 @@
-import axios from '../utils/http'
-import config from '../utils/config'
+import axios from './http'
+import config from './config'
 import BaseContent from './base'
 
 class Order {
@@ -8,7 +8,7 @@ class Order {
    * @param {*} formData 参数 (secretStr、train_date、back_train_date、tour_flag、purpose_codes、query_from_station_name、query_to_station_name)
    */
   static async submitOrder (formData) {
-    formData.purpose_codes = 'ADULT'
+    formData.purpose_codes = formData.ticketType || 'ADULT'
     formData.tour_flag = 'dc'
 
     const {data, messages} = await axios.post(config.urls.submitOrder, formData)
@@ -30,11 +30,9 @@ class Order {
     const res = await axios.post(config.urls.getSubmitOrderInfo)
     // token
     const rgxToken = res.match(/globalRepeatSubmitToken\s+=\s+'(.+)';/) || []
-    console.log(rgxToken)
     const orderToken = rgxToken.length ? rgxToken[1] : ''
     // keyischange 'key_check_isChange':'A9B10220CE8ABC25EFB68C1CADA21FA79F07219C68157AB466B000C7'
     const rgxKey = res.match(/'key_check_isChange':'(.+)','leftDetails':/) || []
-    console.log(rgxKey)
     const orderKey = rgxKey.length ? rgxKey[1] : ''
 
     return new BaseContent({orderToken, orderKey})
@@ -108,7 +106,7 @@ class Order {
     if (!data) {
       message = '没有找到待支付的订单'
 
-      return new BaseContent(null, {message, code})
+      return new BaseContent([], {message, code})
     }
 
     const order = data.orderDBList || []
@@ -116,19 +114,19 @@ class Order {
     if (messages.length) {
       message = messages.toString()
 
-      return new BaseContent(null, {message, code})
+      return new BaseContent([], {message, code})
     }
 
     if (data.to_page === 'cache') {
       message = '您的订单还在排队中'
 
-      return new BaseContent(null, {message, code})
+      return new BaseContent([], {message, code})
     }
 
     if (!order.length) {
       message = '没有找到待支付的订单'
 
-      return new BaseContent(null, {message, code})
+      return new BaseContent([], {message, code})
     }
 
     return new BaseContent(order)
@@ -202,7 +200,7 @@ class Order {
    */
   static async autoSubmitOrder (formData) {
     formData.tour_flag = 'dc'
-    formData.purpose_codes = 'ADULT'
+    formData.purpose_codes = formData.ticketType || 'ADULT'
     formData.cancel_flag = 2
     formData.bed_level_order_num = '000000000000000000000000000000'
 
@@ -241,7 +239,7 @@ class Order {
    * @param {*} formData (train_date,train_no,stationTrainCode,seatType,fromStationTelecode,toStationTelecode,leftTicket)
    */
   static async getOrderQueueInfoAsync (formData) {
-    formData.purpose_codes = 'ADULT'
+    formData.purpose_codes = formData.ticketType || 'ADULT'
     formData._json_att = ''
 
     let code = 400
@@ -281,7 +279,7 @@ class Order {
  * @param {*} formData (passengerTicketStr,oldPassengerStr,randCode,key_check_isChange,leftTicketStr,train_location,choose_seats,seatDetailType)
  */
   static async confirmOrderQueueAsync (formData) {
-    formData.purpose_codes = 'ADULT'
+    formData.purpose_codes = formData.ticketType || 'ADULT'
     formData._json_att = ''
 
     let code = 200

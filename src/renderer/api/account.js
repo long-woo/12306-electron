@@ -1,5 +1,5 @@
-import axios from '../utils/http'
-import config from '../utils/config'
+import axios from './http'
+import config from './config'
 import BaseContent from './base'
 
 const _loginAuth = Symbol('_loginAuth')
@@ -8,8 +8,28 @@ class Account {
   /**
    * 检查是否登录
    */
-  static chkeckIsLogin () {
+  static checkIsLogin () {
     return this[_loginAuth]()
+  }
+
+  /**
+   * 获取登录二维码
+   */
+  static async getLoginQRCode () {
+    let message = '使用手机铁路12306扫一扫'
+    const res = await axios.post(config.urls.loginQRCode, {appid: 'otn'})
+    const {image: qrCode, uuid} = res
+    const data = {
+      qrCode: `data:image/jpg;base64,${qrCode}`,
+      uuid
+    }
+
+    if (res.result_code !== '0') {
+      message = res.result_message
+      return new BaseContent(null, {message, code: 400})
+    }
+
+    return new BaseContent(data, {message})
   }
 
   /**
@@ -20,15 +40,48 @@ class Account {
     formData.appid = 'otn'
 
     let message = ''
-    let res = await axios.post(config.urls.login, formData)
+    const res = await axios.post(config.urls.login, formData)
 
     if (res.result_code !== 0) {
       message = res.result_message
 
-      return new BaseContent(null, {message})
+      return new BaseContent(null, {message, code: 400})
     }
 
     return this[_loginAuth]()
+  }
+
+  /**
+   * 检查登录二维码
+   * @param {*} formData
+   * uuid
+   */
+  static async checkLoginQRCode (formData) {
+    formData.appid = 'otn'
+
+    const res = await axios.post(config.urls.checkLoginQRCode, formData)
+    const code = parseInt(res.result_code) // 1.扫描成功，等待手机确认、2.扫码登录成功、3.二维码已过期
+    let message = '使用手机铁路12306扫一扫'
+
+    if (code === 2) {
+      message = res.result_message
+
+      // return new BaseContent(res.uamtk, {message})
+      return this[_loginAuth]()
+    }
+
+    switch (code) {
+      case 0:
+        break
+      case 1:
+        message = '扫描成功，等待手机确认'
+        break
+      default:
+        message = res.result_message
+        break
+    }
+
+    return new BaseContent({code}, {message, code: 400})
   }
 
   /**
@@ -64,15 +117,18 @@ class Account {
   /**
    * 登录授权
    */
-  async [_loginAuth] () {
+  static async [_loginAuth] () {
     let code = 400
     let message = '请求成功'
+    let data = {
+      code: -1 // 用于扫码登录时，做判断
+    }
     let res = await axios.post(config.urls.loginAuthuam, {appid: 'otn'})
 
     if (res.result_code !== 0) {
       message = res.result_message
 
-      return new BaseContent(null, {message, code})
+      return new BaseContent(data, {message, code})
     }
 
     let loginTicket = res.newapptk
@@ -82,16 +138,16 @@ class Account {
     if (res.result_code !== 0) {
       message = res.result_message
 
-      return new BaseContent(null, {message, code})
+      return new BaseContent(data, {message, code})
     }
 
     code = 200
     message = '登录成功'
+    data.code = 2
+    data.ticket = res.apptk
+    data.loginName = res.username
 
-    return new BaseContent({
-      ticket: res.apptk,
-      loginName: res.username
-    }, {message, code})
+    return new BaseContent(data, {message, code})
   }
 }
 

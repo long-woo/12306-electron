@@ -6,7 +6,7 @@
 
 <style scoped>
 .bs-alert {
-  position: absolute;
+  position: fixed;
   top: 0;
   right: 0;
   left: 0;
@@ -28,9 +28,11 @@ export default {
     }
   },
   watch: {
-    show (value) {
-      if (!value) Object.assign(this.$data, this.$options.data())
-    }
+    // show (value) {
+    //   if (!value) {
+    //     Object.assign(this.$data, this.$options.data())
+    //   }
+    // }
   }
 }
 </script>

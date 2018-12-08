@@ -82,6 +82,7 @@ function createWindow () {
     frame: false,
     show: false,
     webPreferences: {
+      nodeIntegration: process.env.NODE_ENV === 'development',
       webSecurity: false
     }
   })
@@ -104,7 +105,7 @@ function createWindow () {
   })
 
   // 设置菜单
-  if (!menusTemplate.length) return
+  if (!menusTemplate.length || process.env.NODE_ENV === 'development') return
 
   const menu = Menu.buildFromTemplate(menusTemplate)
   Menu.setApplicationMenu(menu)
@@ -131,7 +132,6 @@ const isSecondInstance = app.makeSingleInstance((command, workingDirectory) => {
 
 if (isSecondInstance) {
   app.quit()
-  // return
 }
 
 app.on('before-quit', () => {

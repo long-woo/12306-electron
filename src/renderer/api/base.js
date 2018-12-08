@@ -1,5 +1,5 @@
-import axios from '../utils/http'
-import config from '../utils/config'
+import axios from './http'
+import config from './config'
 
 const _getSeatTypeCode = Symbol('_getSeatTypeCode')
 const _getSeatTypes = Symbol('_getSeatTypes')
@@ -49,7 +49,7 @@ class BaseContent {
 
   /**
    * 查询车次
-   * @param {*} formData (queryUrl、trainDate、fromCity、toCity)
+   * @param {*} formData (queryUrl、trainDate、fromCity、toCity、ticketType？'ADULT')
    */
   static async getTicket (formData) {
     const {data} = await axios.get(`${config.urls.getTicket}${formData.queryUrl}`, {
@@ -57,7 +57,7 @@ class BaseContent {
         'leftTicketDTO.train_date': formData.trainDate,
         'leftTicketDTO.from_station': formData.fromCity,
         'leftTicketDTO.to_station': formData.toCity,
-        'purpose_codes': 'ADULT'
+        'purpose_codes': formData.ticketType || 'ADULT'
       }
     })
     let ticketData = []
@@ -70,12 +70,12 @@ class BaseContent {
     result.map((val, inx) => {
       const arrTrain = val.split('|')
       const trainCode = arrTrain[3]
+      const isBuy = arrTrain[11] === 'Y'
 
       ticketData.push({
-        _rowVariant: arrTrain[11] !== 'Y' ? 'danger' : '',
+        _rowVariant: !isBuy ? 'danger' : '',
         tranType: trainCode.substr(0, 1),
         trainNo: arrTrain[2],
-        trainCode: trainCode,
         fromCityCode: arrTrain[6],
         fromCityName: stationNames[arrTrain[6]],
         toCityCode: arrTrain[7],
@@ -83,13 +83,14 @@ class BaseContent {
         departureTime: arrTrain[8],
         arrivalTime: arrTrain[9],
         useTime: arrTrain[10],
-        isBuy: arrTrain[11] === 'Y',
         ypInfo: arrTrain[12],
         locationCode: arrTrain[15],
         seatTypeCodes: this[_getSeatTypeCode](arrTrain[35]),
         seatTypes: this[_getSeatTypes](arrTrain),
         secret: arrTrain[0],
-        remark: arrTrain[1]
+        remark: arrTrain[1],
+        isBuy,
+        trainCode
       })
     })
 
@@ -160,8 +161,10 @@ class BaseContent {
    */
   static getSeatTypeInfo (seatTypeCode, seatTypes) {
     switch (seatTypeCode) {
-      case 'Q':
-        return seatTypes ? `观光座（${seatTypes[20]}）` : '观光座'
+      case 'A':
+        return seatTypes ? `高级动卧（${seatTypes[20]}）` : '高级动卧'
+      case 'F':
+        return seatTypes ? `动卧（${seatTypes[33]}）` : '动卧'
       case '9':
         return seatTypes ? `商务座（${seatTypes[32]}）` : '商务座'
       case 'P':
@@ -193,17 +196,18 @@ class BaseContent {
    * 存在两个“1”时，第一个“1”改成“W”
    * @param {*} seatTypeCodes
    */
-  [_getSeatTypeCode] (seatTypeCodes) {
-    const seatCodes = seatTypeCodes.replace(/(1)/, 'W').split('')
+  static [_getSeatTypeCode] (seatTypeCodes) {
+    const arr = seatTypeCodes.match(/(1|O)/gi) || []
+    const seatCodes = arr.length === 2 ? seatTypeCodes.replace(/(1|O)/i, 'W') : seatTypeCodes
 
-    return seatCodes
+    return seatCodes.split('')
   }
 
   /**
    * 获取座位类型
    * @param {*} trains
    */
-  [_getSeatTypes] (trains) {
+  static [_getSeatTypes] (trains) {
     const seatCodes = this[_getSeatTypeCode](trains[35])
     let arrSeatInfo = []
 
@@ -216,7 +220,7 @@ class BaseContent {
     return arrSeatInfo
   }
 
-  [_baseContent] (data, {message = '请求成功', code = 200} = {}) {
+  static [_baseContent] (data, {message = '请求成功', code = 200} = {}) {
     return new BaseContent(data, {message, code})
   }
 }

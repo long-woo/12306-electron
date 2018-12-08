@@ -1,12 +1,17 @@
 const urls = {
   initPage: '/otn/leftTicket/init', // GET
+
   getCaptchaCode: `/passport/captcha/captcha-image?login_site=E&module=login&rand=sjrand&${Math.random()}`, // GET
   checkCaptchaCode: '/passport/captcha/captcha-check', // POST
+
   login: '/passport/web/login', // POST
   loginAuthuam: '/passport/web/auth/uamtk', // POST
   loginAuthClient: '/otn/uamauthclient', // POST
-  chkeckIsLogin: '/otn/login/checkUser', // POST
+  checkIsLogin: '/otn/login/checkUser', // POST
   logOff: '/otn/login/loginOut', // GET
+  loginQRCode: '/passport/web/create-qr64', // POST
+  checkLoginQRCode: '/passport/web/checkqr', // POST
+
   getStationName: '/otn/resources/js/framework/station_name.js', // GET
   getTicket: '/otn/', // GET
   getPassengers: '/otn/confirmPassenger/getPassengerDTOs', // POST

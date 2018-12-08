@@ -24,14 +24,11 @@ import 'animate.css/animate.css'
 import bsComponents from './components'
 
 import api from './api'
-import eventBus from './scripts/eventBus'
+import eventBus from './utils/eventBus'
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 
 Vue.config.productionTip = false
-
-Vue.use(BootstrapVue)
-Vue.use(bsComponents)
 
 Wavas.init()
 
@@ -40,6 +37,9 @@ Vue.nprogress = Vue.prototype.$nprogress = nprogress
 Vue.api = Vue.prototype.$api = api
 Vue.store = store
 Vue.eventBus = Vue.prototype.$eventBus = eventBus
+
+Vue.use(BootstrapVue)
+Vue.use(bsComponents)
 
 /* eslint-disable no-new */
 new Vue({

@@ -1,36 +1,40 @@
 <template>
-  <div class="mt-3">
-    <div class="row" v-for="(item, index) in taskData" :key="index">
-      <div class="col-10 border border-info border-left-0 border-right-0 border-bottom-0 pr-0">
-        <div class="task-header p-2 bg-info text-white row mr-0 d-flex flex-row justify-content-between">
-          <div>
-            <span>{{item.statusText}}</span>
+  <div class="task-manager h-100">
+    <div class="d-flex flex-column h-100" v-if="taskData">
+      <div class="task-manager-header">
+        <div class="row text-center bg-info text-white pt-3 pb-2">
+          <div class="col-sm-5">
+            <h4>{{taskData.currentTrain.fromCityName}}</h4>
+            <p>{{taskData.currentTrain.departureTime}}</p>
           </div>
-          <div>
-            <span>{{item.queryInfo.trainDate}}</span>
+          <div class="col-sm-2">
+            <p>{{taskData.currentTrain.trainCode}}</p>
+            <p>
+              <i class="iconfont icon-long-right-arrow"></i>
+            </p>
+            <p class="task-manager-time">{{taskData.queryInfo.trainDate}}</p>
+          </div>
+          <div class="col-sm-5">
+            <h4>{{taskData.currentTrain.toCityName}}</h4>
+            <p>{{taskData.currentTrain.arrivalTime}}</p>
           </div>
         </div>
-        <div class="task-body border-b-dashed-1 p-2">
-          <span>
-            {{item.passengers.passengerName}}
-          </span>
-        </div>
-        <div class="task-footer p-2 bg-light row mr-0 pl-3">
-          <span>
-            {{item.trains.toString()}}
-          </span>
+        <div class="row text-right bg-info text-white pb-2">
+          <div class="col-sm-12">{{taskData.passengers.passengerName}}</div>
         </div>
       </div>
-      <div class="col-2 bg-danger text-white d-flex align-items-center justify-content-center btn-task-del" @click="removeTask(index)">
-        <span>移除</span>
+      <div class="task-manager-status m-auto">
+        <p class="task-manager-seat">{{taskData.currentTrain.seatText}}</p>
+        <p class="task-status-desc">{{taskData.statusText}}</p>
       </div>
     </div>
-    <div class="alert alert-warning text-center" v-if="!taskData.length">您还没有<strong>添加任务</strong>^~^</div>
+    <div class="alert alert-warning text-center mt-3" v-else>您还没有
+      <strong>添加任务</strong>^~^</div>
   </div>
 </template>
 
 <script>
-import utils from '../scripts/utils'
+import OrderTask from '../utils/task'
 
 export default {
   name: 'TaskManager',
@@ -41,22 +45,37 @@ export default {
   },
   methods: {
     // 移除任务
-    removeTask (index) {
-      utils.task.stop(index)
-      utils.task.stopOrderAwaitFunc()
-      this.$store.dispatch('deleteTaskData', index)
+    removeTask () {
+      OrderTask.stop()
+      OrderTask.stopOrderAwaitFunc()
+      this.$store.dispatch('deleteTaskData')
     }
   }
 }
 </script>
 
 <style scoped>
-.btn-task-del {
-  cursor: pointer;
+.task-manager h4,
+.task-manager p {
+  margin-bottom: 0;
 }
 
-.btn-task-del.bg-danger:hover,
-.btn-task-del.bg-danger:active{
-  background-color: rgba(220, 53, 69, 0.8) !important;
+.task-manager-header .icon-long-right-arrow {
+  font-size: 4.5rem;
+  margin-top: -3.3rem;
+}
+
+.task-manager-time {
+  font-size: 0.75rem;
+  margin-top: -3rem;
+}
+
+.task-manager-status .task-manager-seat {
+  color: rgba(23, 162, 184, 0.2);
+  font-size: 5rem;
+  position: absolute;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0);
+  z-index: -1;
 }
 </style>

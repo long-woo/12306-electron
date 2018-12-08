@@ -22,12 +22,6 @@
     </div>
     <div class="table-responsive">
       <b-table empty-text="没有找到车次^~^" :fields="fields" :items="ticketData" head-variant="default bg-info text-white" inverse striped hover show-empty  ref="tbTrain" @row-clicked="rowClick">
-        <template slot="checkNo" slot-scope="row">
-          <div class="checkbox icheck-info waves-effect">
-            <input type="checkbox" :id="`chk_${row.index}`" v-model="chkTrains" :value="row.item.trainCode" />
-            <label :for="`chk_${row.index}`"></label>
-          </div>
-        </template>
         <template slot="trainCode" slot-scope="row">{{row.value}}</template>
         <template slot="from" slot-scope="row">
           <p class="mb-0">{{row.item.fromCityName}}</p>
@@ -43,13 +37,11 @@
         </template>
       </b-table>
     </div>
-    <task-button ref="taskButton"></task-button>
   </div>
 </template>
 
 <script>
-import TaskButton from './TaskButton'
-import utils from '../scripts/utils'
+import utils from '../utils/utils'
 
 export default {
   name: 'NewTask',
@@ -60,7 +52,6 @@ export default {
       toCity: null,
       // table option
       fields: {
-        checkNo: {label: ' ', class: 'text-center align-middle', thStyle: 'width: 20px;'},
         trainCode: {label: '车次', sortable: true, class: 'align-middle'},
         from: {label: '出发地', class: 'align-middle'},
         to: {label: '目的地', class: 'align-middle'},
@@ -74,7 +65,7 @@ export default {
   },
   computed: {
     trainDate () {
-      return this.$refs.rideDate.date.time
+      return this.$refs.rideDate.date
     }
   },
   async mounted () {
@@ -87,17 +78,24 @@ export default {
     }
 
     // 站名
-    const stations = await this.$api.getStationName()
+    const {data} = await this.$api.base.getStationName()
 
-    this.$store.dispatch('setStationName', stations)
-    this.stationData = stations
+    this.$store.dispatch('setStationName', data)
+    this.stationData = data
 
     if (this.$refs.taskButton) {
       this.$refs.taskButton.getPassengers()
     }
 
+    // 清除选择车次信息
     this.$eventBus.$on('clearChooseTrain', () => {
       this.chkTrains = []
+      this.seatCodes = []
+    })
+
+    // 更新车次数据
+    this.$eventBus.$on('updateTicketData', (data) => {
+      this.ticketData = data
     })
 
     setTimeout(() => {
@@ -109,10 +107,18 @@ export default {
     selectFromCity (city) {
       this.fromCity = city
       this.$refs.toCity.focus()
+
+      if (this.toCity.value) {
+        this.queryTrain()
+      }
     },
     // 选择目的地
     selectToCity (city) {
       this.toCity = city
+
+      if (this.fromCity.value) {
+        this.queryTrain()
+      }
     },
     // 切换地址
     changeCity () {
@@ -144,7 +150,7 @@ export default {
       seatCodes.map((code, index) => {
         if (!code) return
 
-        const text = this.$api.getSeatTypeInfo(code)
+        const text = this.$api.base.getSeatTypeInfo(code)
 
         seatItems.filter((s, i) => {
           if (s.code === code) {
@@ -167,8 +173,14 @@ export default {
     async queryTrain () {
       if (!this.fromCity || !this.toCity || this.fromCity === this.toCity) return
 
-      const trainDate = this.$refs.rideDate.date.time
-      const data = await this.$api.getTicket(this.fromCity.value, this.toCity.value, trainDate)
+      const trainDate = this.$refs.rideDate.date
+      const formData = {
+        queryUrl: this.$store.getters.queryUrl,
+        trainDate,
+        fromCity: this.fromCity.value,
+        toCity: this.toCity.value
+      }
+      const {data} = await this.$api.base.getTicket(formData)
 
       this.chkTrains = []
       this.ticketData = data
@@ -178,10 +190,12 @@ export default {
       // 保存查询车次信息
       const queryInfo = {
         fromCity: this.fromCity,
-        toCity: this.toCity
+        toCity: this.toCity,
+        trainDate
       }
 
       utils.setQueryInfo(queryInfo)
+      this.$store.dispatch('setQueryInfo', queryInfo)
     },
     // 格式化座位信息
     formatSeatType (data) {
@@ -193,9 +207,6 @@ export default {
 
       return seatCount
     }
-  },
-  components: {
-    TaskButton
   }
 }
 </script>

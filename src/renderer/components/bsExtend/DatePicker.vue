@@ -3,8 +3,7 @@
     <b-input-group-prepend>
       <b-button variant="info" class="no-outline waves-effect" :disabled="prevState" @click="changeDate('-')">&lt;</b-button>
     </b-input-group-prepend>
-    <date-picker class="col pl-0 pr-0" :date="date" :option="option" :limit="limit" @change="changeDate">
-    </date-picker>
+    <input ref="dateEl" class="form-control" :value="date" :placeholder="placeholder" />
     <b-input-group-append>
       <b-button variant="info" class="no-outline waves-effect" :disabled="nextState" @click="changeDate('+')">&gt;</b-button>
     </b-input-group-append>
@@ -12,8 +11,78 @@
 </template>
 
 <script>
-import moment from 'moment'
-import datePicker from 'vue-datepicker/vue-datepicker-es6'
+/**
+ * 转date
+ * {*} params date
+ */
+const getDate = (date) => {
+  if (date) {
+    date = typeof date === 'string' ? date.replace(/-|[.]/ig, '/') : date
+
+    return new Date(date)
+  }
+
+  return new Date()
+}
+
+/**
+ * 格式化日期
+ * {*} params date
+ */
+const formatDate = (date) => {
+  date = getDate(date)
+
+  const year = date.getFullYear()
+  let month = date.getMonth() + 1
+  let d = date.getDate().toString()
+
+  month = month.toString().padStart(2, '0')
+  d = d.padStart(2, '0')
+
+  return `${year}-${month}-${d}`
+}
+
+/**
+ * 添加天数
+ * {day} params 天数
+ * {date} params 日期
+ */
+const addDay = (day, date) => {
+  const nowDate = date ? getDate(date).getTime() : getDate().getTime()
+  const newDate = getDate(nowDate + day * 24 * 60 * 60 * 1000)
+
+  return newDate
+}
+
+/**
+ * 减去天数
+ * {day} params 天数
+ * {date} params 日期
+ */
+const subtractDay = (day, date) => {
+  const nowDate = date ? getDate(date).getTime() : getDate().getTime()
+  const newDate = getDate(nowDate - day * 24 * 60 * 60 * 1000)
+
+  return newDate
+}
+
+/**
+ * 当前日期
+ */
+const getNowDate = () => {
+  const nowDate = getDate()
+
+  return formatDate(nowDate)
+}
+
+/**
+ * 最大日期
+ */
+const getMaxDate = (day) => {
+  const maxDate = addDay(day)
+
+  return formatDate(maxDate)
+}
 
 export default {
   name: 'bDatePicker',
@@ -21,35 +90,7 @@ export default {
     return {
       prevState: false,
       nextState: true,
-      date: {
-        time: this.max
-      },
-      option: {
-        type: 'day',
-        SundayFirst: true,
-        week: ['日', '一', '二', '三', '四', '五', '六'],
-        month: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
-        format: this.format,
-        placeholder: this.placeholder,
-        buttons: {
-          ok: '确定',
-          cancel: '取消'
-        },
-        inputStyle: {
-          display: 'block',
-          width: '100%',
-          padding: '0.5rem 0.75rem',
-          fontSize: '1rem',
-          lineHeight: 1.25,
-          color: '#495057',
-          backgroundColor: '#fff',
-          backgroundImage: 'none',
-          backgroundClip: 'padding-box',
-          border: '1px solid rgba(0, 0, 0, 0.15)',
-          transition: 'border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s'
-        },
-        inputClass: this.inputClass
-      }
+      date: this.max
     }
   },
   props: {
@@ -61,70 +102,51 @@ export default {
       type: String,
       default: '乘车日期'
     },
-    inputClass: {
-      type: String,
-      default: 'form-control'
-    },
     min: {
       type: String,
-      default: moment().format('YYYY-MM-DD')
+      default: getNowDate()
     },
     max: {
       type: String,
-      default: moment().add(29, 'd').format('YYYY-MM-DD')
-    },
-    limit: {
-      type: Array,
-      default () {
-        return [
-          {
-            type: 'fromto',
-            from: moment().subtract(1, 'd').format('YYYY-MM-DD'),
-            to: moment().add(30, 'd').format('YYYY-MM-DD')
-          }
-        ]
-      }
+      default: getMaxDate(29)
     }
   },
-  components: {
-    datePicker
+  mounted () {
+    this.initLayDate()
   },
   methods: {
+    // 初始化日期组件
+    initLayDate () {
+      window.laydate.render({
+        elem: this.$refs.dateEl,
+        min: this.min,
+        max: this.max,
+        calendar: true,
+        theme: '#17a2b8',
+        done: (value) => {
+          this.changeDate(getDate(value))
+        }
+      })
+    },
     // 更改乘车日期
     changeDate (date) {
-      const value = moment(this.date.time)
+      const value = this.date
 
       if (date === '-') {
-        date = value.subtract(1, 'd').format('YYYY-MM-DD')
+        date = subtractDay(1, value)
       } else if (date === '+') {
-        date = value.add(1, 'd').format('YYYY-MM-DD')
+        date = addDay(1, value)
       }
 
-      if (moment(date) <= moment(this.min)) {
-        this.prevState = true
-      } else {
-        this.prevState = false
-      }
+      this.prevState = date <= getDate(this.min)
+      this.nextState = date >= getDate(this.max)
 
-      if (moment(date) >= moment(this.max)) {
-        this.nextState = true
-      } else {
-        this.nextState = false
-      }
+      if (date < getDate(this.min) || date > getDate(this.max)) return
 
-      if (moment(date) < moment(this.min) || moment(date) > moment(this.max)) return
-
-      this.date.time = date
+      date = formatDate(date)
+      this.date = date
       this.$emit('change', date)
     }
   }
 }
 </script>
-
-<style scoped>
-  /deep/ .cov-vue-date .cov-date-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  font-size: 1rem;
-  font-weight: normal;
-}
-</style>

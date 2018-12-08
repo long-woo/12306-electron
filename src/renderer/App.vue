@@ -1,6 +1,6 @@
 <template>
-  <div id="app">
-    <router-view></router-view>
+  <div id="app" class="h-100">
+    <router-view />
   </div>
 </template>
 
@@ -27,15 +27,15 @@ export default {
         this.$alert(res, {timeout: 0})
 
         if (res.indexOf('Error') > -1) {
-          this.$electron.shell.openExternal('https://github.com/woo-long/12306-electron/releases')
+          this.$electron.shell.openExternal('https://github.com/long-woo/12306-electron/releases')
         }
       })
     },
     // 检查url是否可用
     async checkTickUrl () {
-      const res = await this.$api.getQueryUrl()
+      const {data} = await this.$api.base.getQueryUrl()
 
-      if (!res) {
+      if (!data) {
         this.$swal('查询车票地址不可用^~^', '请重试', 'warning', {
           buttons: {
             cancel: '取消',
@@ -50,7 +50,7 @@ export default {
         return
       }
 
-      this.$store.dispatch('setQueryUrl', res)
+      this.$store.dispatch('setQueryUrl', data)
     }
   }
 }
@@ -59,7 +59,7 @@ export default {
 <style>
 /* CSS */
 * {
-  transition: all 0.3s ease;
+  transition: all 0.3s ease-in;
 }
 
 ::selection {
@@ -73,13 +73,12 @@ export default {
 
 html,body {
   height: 100%;
+  -webkit-app-region: drag;
 }
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Microsoft YaHei";
-  -webkit-app-region: drag;
   overflow: hidden;
-  height: 100%;
   position: relative;
 }
 
@@ -88,12 +87,18 @@ a,
 button,
 tr,
 thead,
+p,
+span,
 .checkbox,
 .img-captcha,
 .btn,
-.datepicker-overlay,
-.btn-task-del {
+.swal-icon,
+.swal-title {
   -webkit-app-region: no-drag;
+}
+
+.waves-effect {
+  display: inherit;
 }
 
 a:focus {
@@ -114,10 +119,6 @@ button {
 
 label {
   margin-bottom: 0 !important;
-}
-
-#app {
-  height: 100%;
 }
 
 .font-size-14{
@@ -153,13 +154,20 @@ label {
 
 .iconfont {
   display: inline-block !important;
-  transition: all 0.3s ease;
+  transition: all 0.3s ease-in;
+}
+
+.bg-nav-hue {
+  background: linear-gradient(to top right, #563D7C, #41B883);
+  background: -webkit-linear-gradient(left bottom, #563D7C, #41B883);
+  animation: ani-hue 60s infinite linear;
+  -webkit-animation: ani-hue 60s infinite linear;
 }
 
 .rotate-enter-active,
 .rotate-leave-active {
   transition: all 0.3s ease;
-  -webkit-transition: all 0.3s ease;
+  -webkit-transition: all 0.3s ease-in;
 }
 
 .rotate-enter,
@@ -173,12 +181,12 @@ label {
   border-bottom: 0.01rem dashed var(--cyan);
 }
 
-.ani-slide-up {
-  animation: slideUp 0.3s ease forwards;
+.ani-slide-left {
+  animation: slideLeft 0.3s ease-in;
 }
 
-.ani-slide-down {
-  animation: slideDown 0.3s ease forwards;
+.ani-slide-right {
+  animation: slideRight 0.3s ease-out;
 }
 
 .form-control:focus,
@@ -203,23 +211,36 @@ label {
   border-bottom-right-radius: 0 !important;
 }
 
-@keyframes slideUp {
-  from {
-    transform: translateY(100%);
+.tip-info {
+  font-size: .7rem;
+  padding: 0;
+}
+
+@keyframes slideLeft {
+  0% {
+    transform: translateX(100%);
+  }
+
+  50% {
+    transform: translateX(-6%);
   }
   
-  to {
-    transform: translateY(0);
+  100% {
+    transform: translateX(0);
   }
 }
 
-@keyframes slideDown {
-  from {
-    transform: translateY(0);
+@keyframes slideRight {
+  0% {
+    transform: translateX(0);
+  }
+
+  50% {
+    transform: translateX(-6%);
   }
   
-  to {
-    transform: translateY(100%);
+  100% {
+    transform: translateX(100%);
   }
 }
 

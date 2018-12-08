@@ -10,9 +10,9 @@ export default new Router({
       path: '/',
       component: Main,
       children: [
-        {path: '', component: () => import('@/views/NewTask')},
-        {path: 'taskmanager', component: () => import('@/views/TaskManager')},
-        {path: 'myorder', component: () => import('@/views/MyOrder')}
+        {path: '', name: 'NewTask', component: () => import('@/views/NewTask')},
+        {path: 'taskmanager', name: 'TaskManager', component: () => import('@/views/TaskManager')},
+        {path: 'myorder', name: 'MyOrder', component: () => import('@/views/MyOrder')}
       ]
     }
   ]
