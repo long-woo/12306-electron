@@ -22,7 +22,7 @@ const urls = {
   confirmOrderQueueAsync: '/otn/confirmPassenger/confirmSingleForQueueAsys', // POST
 
   submitOrder: '/otn/leftTicket/submitOrderRequest', // POST
-  getSubmitOrderInfo: '/otn/confirmPassenger/initDc', // POST
+  getSubmitOrderToken: '/otn/confirmPassenger/initDc', // POST
   checkOrderInfo: '/otn/confirmPassenger/checkOrderInfo', // POST
   getOrderQueueInfo: '/otn/confirmPassenger/getQueueCount', // POST
   confirmOrderQueue: '/otn/confirmPassenger/confirmSingleForQueue', // POST

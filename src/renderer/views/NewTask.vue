@@ -108,7 +108,7 @@ export default {
       this.fromCity = city
       this.$refs.toCity.focus()
 
-      if (this.toCity.value) {
+      if (this.toCity && this.toCity.value) {
         this.queryTrain()
       }
     },
@@ -116,7 +116,7 @@ export default {
     selectToCity (city) {
       this.toCity = city
 
-      if (this.fromCity.value) {
+      if (this.fromCity && this.fromCity.value) {
         this.queryTrain()
       }
     },

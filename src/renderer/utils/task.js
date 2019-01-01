@@ -61,7 +61,9 @@ class OrderTask {
 
             trainSeats = [...new Set(arrSeat)]
 
-            prev.push(current)
+            if (trainSeats.length) {
+              prev.push(current)
+            }
           }
 
           return prev
@@ -118,7 +120,7 @@ class OrderTask {
    * @param {*} seatText
    */
   static [_setCurrentTrain] (train, seatText) {
-    const {trainCode, fromCityName, toCityName, departureTime, arrivalTime, useTime} = train.trainCode
+    const {trainCode, fromCityName, toCityName, departureTime, arrivalTime, useTime} = train
     const currentTrain = {
       trainCode,
       fromCityName,
@@ -150,6 +152,7 @@ class OrderTask {
       let ticketCount = ticketRemark.match(/（(.+)）/)[1]
 
       ticketCount = Number(ticketCount)
+
       if ('有'.indexOf(ticketCount.toString()) > -1 || (!Number.isNaN(ticketCount) && ticketCount >= passengerCount)) {
         prevValue.push(currentValue)
       }
@@ -183,9 +186,6 @@ class OrderTask {
         // 提交订单
         this[_setStatus](`正在预订【${train.trainCode}】车次的【${seatText}】...`)
         this[_setCurrentTrain](train, seatText)
-        console.log('123')
-        isStop = true
-        if (isStop) return
 
         const orderResult = await this[_submitOrder](train.secret, queryInfo)
 
@@ -412,7 +412,7 @@ class OrderTask {
    * @param {*} seatText 座位
    */
   static [_getOrderAwaitTime] (train, seatText) {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       let data = {}
       let title = '提示'
       let content = '哎呀！！！被挤下线了，请重新登录'
@@ -436,7 +436,7 @@ class OrderTask {
             })
 
             data.code = 0
-            resolve(data)
+            reject(data)
           }
 
           if (res.message.indexOf('出票超时') > -1) {
@@ -449,11 +449,11 @@ class OrderTask {
             })
 
             data.code = -2
-            resolve(data)
+            reject(data)
           }
 
           data.code = -1
-          resolve(data)
+          reject(data)
         }
 
         // 出票成功
@@ -470,7 +470,7 @@ class OrderTask {
             title: title,
             text: content,
             icon: 'success',
-            button: '关闭'
+            button: '我知道了'
           })
           utils.notification.show(title, {
             body: content
@@ -480,7 +480,7 @@ class OrderTask {
           data.orderId = orderNo
           resolve(data)
         }
-      }, 500)
+      }, 1000)
     })
   }
 
