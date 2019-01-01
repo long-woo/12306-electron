@@ -170,12 +170,12 @@ export default {
         },
         statusText: '等待启动任务...',
         currentTrain: {
-          trainCode: chkTrainCodes[0],
+          trainCode: '---',
           fromCityName: queryInfo.fromCity.text,
           toCityName: queryInfo.toCity.text,
-          departureTime: '00:00',
-          arrivalTime: '00:00',
-          useTime: '00:00',
+          departureTime: '--:--',
+          arrivalTime: '--:--',
+          useTime: '--:--',
           seatText: ''
         },
         queryInfo: {

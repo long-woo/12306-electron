@@ -43,6 +43,8 @@
 </template>
 
 <script>
+import OrderTask from '../utils/task'
+
 export default {
   name: 'MyOrder',
   data () {
@@ -60,6 +62,11 @@ export default {
 
       this.orderData = data
       this.$store.dispatch('setOrderCount', data.length)
+
+      if (data.length) {
+        OrderTask.stopOrderAwaitFunc()
+        this.$store.dispatch('deleteTaskData')
+      }
     }
   }
 }

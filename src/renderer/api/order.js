@@ -2,6 +2,8 @@ import axios from './http'
 import config from './config'
 import BaseContent from './base'
 
+const _getSubmitOrderToken = Symbol('_getSubmitOrderToken')
+
 class Order {
   /**
    * 提交订单
@@ -13,29 +15,34 @@ class Order {
 
     const {data, messages} = await axios.post(config.urls.submitOrder, formData)
     let message = messages.indexOf('有未处理的订单') > -1 ? '您还有未完成支付的订单，请先进行处理' : messages.toString()
-    let code = 400
 
-    if (data === 'N') {
-      code = 200
-      message = '订单已提交'
-    }
+    if (data !== 'N') return new BaseContent(null, {message, code: 400})
 
-    return new BaseContent(null, {message, code})
+    const orderToken = await this[_getSubmitOrderToken]()
+
+    return orderToken
   }
 
   /**
    * 获取提交订单的信息（token、keychange）
    */
-  static async getSubmitOrderInfo () {
-    const res = await axios.post(config.urls.getSubmitOrderInfo)
+  static async [_getSubmitOrderToken] () {
+    const res = await axios.post(config.urls.getSubmitOrderToken)
     // token
     const rgxToken = res.match(/globalRepeatSubmitToken\s+=\s+'(.+)';/) || []
     const orderToken = rgxToken.length ? rgxToken[1] : ''
     // keyischange 'key_check_isChange':'A9B10220CE8ABC25EFB68C1CADA21FA79F07219C68157AB466B000C7'
     const rgxKey = res.match(/'key_check_isChange':'(.+)','leftDetails':/) || []
     const orderKey = rgxKey.length ? rgxKey[1] : ''
+    let code = 200
+    let message = '订单提交中...'
 
-    return new BaseContent({orderToken, orderKey})
+    if (!orderToken || !orderKey) {
+      code = 400
+      message = '订单无法提交'
+    }
+
+    return new BaseContent({orderToken, orderKey}, {message, code})
   }
 
   /**

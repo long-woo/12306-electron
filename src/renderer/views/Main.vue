@@ -172,7 +172,6 @@ export default {
         // 提交订单
         const orderData = this.$store.getters.confirmOrderData
 
-        // utils.task.confirmOrderQueueAsync(orderData.train, orderData.seatCode, orderData.passengers, orderData.key, value.verifyCode, orderData.awaitTime)
         OrderTask.confirmOrderQueue(orderData.train, orderData.passengers, orderData.key, orderData.token, orderData.seatCode, value.verifyCode, orderData.awaitTime, orderData.chooseSeats)
       }
     },
