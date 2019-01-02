@@ -192,6 +192,9 @@ export default {
       this.loginName = data.loginName
       this.$store.dispatch('setLoginModel', loginInfo)
       this.getPassengers()
+
+      // 刷新登录状态，防止掉线
+      this.$api.account.keepLogin()
     },
 
     // 关于

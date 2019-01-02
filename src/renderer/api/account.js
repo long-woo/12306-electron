@@ -85,6 +85,19 @@ class Account {
   }
 
   /**
+   * 保持登录
+   */
+  static keepLogin () {
+    if (this.keepFunc) {
+      window.clearInterval(this.keepFunc)
+    }
+
+    this.keepFunc = window.setInterval(() => {
+      this[_loginAuth]()
+    }, 10 * 60 * 1000)
+  }
+
+  /**
    * 获取乘客
    * @param {*} name 乘客名
    * @param {*} pageIndex 当前页
