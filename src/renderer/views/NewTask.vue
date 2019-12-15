@@ -2,37 +2,62 @@
   <div>
     <div class="form-row sticky-top bg-white pt-3">
       <div class="col-sm-6 form-inline mb-3">
-        <b-autocomplete class="col pl-0 pr-0" inputClass="br-rounded-0" placeholder="输入出发地" v-model="fromCity" :dropdownData="stationData" @onSelect="selectFromCity"></b-autocomplete>
+        <b-autocomplete class="col pl-0 pr-0"
+                        inputClass="br-rounded-0"
+                        placeholder="输入出发地"
+                        v-model="fromCity"
+                        :dropdownData="stationData"
+                        @onSelect="selectFromCity"></b-autocomplete>
         <div class="col-auto pl-0 pr-0">
-          <b-button variant="info" class="bs-input-center waves-effect" @click="changeCity">
+          <b-button variant="info"
+                    class="bs-input-center waves-effect"
+                    @click="changeCity">
             <i class="iconfont icon-change"></i>
           </b-button>
         </div>
-        <b-autocomplete class="col pl-0 pr-0" placeholder="输入目的地" inputClass="bl-rounded-0" v-model="toCity" :dropdownData="stationData" ref="toCity" @onSelect="selectToCity"></b-autocomplete>
+        <b-autocomplete class="col pl-0 pr-0"
+                        placeholder="输入目的地"
+                        inputClass="bl-rounded-0"
+                        v-model="toCity"
+                        :dropdownData="stationData"
+                        ref="toCity"
+                        @onSelect="selectToCity"></b-autocomplete>
       </div>
       <div class="col-sm-4 mb-3">
-        <b-date-picker ref="rideDate" @change="changeDate"></b-date-picker>
+        <b-date-picker ref="rideDate"
+                       @change="changeDate"></b-date-picker>
       </div>
       <div class="col-sm-2 mb-3 text-right">
-        <b-button variant="info" class="waves-effect" @click="queryTrain">
+        <b-button variant="info"
+                  class="waves-effect"
+                  @click="queryTrain">
           <i class="iconfont icon-search"></i>
           <span>查询</span>
         </b-button>
       </div>
     </div>
     <div class="table-responsive">
-      <b-table empty-text="没有找到车次^~^" :fields="fields" :items="ticketData" head-variant="default bg-info text-white" inverse striped hover show-empty  ref="tbTrain" @row-clicked="rowClick">
-        <template slot="trainCode" slot-scope="row">{{row.value}}</template>
-        <template slot="from" slot-scope="row">
+      <b-table empty-text="没有找到车次^~^"
+               :fields="fields"
+               :items="ticketData"
+               head-variant="default bg-info text-white"
+               inverse
+               striped
+               hover
+               show-empty
+               ref="tbTrain"
+               @row-clicked="rowClick">
+        <template v-slot:cell(trainCode)="row">{{row.value}}</template>
+        <template v-slot:cell(from)="row">
           <p class="mb-0">{{row.item.fromCityName}}</p>
           <p class="mb-0 font-size-14">{{row.item.departureTime}}</p>
         </template>
-        <template slot="to" slot-scope="row">
+        <template v-slot:cell(to)="row">
           <p class="mb-0">{{row.item.toCityName}}</p>
           <p class="mb-0 font-size-14">{{row.item.arrivalTime}}</p>
         </template>
-        <template slot="useTime" slot-scope="row">{{row.value}}</template>
-        <template slot="seatTypes" slot-scope="row">
+        <template v-slot:cell(useTime)="row">{{row.value}}</template>
+        <template v-slot:cell(seatTypes)="row">
           <p class="mb-0 font-size-14">{{row.value}}</p>
         </template>
       </b-table>
@@ -70,37 +95,37 @@ export default {
   },
   async mounted () {
     // 获取保存过的车次查询信息
-    const queryInfo = utils.getQueryInfo()
+    // const queryInfo = utils.getQueryInfo()
 
-    if (queryInfo) {
-      this.fromCity = queryInfo.fromCity
-      this.toCity = queryInfo.toCity
-    }
+    // if (queryInfo) {
+    //   this.fromCity = queryInfo.fromCity
+    //   this.toCity = queryInfo.toCity
+    // }
 
-    // 站名
-    const {data} = await this.$api.base.getStationName()
+    // // 站名
+    // const {data} = await this.$api.base.getStationName()
 
-    this.$store.dispatch('setStationName', data)
-    this.stationData = data
+    // this.$store.dispatch('setStationName', data)
+    // this.stationData = data
 
-    if (this.$refs.taskButton) {
-      this.$refs.taskButton.getPassengers()
-    }
+    // if (this.$refs.taskButton) {
+    //   this.$refs.taskButton.getPassengers()
+    // }
 
-    // 清除选择车次信息
-    this.$eventBus.$on('clearChooseTrain', () => {
-      this.chkTrains = []
-      this.seatCodes = []
-    })
+    // // 清除选择车次信息
+    // this.$eventBus.$on('clearChooseTrain', () => {
+    //   this.chkTrains = []
+    //   this.seatCodes = []
+    // })
 
-    // 更新车次数据
-    this.$eventBus.$on('updateTicketData', (data) => {
-      this.ticketData = data
-    })
+    // // 更新车次数据
+    // this.$eventBus.$on('updateTicketData', (data) => {
+    //   this.ticketData = data
+    // })
 
-    setTimeout(() => {
-      this.queryTrain()
-    }, 1000)
+    // setTimeout(() => {
+    //   this.queryTrain()
+    // }, 1000)
   },
   methods: {
     // 选择出发地
