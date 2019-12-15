@@ -5,6 +5,7 @@ const urls = {
   checkCaptchaCode: '/passport/captcha/captcha-check', // POST
 
   login: '/passport/web/login', // POST
+  loginConfirm: '/otn/login/conf', // POST
   loginAuthuam: '/passport/web/auth/uamtk', // POST
   loginAuthClient: '/otn/uamauthclient', // POST
   checkIsLogin: '/otn/login/checkUser', // POST

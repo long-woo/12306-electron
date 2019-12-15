@@ -17,8 +17,8 @@ class Account {
    */
   static async getLoginQRCode () {
     let message = '使用手机铁路12306扫一扫'
-    const res = await axios.post(config.urls.loginQRCode, {appid: 'otn'})
-    const {image: qrCode, uuid} = res
+    const res = await axios.post(config.urls.loginQRCode, { appid: 'otn' })
+    const { image: qrCode, uuid } = res
     const data = {
       qrCode: `data:image/jpg;base64,${qrCode}`,
       uuid
@@ -26,10 +26,10 @@ class Account {
 
     if (res.result_code !== '0') {
       message = res.result_message
-      return new BaseContent(null, {message, code: 400})
+      return new BaseContent(null, { message, code: 400 })
     }
 
-    return new BaseContent(data, {message})
+    return new BaseContent(data, { message })
   }
 
   /**
@@ -45,7 +45,7 @@ class Account {
     if (res.result_code !== 0) {
       message = res.result_message
 
-      return new BaseContent(null, {message, code: 400})
+      return new BaseContent(null, { message, code: 400 })
     }
 
     return this[_loginAuth]()
@@ -81,7 +81,7 @@ class Account {
         break
     }
 
-    return new BaseContent({code}, {message, code: 400})
+    return new BaseContent({ code }, { message, code: 400 })
   }
 
   /**
@@ -113,7 +113,7 @@ class Account {
       formData['passengerDTO.passenger_name'] = name
     }
 
-    let {data} = await axios.post(config.urls.getPassengers)
+    let { data } = await axios.post(config.urls.getPassengers)
 
     data = data.normal_passengers || []
 
@@ -136,22 +136,28 @@ class Account {
     let data = {
       code: -1 // 用于扫码登录时，做判断
     }
-    let res = await axios.post(config.urls.loginAuthuam, {appid: 'otn'})
+    let res = await axios.post(config.urls.loginAuthuam, { appid: 'otn' })
 
     if (res.result_code !== 0) {
       message = res.result_message
-
-      return new BaseContent(data, {message, code})
+      return new BaseContent(data, { message, code })
     }
 
     let loginTicket = res.newapptk
 
-    res = await axios.post(config.urls.loginAuthClient, {tk: loginTicket})
+    res = await axios.post(config.urls.loginAuthClient, { tk: loginTicket })
 
     if (res.result_code !== 0) {
       message = res.result_message
+      return new BaseContent(data, { message, code })
+    }
 
-      return new BaseContent(data, {message, code})
+    res = await axios.post(config.urls.loginConfirm)
+    const newData = res.data || {}
+
+    if (newData && !newData.name) {
+      message = res.messages
+      return new BaseContent(data, { message, code })
     }
 
     code = 200
@@ -160,7 +166,7 @@ class Account {
     data.ticket = res.apptk
     data.loginName = res.username
 
-    return new BaseContent(data, {message, code})
+    return new BaseContent(data, { message, code })
   }
 }
 
