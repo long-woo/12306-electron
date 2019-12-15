@@ -16,19 +16,24 @@ let electronProcess = null
 let manualRestart = false
 let hotMiddleware
 
-function logStats (proc, data) {
+function logStats(proc, data) {
   let log = ''
 
-  log += chalk.yellow.bold(`┏ ${proc} Process ${new Array((19 - proc.length) + 1).join('-')}`)
+  log += chalk.yellow.bold(
+    `┏ ${proc} Process ${new Array(19 - proc.length + 1).join('-')}`
+  )
   log += '\n\n'
 
   if (typeof data === 'object') {
-    data.toString({
-      colors: true,
-      chunks: false
-    }).split(/\r?\n/).forEach(line => {
-      log += '  ' + line + '\n'
-    })
+    data
+      .toString({
+        colors: true,
+        chunks: false
+      })
+      .split(/\r?\n/)
+      .forEach(line => {
+        log += '  ' + line + '\n'
+      })
   } else {
     log += `  ${data}\n`
   }
@@ -38,52 +43,56 @@ function logStats (proc, data) {
   console.log(log)
 }
 
-function startRenderer () {
+function startRenderer() {
   return new Promise((resolve, reject) => {
-    rendererConfig.entry.renderer = [path.join(__dirname, 'dev-client')].concat(rendererConfig.entry.renderer)
-
+    rendererConfig.entry.renderer = [path.join(__dirname, 'dev-client')].concat(
+      rendererConfig.entry.renderer
+    )
+    rendererConfig.mode = 'development'
     const compiler = webpack(rendererConfig)
-    hotMiddleware = webpackHotMiddleware(compiler, { 
-      log: false, 
-      heartbeat: 2500 
+    hotMiddleware = webpackHotMiddleware(compiler, {
+      log: false,
+      heartbeat: 2500
     })
 
-    compiler.plugin('compilation', compilation => {
-      compilation.plugin('html-webpack-plugin-after-emit', (data, cb) => {
-        hotMiddleware.publish({ action: 'reload' })
-        cb()
-      })
+    compiler.hooks.compilation.tap('compilation', compilation => {
+      compilation.hooks.htmlWebpackPluginAfterEmit.tapAsync(
+        'html-webpack-plugin-after-emit',
+        (data, cb) => {
+          hotMiddleware.publish({ action: 'reload' })
+          cb()
+        }
+      )
     })
 
-    compiler.plugin('done', stats => {
+    compiler.hooks.done.tap('done', stats => {
       logStats('Renderer', stats)
     })
 
-    const server = new WebpackDevServer(
-      compiler,
-      {
-        contentBase: path.join(__dirname, '../'),
-        quiet: true,
-        before (app, ctx) {
-          app.use(hotMiddleware)
-          ctx.middleware.waitUntilValid(() => {
-            resolve()
-          })
-        }
+    const server = new WebpackDevServer(compiler, {
+      contentBase: path.join(__dirname, '../'),
+      quiet: true,
+      before(app, ctx) {
+        app.use(hotMiddleware)
+        ctx.middleware.waitUntilValid(() => {
+          resolve()
+        })
       }
-    )
+    })
 
     server.listen(9080)
   })
 }
 
-function startMain () {
+function startMain() {
   return new Promise((resolve, reject) => {
-    mainConfig.entry.main = [path.join(__dirname, '../src/main/index.dev.js')].concat(mainConfig.entry.main)
-
+    mainConfig.entry.main = [
+      path.join(__dirname, '../src/main/index.dev.js')
+    ].concat(mainConfig.entry.main)
+    mainConfig.mode = 'development'
     const compiler = webpack(mainConfig)
 
-    compiler.plugin('watch-run', (compilation, done) => {
+    compiler.hooks.watchRun.tapAsync('watch-run', (compilation, done) => {
       logStats('Main', chalk.white.bold('compiling...'))
       hotMiddleware.publish({ action: 'compiling' })
       done()
@@ -113,8 +122,20 @@ function startMain () {
   })
 }
 
-function startElectron () {
-  electronProcess = spawn(electron, ['--inspect=5858', path.join(__dirname, '../dist/electron/main.js')])
+function startElectron() {
+  var args = [
+    '--inspect=5858',
+    path.join(__dirname, '../dist/electron/main.js')
+  ]
+
+  // detect yarn or npm and process commandline args accordingly
+  if (process.env.npm_execpath.endsWith('yarn.js')) {
+    args = args.concat(process.argv.slice(3))
+  } else if (process.env.npm_execpath.endsWith('npm-cli.js')) {
+    args = args.concat(process.argv.slice(2))
+  }
+
+  electronProcess = spawn(electron, args)
 
   electronProcess.stdout.on('data', data => {
     electronLog(data, 'blue')
@@ -128,7 +149,7 @@ function startElectron () {
   })
 }
 
-function electronLog (data, color) {
+function electronLog(data, color) {
   let log = ''
   data = data.toString().split(/\r?\n/)
   data.forEach(line => {
@@ -137,15 +158,15 @@ function electronLog (data, color) {
   if (/[0-9A-z]+/.test(log)) {
     console.log(
       chalk[color].bold('┏ Electron -------------------') +
-      '\n\n' +
-      log +
-      chalk[color].bold('┗ ----------------------------') +
-      '\n'
+        '\n\n' +
+        log +
+        chalk[color].bold('┗ ----------------------------') +
+        '\n'
     )
   }
 }
 
-function greeting () {
+function greeting() {
   const cols = process.stdout.columns
   let text = ''
 
@@ -163,7 +184,7 @@ function greeting () {
   console.log(chalk.blue('  getting ready...') + '\n')
 }
 
-function init () {
+function init() {
   greeting()
 
   Promise.all([startRenderer(), startMain()])

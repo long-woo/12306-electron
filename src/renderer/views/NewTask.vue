@@ -51,13 +51,13 @@ export default {
       fromCity: null,
       toCity: null,
       // table option
-      fields: {
-        trainCode: {label: '车次', sortable: true, class: 'align-middle'},
-        from: {label: '出发地', class: 'align-middle'},
-        to: {label: '目的地', class: 'align-middle'},
-        useTime: {label: '用时', sortable: true, class: 'align-middle'},
-        seatTypes: {label: '备注', class: 'align-middle', thStyle: 'min-width: 200px;', formatter: this.formatSeatType}
-      },
+      fields: [
+        {key: 'trainCode', label: '车次', sortable: true, class: 'align-middle'},
+        {key: 'from', label: '出发地', class: 'align-middle'},
+        {key: 'to', label: '目的地', class: 'align-middle'},
+        {key: 'useTime', label: '用时', sortable: true, class: 'align-middle'},
+        {key: 'seatTypes', label: '备注', class: 'align-middle', thStyle: 'min-width: 200px;', formatter: this.formatSeatType}
+      ],
       chkTrains: [],
       ticketData: [],
       seatCodes: []
