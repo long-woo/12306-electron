@@ -24,7 +24,6 @@ import 'animate.css/animate.css'
 import bsComponents from './components'
 
 import api from './api'
-import eventBus from './utils/eventBus'
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 
@@ -36,15 +35,16 @@ Vue.swal = Vue.prototype.$swal = swal
 Vue.nprogress = Vue.prototype.$nprogress = nprogress
 Vue.api = Vue.prototype.$api = api
 Vue.store = store
-Vue.eventBus = Vue.prototype.$eventBus = eventBus
 
 Vue.use(BootstrapVue)
 Vue.use(bsComponents)
 
 /* eslint-disable no-new */
-new Vue({
+const vue = new Vue({
   components: { App },
   router,
   store,
   template: '<App/>'
 }).$mount('#app')
+
+Vue.eventBus = Vue.prototype.$eventBus = vue

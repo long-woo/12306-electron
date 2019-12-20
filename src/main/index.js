@@ -82,7 +82,7 @@ function createWindow () {
     frame: false,
     show: false,
     webPreferences: {
-      nodeIntegration: process.env.NODE_ENV === 'development',
+      // nodeIntegration: process.env.NODE_ENV === 'development',
       webSecurity: false
     }
   })

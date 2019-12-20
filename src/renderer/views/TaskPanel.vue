@@ -69,7 +69,10 @@ export default {
       type: Boolean,
       default: false
     },
-    passengers: Array
+    passengers: {
+      type: Array,
+      default: () => []
+    }
   },
   watch: {
     chkTrainCodes (value) {

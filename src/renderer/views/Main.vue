@@ -2,12 +2,24 @@
   <div class="h-100">
     <header class="navbar-dark fixed-top">
       <div class="navbar-nav-scroll">
+        <!-- <b-nav-item to="/task">b-nav-item</b-nav-item>
+        <router-link to="/task">router link</router-link>
+        <b-link :to="{name: 'TaskManager'}">b-link</b-link> -->
         <b-nav class="navbar-nav flex-row justify-content-center text-center bg-nav-hue">
-          <b-nav-item class="waves-effect" :active-class="nav.activeClass" v-for="(nav, index) in navItems" :key="index" :to="nav.to" @click="navChange(nav)">
-            <i class="iconfont" :class="`icon-${nav.icon}`"></i>
+          <b-nav-item class="waves-effect"
+                      :active-class="nav.activeClass"
+                      v-for="(nav, index) in navItems"
+                      :key="index"
+                      :to="nav.to"
+                      @click="navChange(nav)">
+            <i class="iconfont"
+               :class="`icon-${nav.icon}`"></i>
             <p>
               {{nav.text}}
-              <b-badge class="badge-count" pill variant="danger" v-if="index === 2 && $store.getters.orderCount">
+              <b-badge class="badge-count"
+                       pill
+                       variant="danger"
+                       v-if="index === 2 && $store.getters.orderCount">
                 {{$store.getters.orderCount}}
               </b-badge>
             </p>
@@ -16,41 +28,52 @@
       </div>
     </header>
     <main class="container-fluid">
-      <transition appear enter-active-class="animated zoomInDown">
-        <router-view />
+      <transition enter-active-class="animated zoomInDown">
+        <router-view></router-view>
       </transition>
     </main>
     <footer class="fixed-bottom border border-info border-left-0 border-right-0 border-bottom-0 bg-white">
       <div class="d-flex flex-row justify-content-between font-size-14">
         <div class="p-2">
-          <div class="text-info" v-if="loginName">
+          <div class="text-info"
+               v-if="loginName">
             <i class="iconfont icon-user"></i>
             <span>{{loginName}}，</span>
-            <a href="javascript:;" @click="logOff">退出</a>
+            <a href="javascript:;"
+               @click="logOff">退出</a>
           </div>
-          <a class="text-info waves-effect" href="javascript:;" v-b-modal.loginModal v-else>
+          <a class="text-info waves-effect"
+             href="javascript:;"
+             v-b-modal.loginModal
+             v-else>
             <i class="iconfont icon-user"></i>
             <span>登录</span>
           </a>
         </div>
-        <div class="text-center" v-if="showAddTask">
-          <a class="btn-add-task waves-effect" href="javascript:;" @click="addTask">
-            <i class="iconfont" :class="buttonIcon"></i>
+        <div class="text-center"
+             v-if="showAddTask">
+          <a class="btn-add-task waves-effect"
+             href="javascript:;"
+             @click="addTask">
+            <i class="iconfont"
+               :class="buttonIcon"></i>
             <p>{{buttonText}}</p>
           </a>
         </div>
         <div class="p-2">
-          <a class="text-info waves-effect" href="javascript:;" @click="openAbout">
+          <a class="text-info waves-effect"
+             href="javascript:;"
+             @click="openAbout">
             <i class="iconfont icon-help"></i>
             <span>关于</span>
           </a>
         </div>
       </div>
     </footer>
-    <task-panel :showPanel="showTaskPanel" :passengers="passengers" @addTaskSuccess="addTask" />
+    <!-- <task-panel :showPanel="showTaskPanel" :passengers="passengers" @addTaskSuccess="addTask" />
     <login ref="loginModal" @loginSuccess="loginSuccess"/>
     <captcha-code :type="captchaCodeType" @validComplete="validComplete" />
-    <about :show.sync="showAbout" />
+    <about :show.sync="showAbout" /> -->
   </div>
 </template>
 
@@ -69,9 +92,9 @@ export default {
   data () {
     return {
       navItems: [
-        { text: '新任务', active: false, activeClass: '', icon: 'new-task', to: '/' },
-        { text: '任务管理', active: false, activeClass: '', icon: 'task-manager', to: '/taskmanager' },
-        { text: '我的订单', active: false, activeClass: '', icon: 'order-manager', to: '/myorder' }
+        { text: '新任务', active: false, activeClass: '', icon: 'new-task', to: '#/' },
+        { text: '任务管理', active: false, activeClass: '', icon: 'task-manager', to: '#/taskmanager' },
+        { text: '我的订单', active: false, activeClass: '', icon: 'order-manager', to: '#/myorder' }
       ],
       showTaskPanel: false,
       captchaCodeType: 'login',
@@ -231,11 +254,11 @@ main {
   padding-right: 1rem;
 }
 
-.navbar-nav .nav-link i{
+.navbar-nav .nav-link i {
   font-size: 2rem;
 }
 
-.navbar-nav .nav-link p{
+.navbar-nav .nav-link p {
   margin-bottom: 0;
 }
 
@@ -274,6 +297,6 @@ main {
 }
 
 .btn-add-task p {
-  margin-top: -.5rem;
+  margin-top: -0.5rem;
 }
 </style>
