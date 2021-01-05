@@ -73,7 +73,7 @@
   },
   "dependencies": {
     "animate.css": "^3.5.2",
-    "axios": "^0.18.1",
+    "axios": "^0.21.1",
     "bootstrap-vue": "^2.1.0",
     "electron-log": "^2.2.14",
     "electron-updater": "^2.19.0",
