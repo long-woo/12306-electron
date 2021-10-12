@@ -3987,10 +3987,10 @@ electron-updater@^2.19.0:
     semver "^5.5.0"
     source-map-support "^0.5.6"
 
-electron@^9.4.0:
-  version "9.4.0"
-  resolved "https://registry.npm.taobao.org/electron/download/electron-9.4.0.tgz#c3c607e3598226ddbaaff8babcdffa8bb2210936"
-  integrity sha1-w8YH41mCJt26r/i6vN/6i7IhCTY=
+electron@^11.5.0:
+  version "11.5.0"
+  resolved "https://registry.npmmirror.com/electron/download/electron-11.5.0.tgz#f1650543b9d8f2047d3807755bdb120153ed210f"
+  integrity sha1-8WUFQ7nY8gR9OAd1W9sSAVPtIQ8=
   dependencies:
     "@electron/get" "^1.0.1"
     "@types/node" "^12.0.12"
